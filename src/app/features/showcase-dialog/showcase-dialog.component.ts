@@ -24,13 +24,20 @@ export interface ShowcaseDialogData {
   imports: [MatDialogModule],
   styleUrl: '../shared/_dialog-shared.scss',
   styles: [`
-    .showcase-hero {
+    .showcase-shell {
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+      background: #FFFFFF;
+    }
+
+    .showcase-media-wrap {
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      max-height: 280px;
-      overflow: hidden;
       background: #0D1B3E;
+      flex-shrink: 0;
+      overflow: hidden;
 
       img {
         width: 100%;
@@ -39,54 +46,71 @@ export interface ShowcaseDialogData {
         display: block;
       }
 
-      .showcase-hero-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(13, 27, 62, 0.12) 0%, rgba(13, 27, 62, 0.86) 100%);
-      }
-
-      .showcase-hero-copy {
-        position: absolute;
-        left: 22px;
-        right: 54px;
-        bottom: 16px;
-        color: #FFFFFF;
-
-        .eyebrow {
-          font-size: 0.72rem;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          color: #F59E0B;
-          display: block;
-          margin-bottom: 4px;
-        }
-        h2 {
-          color: #FFFFFF;
-          margin: 0;
-          font-size: 1.32rem;
-          line-height: 1.25;
-        }
-        p {
-          margin: 4px 0 0;
-          font-size: 0.85rem;
-          color: rgba(255, 255, 255, 0.85);
-        }
-      }
-
       .showcase-close {
         position: absolute;
-        top: 14px;
-        right: 14px;
-        z-index: 3;
+        top: 12px;
+        right: 12px;
+        z-index: 4;
+        background: rgba(13, 27, 62, 0.78);
+        border: 1.5px solid rgba(255, 255, 255, 0.45);
       }
+    }
+
+    .showcase-scroll-body {
+      padding: 22px 26px 24px;
+      overflow-y: auto;
+
+      @media (max-width: 560px) {
+        padding: 18px 18px 22px;
+      }
+    }
+
+    .showcase-title-block {
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #E2EAF6;
+
+      .sc-badge {
+        display: inline-block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #D97706;
+        background: #FFFBEB;
+        border: 1px solid #FDE68A;
+        padding: 3px 10px;
+        border-radius: 999px;
+        margin-bottom: 8px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(1.2rem, 2.5vw, 1.48rem);
+        color: #102A63;
+        line-height: 1.25;
+      }
+
+      .sc-sub {
+        margin: 4px 0 0;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #2457A7;
+      }
+    }
+
+    .showcase-desc {
+      margin: 0;
+      color: #334155;
+      font-size: 0.94rem;
+      line-height: 1.62;
     }
 
     .showcase-highlights {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin: 14px 0;
+      margin: 16px 0;
 
       span {
         background: #EFF6FF;
@@ -102,8 +126,8 @@ export interface ShowcaseDialogData {
     .showcase-details-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 12px;
+      margin-top: 14px;
 
       @media (max-width: 560px) {
         grid-template-columns: 1fr;
@@ -111,42 +135,60 @@ export interface ShowcaseDialogData {
     }
 
     .sd-box {
-      background: #F8FAFC;
+      background: #F8FAFE;
       border: 1px solid #DCE6F5;
-      border-radius: 12px;
-      padding: 11px 13px;
+      border-radius: 14px;
+      padding: 13px 15px;
 
       strong {
         display: block;
         color: #102A63;
-        font-size: 0.85rem;
-        margin-bottom: 3px;
+        font-size: 0.86rem;
+        margin-bottom: 4px;
       }
       p {
         margin: 0;
         color: #526177;
-        font-size: 0.81rem;
-        line-height: 1.45;
+        font-size: 0.82rem;
+        line-height: 1.5;
+      }
+    }
+
+    .showcase-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #E2EAF6;
+
+      @media (max-width: 480px) {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        button {
+          width: 100%;
+          justify-content: center;
+        }
       }
     }
   `],
   template: `
-    <div class="dialog-shell">
-      <div class="showcase-hero">
+    <div class="showcase-shell">
+      <div class="showcase-media-wrap">
         <img [src]="data.image" [alt]="data.title" />
-        <div class="showcase-hero-overlay"></div>
         <button type="button" class="dialog-close showcase-close" mat-dialog-close aria-label="Close popup">×</button>
-        <div class="showcase-hero-copy">
-          <span class="eyebrow">{{ data.badge }}</span>
-          <h2>{{ data.title }}</h2>
-          <p>{{ data.subtitle }}</p>
-        </div>
       </div>
 
-      <div class="dialog-body">
-        <p style="margin:0;color:#334155;font-size:0.95rem;line-height:1.6;">
-          {{ data.description }}
-        </p>
+      <div class="showcase-scroll-body">
+        <div class="showcase-title-block">
+          <span class="sc-badge">{{ data.badge }}</span>
+          <h2>{{ data.title }}</h2>
+          <p class="sc-sub">{{ data.subtitle }}</p>
+        </div>
+
+        <p class="showcase-desc">{{ data.description }}</p>
 
         @if (data.highlights.length) {
           <div class="showcase-highlights">
@@ -167,7 +209,7 @@ export interface ShowcaseDialogData {
           </div>
         }
 
-        <div class="dialog-footer-actions" style="flex-wrap:wrap;margin-top:20px;">
+        <div class="showcase-actions">
           <button type="button" class="btn-cancel" mat-dialog-close>Close</button>
           <button type="button" class="btn-outline-navy" style="padding:9px 18px;font-size:0.86rem;" (click)="openInquiry()">
             Request Quote / Demo
@@ -217,4 +259,3 @@ export class ShowcaseDialogComponent {
     }
   }
 }
-

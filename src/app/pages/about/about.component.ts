@@ -37,11 +37,19 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
               Headquartered in Secunderabad, Telangana, Aircom Technologies has spent over 17 years helping growing enterprises across India and global markets modernize operations. Unlike single-discipline vendors, our engineers unite ERPNext, TallyPrime accounting sync, HRMS &amp; biometric hardware, CRM workflows, and cloud/on-premise IT infrastructure under one accountable roof.
             </p>
             <div class="card-grid-2">
-              @for (stat of stats; track stat.label) {
-                <div class="feature-box" style="padding:16px;">
-                  <strong style="display:block;font-size:1.15rem;color:#102A63;">{{ stat.value }}</strong>
-                  <span style="font-size:0.85rem;color:#2457A7;font-weight:600;">{{ stat.label }}</span>
-                </div>
+              @for (stat of stats; track stat.label; let idx = $index) {
+                <button
+                  type="button"
+                  class="feature-box"
+                  style="padding:16px;text-align:left;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;gap:10px;"
+                  (click)="openWhy(whyItems[idx] || whyItems[0])"
+                >
+                  <div>
+                    <strong style="display:block;font-size:1.15rem;color:#102A63;">{{ stat.value }}</strong>
+                    <span style="font-size:0.85rem;color:#2457A7;font-weight:600;">{{ stat.label }}</span>
+                  </div>
+                  <span style="color:#F59E0B;font-weight:700;" aria-hidden="true">→</span>
+                </button>
               }
             </div>
             <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">

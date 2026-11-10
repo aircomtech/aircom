@@ -121,7 +121,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
           @for (service of services; track service.slug) {
             <article class="service-card" (click)="openServicePopup(service)">
               <div class="sc-thumb">
-                <img [src]="service.heroImage" [alt]="service.title" loading="lazy" />
+                <img [src]="service.heroImage" [alt]="service.title" />
               </div>
 
               <div class="sc-body">
@@ -158,7 +158,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
           <!-- Left Full Building Visual (image copy 8.png — zero side crop) -->
           <div class="about-visual-col" appScrollReveal="left">
             <div class="about-image-frame grand-frame">
-              <img [src]="about.image" alt="Aircom Technologies corporate glass building" loading="lazy" />
+              <img [src]="about.image" alt="Aircom Technologies corporate glass building" />
               <div class="about-year-badge">
                 <strong>2009</strong>
                 <span>Est. &bull; 17+ Years</span>
@@ -166,7 +166,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             </div>
           </div>
 
-          <!-- Center Narrative -->
+          <!-- Center Narrative + Interactive Popups on 4 Verified Highlights -->
           <div class="about-copy-col" appScrollReveal="up">
             <div class="inline-eyebrow">
               <span class="eyebrow-line"></span>
@@ -177,34 +177,38 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             <p class="about-desc">{{ about.description }}</p>
 
             <div class="about-mini-badges">
-              <div class="mini-stat">
+              <button type="button" class="mini-stat mini-stat-btn" (click)="openWhyPopup(whyItems[1])">
                 <app-tech-icon name="trophy" [size]="22" color="#2457A7" />
                 <div>
                   <strong>17+ Years</strong>
                   <span>Of Excellence</span>
                 </div>
-              </div>
-              <div class="mini-stat">
+                <span class="mini-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="mini-stat mini-stat-btn" (click)="openWhyPopup(whyItems[0])">
                 <app-tech-icon name="users" [size]="22" color="#2457A7" />
                 <div>
                   <strong>Customer</strong>
                   <span>Focused Solutions</span>
                 </div>
-              </div>
-              <div class="mini-stat">
+                <span class="mini-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="mini-stat mini-stat-btn" (click)="openWhyPopup(whyItems[3])">
                 <app-tech-icon name="shield-check" [size]="22" color="#2457A7" />
                 <div>
                   <strong>Quality</strong>
                   <span>Driven Delivery</span>
                 </div>
-              </div>
-              <div class="mini-stat">
+                <span class="mini-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="mini-stat mini-stat-btn" (click)="openWhyPopup(whyItems[2])">
                 <app-tech-icon name="headphones" [size]="22" color="#2457A7" />
                 <div>
                   <strong>Dedicated</strong>
                   <span>Technical Support</span>
                 </div>
-              </div>
+                <span class="mini-arrow" aria-hidden="true">→</span>
+              </button>
             </div>
 
             <a routerLink="/about" class="btn-navy">
@@ -213,7 +217,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             </a>
           </div>
 
-          <!-- Right Interactive Vision / Mission / Core Values Card -->
+          <!-- Right Interactive Vision / Mission / Core Values Card (Heavy Mobile/Desktop Popups) -->
           <div class="about-pillars-card" appScrollReveal="right">
             @for (pillar of pillars; track pillar.key) {
               <button type="button" class="pillar-item pillar-btn" (click)="openPillarPopup(pillar)">
@@ -223,7 +227,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
                 <div class="pillar-text">
                   <div class="pillar-title-row">
                     <h3>{{ pillar.title }}</h3>
-                    <span class="pillar-open">View →</span>
+                    <span class="pillar-open">View Details →</span>
                   </div>
                   @if (pillar.key === 'values') {
                     <div class="core-chips">
@@ -259,7 +263,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
           @for (item of whyItems; track item.title; let i = $index) {
             <button type="button" class="why-card" (click)="openWhyPopup(item)">
               <div class="why-thumb">
-                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <img [src]="item.image" [alt]="item.title" />
               </div>
               <div class="why-body">
                 <div class="why-title-row">
@@ -277,7 +281,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
-    <!-- 5. PRODUCTS SECTION (5 PRODUCTS + TAILORED DEPLOYMENT VISUAL CARD) -->
+    <!-- 5. PRODUCTS SECTION (UNIFIED 6-CARD 3x2 GRID: 5 PRODUCTS + TAILORED DEPLOYMENT) -->
     <section class="products-section">
       <div class="container">
         <div class="section-header" appScrollReveal="up">
@@ -290,37 +294,36 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
           <p>Explore our enterprise solution categories designed to simplify, automate, and accelerate business growth.</p>
         </div>
 
-        <div class="products-showcase" #productsGrid>
-          <div class="products-cards-grid">
-            @for (product of products; track product.slug) {
-              <article class="product-card" (click)="openProductPopup(product)">
-                <div class="pc-thumb">
-                  <img [src]="product.image" [alt]="product.title" loading="lazy" />
+        <div class="products-cards-grid" #productsGrid>
+          @for (product of products; track product.slug) {
+            <article class="product-card" (click)="openProductPopup(product)">
+              <div class="pc-thumb">
+                <img [src]="product.image" [alt]="product.title" />
+              </div>
+              <div class="pc-body">
+                <div class="pc-title-row">
+                  <span class="pc-icon-inline">
+                    <app-tech-icon [name]="product.icon" [size]="18" color="#2457A7" />
+                  </span>
+                  <h3>{{ product.title }}</h3>
                 </div>
-                <div class="pc-body">
-                  <div class="pc-title-row">
-                    <span class="pc-icon-inline">
-                      <app-tech-icon [name]="product.icon" [size]="18" color="#2457A7" />
-                    </span>
-                    <h3>{{ product.title }}</h3>
-                  </div>
-                  <p>{{ product.shortDesc }}</p>
-                  <div class="pc-actions">
-                    <span class="pc-preview">Quick View</span>
-                    <a
-                      [routerLink]="['/products', product.slug]"
-                      class="pc-explore"
-                      (click)="$event.stopPropagation()"
-                    >Explore Product →</a>
-                  </div>
+                <p>{{ product.shortDesc }}</p>
+                <div class="pc-actions">
+                  <span class="pc-preview">Quick View</span>
+                  <a
+                    [routerLink]="['/products', product.slug]"
+                    class="pc-explore"
+                    (click)="$event.stopPropagation()"
+                  >Explore Product →</a>
                 </div>
-              </article>
-            }
-          </div>
+              </div>
+            </article>
+          }
 
-          <aside class="products-cta-banner" appScrollReveal="right">
-            <div class="pct-thumb">
-              <img src="assets/images/tailored-deployment.png" alt="Tailored Deployment Solutions" loading="lazy" />
+          <!-- Slot 6: Tailored Deployment aligned identically beside IT Support Services -->
+          <aside class="product-card products-cta-card">
+            <div class="pc-thumb">
+              <img src="assets/images/tailored-deployment.png" alt="Tailored Deployment Solutions" />
             </div>
             <div class="pct-body">
               <span class="pct-tag">Tailored Deployment</span>
@@ -335,7 +338,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
-    <!-- 6. INDUSTRIES WE SERVE (GRAND FULL-IMAGE CARDS + MOBILE SWIPE CAROUSEL) -->
+    <!-- 6. INDUSTRIES WE SERVE (VISIBLE PICS + AUTO-SCROLLING CAROUSEL) -->
     <section class="industries-section">
       <div class="container">
         <div class="industries-head">
@@ -354,11 +357,18 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
           </div>
         </div>
 
-        <div class="industries-track" #industriesTrack>
+        <div
+          class="industries-track"
+          #industriesTrack
+          (mouseenter)="pauseAutoScroll(true)"
+          (mouseleave)="pauseAutoScroll(false)"
+          (touchstart)="pauseAutoScroll(true)"
+          (touchend)="resumeAutoScrollDelayed()"
+        >
           @for (ind of industries; track ind.slug) {
             <a [routerLink]="['/industries', ind.slug]" class="industry-card">
               <div class="ind-thumb">
-                <img [src]="ind.image" [alt]="ind.name + ' IT and ERP solutions'" class="ind-bg" loading="lazy" />
+                <img [src]="ind.image" [alt]="ind.name + ' IT and ERP solutions'" class="ind-bg" />
               </div>
               <div class="ind-footer">
                 <span class="ind-icon-circle">
@@ -405,6 +415,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private ctx?: gsap.Context;
   private typingTimers: ReturnType<typeof setInterval>[] = [];
+  private autoScrollTimer?: ReturnType<typeof setInterval>;
+  private resumeTimer?: ReturnType<typeof setTimeout>;
+  private autoScrollPaused = false;
 
   ngOnInit(): void {
     this.seo.updateSeo({
@@ -449,6 +462,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
       this.startTypingStats();
+      this.startIndustriesAutoScroll();
 
       if (this.servicesGrid) {
         this.anim.animateStaggerCards(this.servicesGrid.nativeElement, '.service-card');
@@ -460,6 +474,41 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.anim.animateStaggerCards(this.productsGrid.nativeElement, '.product-card');
       }
     }
+  }
+
+  private startIndustriesAutoScroll(): void {
+    this.autoScrollTimer = setInterval(() => {
+      if (this.autoScrollPaused) {
+        return;
+      }
+      const track = this.industriesTrack?.nativeElement;
+      if (!track || track.scrollWidth <= track.clientWidth + 8) {
+        return;
+      }
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      if (track.scrollLeft >= maxScroll - 12) {
+        track.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        const cardWidth = track.querySelector('.industry-card')?.clientWidth || 280;
+        track.scrollBy({ left: cardWidth + 14, behavior: 'smooth' });
+      }
+    }, 2800);
+  }
+
+  pauseAutoScroll(paused: boolean): void {
+    this.autoScrollPaused = paused;
+    if (this.resumeTimer) {
+      clearTimeout(this.resumeTimer);
+    }
+  }
+
+  resumeAutoScrollDelayed(): void {
+    if (this.resumeTimer) {
+      clearTimeout(this.resumeTimer);
+    }
+    this.resumeTimer = setTimeout(() => {
+      this.autoScrollPaused = false;
+    }, 3500);
   }
 
   private startTypingStats(): void {
@@ -578,12 +627,20 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!track) {
       return;
     }
+    this.pauseAutoScroll(true);
+    this.resumeAutoScrollDelayed();
     const step = Math.max(260, track.clientWidth * 0.72);
     track.scrollBy({ left: direction * step, behavior: 'smooth' });
   }
 
   ngOnDestroy(): void {
     this.typingTimers.forEach((t) => clearInterval(t));
+    if (this.autoScrollTimer) {
+      clearInterval(this.autoScrollTimer);
+    }
+    if (this.resumeTimer) {
+      clearTimeout(this.resumeTimer);
+    }
     this.ctx?.revert();
     ScrollTrigger.getAll().forEach((t) => t.kill());
   }

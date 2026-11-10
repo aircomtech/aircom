@@ -62,9 +62,9 @@ export class DialogLauncherService {
 
   openShowcase(data: ShowcaseDialogData): MatDialogRef<ShowcaseDialogComponent> {
     return this.dialog.open(ShowcaseDialogComponent, {
-      width: '620px',
+      width: '660px',
       maxWidth: '95vw',
-      maxHeight: '92vh',
+      maxHeight: '94vh',
       panelClass: 'aircom-dialog-panel',
       data
     });
