@@ -1,6 +1,10 @@
 .contact-section {
-  padding: 68px 0;
+  padding: 44px 0 64px;
   background: linear-gradient(180deg, #F4F7FC 0%, #FFFFFF 100%);
+
+  @media (max-width: 767px) {
+    padding: 32px 0 52px;
+  }
 }
 
 .contact-grid {

@@ -14,7 +14,7 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
   imports: [RouterLink, BreadcrumbComponent, TechIconComponent, ScrollRevealDirective, CtaBannerComponent],
   styleUrl: '../../_inner-page.scss',
   template: `
-    <section class="page-hero">
+    <section class="page-hero page-hero--solutions">
       <div class="container">
         <app-breadcrumb [items]="[{ label: 'Products' }]" />
         <span class="hero-badge">Enterprise Solution Categories</span>

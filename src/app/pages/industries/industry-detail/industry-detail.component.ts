@@ -17,7 +17,7 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
   styleUrl: '../../_inner-page.scss',
   template: `
     @if (industry(); as ind) {
-      <section class="page-hero">
+      <section class="page-hero page-hero--solutions">
         <div class="container">
           <div class="detail-hero-grid">
             <div>

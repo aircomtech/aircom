@@ -31,15 +31,15 @@ import { DialogLauncherService } from '../../../core/services/dialog-launcher.se
       padding: 48px 0 64px;
     }
     .cta-box {
-      background-color: #091638;
+      background-color: #07163B;
       background-image:
-        linear-gradient(95deg, rgba(8, 19, 52, 0.92) 0%, rgba(13, 27, 62, 0.76) 52%, rgba(13, 27, 62, 0.22) 100%),
+        linear-gradient(95deg, rgba(8, 19, 52, 0.90) 0%, rgba(13, 27, 62, 0.65) 48%, rgba(13, 27, 62, 0.08) 100%),
         url('/assets/images/cta-banner-bg.png');
       background-size: cover;
       background-position: right center;
       background-repeat: no-repeat;
       border-radius: 22px;
-      padding: 40px 34px;
+      padding: 44px 36px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -52,10 +52,11 @@ import { DialogLauncherService } from '../../../core/services/dialog-launcher.se
 
       @media (max-width: 767px) {
         background-image:
-          linear-gradient(180deg, rgba(8, 19, 52, 0.88) 0%, rgba(13, 27, 62, 0.74) 58%, rgba(13, 27, 62, 0.55) 100%),
+          linear-gradient(180deg, #07163B 0%, rgba(7, 22, 59, 0.92) 52%, rgba(7, 22, 59, 0.16) 74%, rgba(7, 22, 59, 0) 100%),
           url('/assets/images/cta-banner-bg.png');
-        background-position: 78% bottom;
-        padding: 28px 22px;
+        background-size: 100% auto;
+        background-position: center bottom;
+        padding: 28px 20px 145px;
       }
     }
     .cta-tag {

@@ -1,22 +1,41 @@
 .page-hero {
-  background-color: #091638;
+  background-color: #08163A;
   background-image:
-    linear-gradient(90deg, rgba(8, 19, 52, 0.92) 0%, rgba(13, 27, 62, 0.78) 48%, rgba(13, 27, 62, 0.25) 100%),
+    linear-gradient(90deg, rgba(8, 19, 52, 0.88) 0%, rgba(13, 27, 62, 0.56) 44%, rgba(13, 27, 62, 0.06) 100%),
     url('/assets/images/page-hero-bg.png');
   background-size: cover;
-  background-position: right center;
+  background-position: center center;
   background-repeat: no-repeat;
   color: #FFFFFF;
-  padding: 58px 0 52px;
+  min-height: 295px;
+  display: flex;
+  align-items: center;
+  padding: 58px 0 56px;
   position: relative;
   overflow: hidden;
 
-  @media (max-width: 767px) {
+  &.page-hero--solutions {
     background-image:
-      linear-gradient(180deg, rgba(8, 19, 52, 0.88) 0%, rgba(13, 27, 62, 0.74) 55%, rgba(13, 27, 62, 0.52) 100%),
+      linear-gradient(90deg, rgba(8, 19, 52, 0.84) 0%, rgba(13, 27, 62, 0.50) 48%, rgba(13, 27, 62, 0.14) 100%),
+      url('/assets/images/solutions-hero-bg.png');
+  }
+
+  @media (max-width: 767px) {
+    min-height: 0;
+    background-image:
+      linear-gradient(180deg, #08163A 0%, rgba(8, 22, 58, 0.92) 48%, rgba(8, 22, 58, 0.22) 72%, rgba(8, 22, 58, 0) 100%),
       url('/assets/images/page-hero-bg.png');
-    background-position: 72% bottom;
-    padding: 42px 0 40px;
+    background-size: 100% auto;
+    background-position: center bottom;
+    padding: 36px 0 138px;
+
+    &.page-hero--solutions {
+      background-image:
+        linear-gradient(180deg, #08163A 0%, rgba(8, 22, 58, 0.92) 48%, rgba(8, 22, 58, 0.22) 72%, rgba(8, 22, 58, 0) 100%),
+        url('/assets/images/solutions-hero-bg.png');
+      background-size: 100% auto;
+      background-position: center bottom;
+    }
   }
 
   .container {
