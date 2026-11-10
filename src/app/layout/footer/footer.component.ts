@@ -16,7 +16,7 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
           <!-- Column 1: Logo & Tagline -->
           <div class="footer-col brand-col">
             <a routerLink="/" aria-label="Aircom Technologies Home">
-              <app-aircom-logo variant="dark" [height]="54" />
+              <app-aircom-logo variant="dark" [height]="76" />
             </a>
             <p class="footer-about">
               Enterprise ERP, TallyPrime integration, HRMS automation, IT infrastructure, and cloud solutions trusted since 2009.

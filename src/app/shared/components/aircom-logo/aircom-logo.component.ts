@@ -5,12 +5,12 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   template: `
     <img
-      [src]="variant === 'dark' ? 'assets/logo/aircom-logo-dark.svg' : 'assets/logo/aircom-logo-light.svg'"
+      [src]="variant === 'dark' ? 'assets/logo/aircom-logo-dark.png' : 'assets/logo/aircom-logo-light.png'"
       alt="Aircom Technologies - Serving beyond boundaries"
       [style.height.px]="height"
       class="aircom-logo-img"
-      width="210"
-      height="60"
+      width="180"
+      height="112"
     />
   `,
   styles: [`
@@ -27,6 +27,5 @@ import { Component, Input } from '@angular/core';
 })
 export class AircomLogoComponent {
   @Input() variant: 'light' | 'dark' = 'light';
-  @Input() height = 50;
+  @Input() height = 58;
 }
-

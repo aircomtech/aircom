@@ -44,10 +44,10 @@ import { Component, HostListener, inject, PLATFORM_ID, signal } from '@angular/c
       }
 
       @media (max-width: 767px) {
-        bottom: 72px;
-        right: 16px;
-        width: 42px;
-        height: 42px;
+        bottom: 22px;
+        right: 10px;
+        width: 44px;
+        height: 44px;
       }
     }
   `]

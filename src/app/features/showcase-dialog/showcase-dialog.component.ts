@@ -26,7 +26,9 @@ export interface ShowcaseDialogData {
   styles: [`
     .showcase-hero {
       position: relative;
-      height: 220px;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      max-height: 280px;
       overflow: hidden;
       background: #0D1B3E;
 
@@ -40,7 +42,7 @@ export interface ShowcaseDialogData {
       .showcase-hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(13, 27, 62, 0.25) 0%, rgba(13, 27, 62, 0.88) 100%);
+        background: linear-gradient(180deg, rgba(13, 27, 62, 0.12) 0%, rgba(13, 27, 62, 0.86) 100%);
       }
 
       .showcase-hero-copy {
@@ -215,3 +217,4 @@ export class ShowcaseDialogComponent {
     }
   }
 }
+

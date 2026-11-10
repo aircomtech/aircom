@@ -7,6 +7,7 @@ import {
   OnDestroy,
   OnInit,
   PLATFORM_ID,
+  signal,
   ViewChild
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -49,15 +50,6 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
 
       <div class="hero-gradient-overlay" aria-hidden="true"></div>
 
-      <!-- Subtle glowing digital globe pulse & floating tech rings -->
-      <div class="hero-tech-aura" aria-hidden="true">
-        <span class="pulse-ring ring-1"></span>
-        <span class="pulse-ring ring-2"></span>
-        <span class="float-chip chip-cloud">Cloud ERP</span>
-        <span class="float-chip chip-sec">Zero-Trust</span>
-        <span class="float-chip chip-ai">Analytics</span>
-      </div>
-
       <div class="container hero-container">
         <div class="hero-content">
           <div class="hero-eyebrow">
@@ -90,21 +82,19 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
-    <!-- STATS STRIP BELOW HERO -->
-    <section class="stats-strip-section" aria-label="Verified Company Highlights">
+    <!-- STATS STRIP BELOW HERO (GRAND SIZE + TYPING MODE) -->
+    <section class="stats-strip-section" aria-label="Verified Company Highlights" #statsSection>
       <div class="container">
         <div class="stats-strip-card">
-          @for (stat of stats; track stat.label) {
+          @for (stat of stats; track stat.label; let i = $index) {
             <div class="stat-pill">
               <div class="stat-icon">
-                <app-tech-icon [name]="stat.icon" [size]="26" color="#2457A7" />
+                <app-tech-icon [name]="stat.icon" [size]="28" color="#2457A7" />
               </div>
               <div class="stat-text">
-                @if (stat.numericValue) {
-                  <strong #counter17>{{ stat.value }}</strong>
-                } @else {
-                  <strong>{{ stat.value }}</strong>
-                }
+                <strong class="typed-stat-val">
+                  {{ typedValues()[i] }}@if (typingActive()[i]) {<span class="typing-caret" aria-hidden="true">|</span>}
+                </strong>
                 <span>{{ stat.label }}</span>
                 <small>{{ stat.sublabel }}</small>
               </div>
@@ -114,7 +104,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
-    <!-- 2. SERVICES SECTION (10 CARDS WITH PICTORIAL PREVIEWS + POPUPS) -->
+    <!-- 2. SERVICES SECTION (10 GRAND PICTORIAL CARDS + POPUPS) -->
     <section class="services-section" id="services-section">
       <div class="container">
         <div class="section-header" appScrollReveal="up">
@@ -124,7 +114,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             <span class="eyebrow-line right"></span>
           </div>
           <h2>Comprehensive IT &amp; Business Solutions</h2>
-          <p>From ERP to Cloud, click any solution to preview architecture visuals or open its full page.</p>
+          <p>From ERP to Cloud, click any solution to inspect its visual blueprint or open its dedicated page.</p>
         </div>
 
         <div class="services-grid" #servicesGrid>
@@ -132,14 +122,15 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             <article class="service-card" (click)="openServicePopup(service)">
               <div class="sc-thumb">
                 <img [src]="service.heroImage" [alt]="service.title" loading="lazy" />
-                <div class="sc-thumb-overlay"></div>
-                <span class="sc-cat-pill">{{ service.category }}</span>
-                <span class="sc-icon-badge">
-                  <app-tech-icon [name]="service.icon" [size]="20" color="#FFFFFF" />
-                </span>
               </div>
 
               <div class="sc-body">
+                <div class="sc-meta-row">
+                  <span class="sc-icon-chip">
+                    <app-tech-icon [name]="service.icon" [size]="18" color="#2457A7" />
+                  </span>
+                  <span class="sc-cat-text">{{ service.category }}</span>
+                </div>
                 <h3>{{ service.title }}</h3>
                 <p>{{ service.shortDesc }}</p>
               </div>
@@ -164,11 +155,10 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
     <section class="about-section">
       <div class="container">
         <div class="about-grid">
-          <!-- Left Grand Building Visual (image copy 8.png) -->
+          <!-- Left Full Building Visual (image copy 8.png — zero side crop) -->
           <div class="about-visual-col" appScrollReveal="left">
             <div class="about-image-frame grand-frame">
               <img [src]="about.image" alt="Aircom Technologies corporate glass building" loading="lazy" />
-              <div class="about-frame-shine" aria-hidden="true"></div>
               <div class="about-year-badge">
                 <strong>2009</strong>
                 <span>Est. &bull; 17+ Years</span>
@@ -252,7 +242,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
-    <!-- 4. WHY CHOOSE AIRCOM? (PICTORIAL + INTERACTIVE POPUPS) -->
+    <!-- 4. WHY CHOOSE AIRCOM? (4 GRAND PICTORIAL CARDS + POPUPS) -->
     <section class="why-section">
       <div class="container">
         <div class="section-header" appScrollReveal="up">
@@ -262,7 +252,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             <span class="eyebrow-line right"></span>
           </div>
           <h2>Building a Smarter, Stronger &amp; More Connected Business</h2>
-          <p>Click any pillar below to explore how our engineers deliver measurable enterprise impact.</p>
+          <p>Click any pillar below to explore its visual architecture and enterprise impact.</p>
         </div>
 
         <div class="why-grid" #whyGrid>
@@ -270,13 +260,14 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             <button type="button" class="why-card" (click)="openWhyPopup(item)">
               <div class="why-thumb">
                 <img [src]="item.image" [alt]="item.title" loading="lazy" />
-                <span class="why-step">0{{ i + 1 }}</span>
-                <div class="why-icon" [style.borderColor]="item.accent">
-                  <app-tech-icon [name]="item.icon" [size]="24" [color]="item.accent" />
-                </div>
               </div>
               <div class="why-body">
-                <h3>{{ item.title }}</h3>
+                <div class="why-title-row">
+                  <span class="why-icon-inline" [style.borderColor]="item.accent">
+                    <app-tech-icon [name]="item.icon" [size]="20" [color]="item.accent" />
+                  </span>
+                  <h3>{{ item.title }}</h3>
+                </div>
                 <p>{{ item.description }}</p>
                 <span class="why-more">Explore Advantage →</span>
               </div>
@@ -286,7 +277,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
-    <!-- 5. PRODUCTS SECTION (5 PRODUCTS + PICTORIAL POPUPS + CTA PANEL) -->
+    <!-- 5. PRODUCTS SECTION (5 PRODUCTS + TAILORED DEPLOYMENT VISUAL CARD) -->
     <section class="products-section">
       <div class="container">
         <div class="section-header" appScrollReveal="up">
@@ -305,12 +296,14 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
               <article class="product-card" (click)="openProductPopup(product)">
                 <div class="pc-thumb">
                   <img [src]="product.image" [alt]="product.title" loading="lazy" />
-                  <span class="pc-icon-badge">
-                    <app-tech-icon [name]="product.icon" [size]="20" color="#FFFFFF" />
-                  </span>
                 </div>
                 <div class="pc-body">
-                  <h3>{{ product.title }}</h3>
+                  <div class="pc-title-row">
+                    <span class="pc-icon-inline">
+                      <app-tech-icon [name]="product.icon" [size]="18" color="#2457A7" />
+                    </span>
+                    <h3>{{ product.title }}</h3>
+                  </div>
                   <p>{{ product.shortDesc }}</p>
                   <div class="pc-actions">
                     <span class="pc-preview">Quick View</span>
@@ -326,18 +319,23 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
           </div>
 
           <aside class="products-cta-banner" appScrollReveal="right">
-            <span class="pct-tag">Tailored Deployment</span>
-            <h3>Ready to Simplify &amp; Scale Operations?</h3>
-            <p>Combine Cloud ERP, Analytics, Security, and Managed IT under one trusted partner.</p>
-            <button type="button" class="btn-orange" (click)="dialogs.openQuote('Cloud ERP Solution')">
-              Get Started Today →
-            </button>
+            <div class="pct-thumb">
+              <img src="assets/images/tailored-deployment.png" alt="Tailored Deployment Solutions" loading="lazy" />
+            </div>
+            <div class="pct-body">
+              <span class="pct-tag">Tailored Deployment</span>
+              <h3>Ready to Simplify &amp; Scale Operations?</h3>
+              <p>Combine Cloud ERP, Analytics, Security, and Managed IT under one trusted partner.</p>
+              <button type="button" class="btn-orange" (click)="dialogs.openQuote('Cloud ERP Solution')">
+                Get Started Today →
+              </button>
+            </div>
           </aside>
         </div>
       </div>
     </section>
 
-    <!-- 6. INDUSTRIES WE SERVE (HORIZONTAL / SWIPEABLE CAROUSEL) -->
+    <!-- 6. INDUSTRIES WE SERVE (GRAND FULL-IMAGE CARDS + MOBILE SWIPE CAROUSEL) -->
     <section class="industries-section">
       <div class="container">
         <div class="industries-head">
@@ -359,13 +357,15 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
         <div class="industries-track" #industriesTrack>
           @for (ind of industries; track ind.slug) {
             <a [routerLink]="['/industries', ind.slug]" class="industry-card">
-              <img [src]="ind.image" [alt]="ind.name + ' IT and ERP solutions'" class="ind-bg" loading="lazy" />
-              <div class="ind-overlay"></div>
-              <div class="ind-content">
-                <div class="ind-icon-circle">
-                  <app-tech-icon [name]="ind.icon" [size]="24" color="#FFFFFF" />
-                </div>
+              <div class="ind-thumb">
+                <img [src]="ind.image" [alt]="ind.name + ' IT and ERP solutions'" class="ind-bg" loading="lazy" />
+              </div>
+              <div class="ind-footer">
+                <span class="ind-icon-circle">
+                  <app-tech-icon [name]="ind.icon" [size]="18" color="#FFFFFF" />
+                </span>
                 <h3>{{ ind.name }}</h3>
+                <span class="ind-go" aria-hidden="true">→</span>
               </div>
             </a>
           }
@@ -391,16 +391,20 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly products = PRODUCTS_DATA;
   readonly industries = INDUSTRIES_DATA;
 
+  readonly typedValues = signal<string[]>(HERO_STATS.map((s) => s.value));
+  readonly typingActive = signal<boolean[]>(HERO_STATS.map(() => false));
+
   @ViewChild('heroSection') heroSection?: ElementRef<HTMLElement>;
   @ViewChild('heroParallaxDesktop') heroParallaxDesktop?: ElementRef<HTMLElement>;
   @ViewChild('heroParallaxMobile') heroParallaxMobile?: ElementRef<HTMLElement>;
-  @ViewChild('counter17') counter17?: ElementRef<HTMLElement>;
+  @ViewChild('statsSection') statsSection?: ElementRef<HTMLElement>;
   @ViewChild('servicesGrid') servicesGrid?: ElementRef<HTMLElement>;
   @ViewChild('whyGrid') whyGrid?: ElementRef<HTMLElement>;
   @ViewChild('productsGrid') productsGrid?: ElementRef<HTMLElement>;
   @ViewChild('industriesTrack') industriesTrack?: ElementRef<HTMLElement>;
 
   private ctx?: gsap.Context;
+  private typingTimers: ReturnType<typeof setInterval>[] = [];
 
   ngOnInit(): void {
     this.seo.updateSeo({
@@ -444,9 +448,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
 
-      if (this.counter17) {
-        this.anim.animateCounter(this.counter17.nativeElement, 17, '+');
-      }
+      this.startTypingStats();
+
       if (this.servicesGrid) {
         this.anim.animateStaggerCards(this.servicesGrid.nativeElement, '.service-card');
       }
@@ -457,6 +460,36 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.anim.animateStaggerCards(this.productsGrid.nativeElement, '.product-card');
       }
     }
+  }
+
+  private startTypingStats(): void {
+    const targets = HERO_STATS.map((s) => s.value);
+    this.typedValues.set(targets.map(() => ''));
+    this.typingActive.set(targets.map(() => true));
+
+    targets.forEach((fullText, idx) => {
+      let charPos = 0;
+      const delayMs = idx * 140;
+      setTimeout(() => {
+        const timer = setInterval(() => {
+          charPos++;
+          this.typedValues.update((arr) => {
+            const next = [...arr];
+            next[idx] = fullText.slice(0, charPos);
+            return next;
+          });
+          if (charPos >= fullText.length) {
+            clearInterval(timer);
+            this.typingActive.update((flags) => {
+              const next = [...flags];
+              next[idx] = false;
+              return next;
+            });
+          }
+        }, 55);
+        this.typingTimers.push(timer);
+      }, delayMs);
+    });
   }
 
   openServicePopup(service: ServiceItem): void {
@@ -545,11 +578,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!track) {
       return;
     }
-    const step = Math.max(260, track.clientWidth * 0.65);
+    const step = Math.max(260, track.clientWidth * 0.72);
     track.scrollBy({ left: direction * step, behavior: 'smooth' });
   }
 
   ngOnDestroy(): void {
+    this.typingTimers.forEach((t) => clearInterval(t));
     this.ctx?.revert();
     ScrollTrigger.getAll().forEach((t) => t.kill());
   }

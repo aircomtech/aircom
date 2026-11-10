@@ -59,7 +59,7 @@ import { TechIconComponent } from '../../shared/components/tech-icon/tech-icon.c
       <div class="main-nav-wrap">
         <div class="container main-nav-inner">
           <a routerLink="/" class="brand-link" aria-label="Aircom Technologies Home">
-            <app-aircom-logo variant="light" [height]="50" />
+            <app-aircom-logo variant="light" [height]="58" />
           </a>
 
           <nav class="desktop-nav" aria-label="Primary Navigation">

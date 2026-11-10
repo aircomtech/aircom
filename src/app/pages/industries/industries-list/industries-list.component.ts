@@ -26,11 +26,13 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
       <div class="container">
         <div class="card-grid-2">
           @for (ind of industries; track ind.slug) {
-            <a [routerLink]="['/industries', ind.slug]" class="feature-box" style="padding:0;overflow:hidden;display:grid;grid-template-columns:200px 1fr;" appScrollReveal="up">
-              <img [src]="ind.image" [alt]="ind.name" style="width:100%;height:100%;min-height:180px;object-fit:cover;" />
+            <a [routerLink]="['/industries', ind.slug]" class="feature-box" style="padding:0;overflow:hidden;display:flex;flex-direction:column;" appScrollReveal="up">
+              <img [src]="ind.image" [alt]="ind.name" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" />
               <div style="padding:20px;">
-                <app-tech-icon [name]="ind.icon" [size]="24" color="#2457A7" />
-                <h3 style="margin-top:8px;">{{ ind.name }}</h3>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                  <app-tech-icon [name]="ind.icon" [size]="24" color="#2457A7" />
+                  <h3 style="margin:0;">{{ ind.name }}</h3>
+                </div>
                 <p style="margin-bottom:10px;">{{ ind.shortDesc }}</p>
                 <span style="font-size:0.84rem;font-weight:700;color:#F59E0B;">Explore Solutions →</span>
               </div>

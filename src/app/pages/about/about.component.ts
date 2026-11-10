@@ -102,14 +102,16 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             <button
               type="button"
               class="feature-box"
-              style="padding:0;overflow:hidden;text-align:left;cursor:pointer;display:grid;grid-template-columns:190px 1fr;font-family:inherit;"
+              style="padding:0;overflow:hidden;text-align:left;cursor:pointer;display:flex;flex-direction:column;font-family:inherit;"
               appScrollReveal="up"
               (click)="openWhy(item)"
             >
-              <img [src]="item.image" [alt]="item.title" style="width:100%;height:100%;min-height:175px;object-fit:cover;" />
+              <img [src]="item.image" [alt]="item.title" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" />
               <div style="padding:20px;">
-                <app-tech-icon [name]="item.icon" [size]="26" [color]="item.accent" />
-                <h3 style="margin-top:8px;">{{ item.title }}</h3>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                  <app-tech-icon [name]="item.icon" [size]="24" [color]="item.accent" />
+                  <h3 style="margin:0;">{{ item.title }}</h3>
+                </div>
                 <p style="margin-bottom:10px;">{{ item.description }}</p>
                 <span style="font-size:0.82rem;font-weight:700;color:#2457A7;">Open Visual Popup →</span>
               </div>

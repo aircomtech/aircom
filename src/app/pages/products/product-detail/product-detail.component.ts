@@ -101,11 +101,13 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
           <h2 style="margin-bottom:20px;">Related Solutions</h2>
           <div class="card-grid-2">
             @for (rel of relatedProducts(); track rel.slug) {
-              <a [routerLink]="['/products', rel.slug]" class="feature-box" style="padding:0;overflow:hidden;display:grid;grid-template-columns:180px 1fr;" appScrollReveal="up">
-                <img [src]="rel.image" [alt]="rel.title" style="width:100%;height:100%;min-height:150px;object-fit:cover;" />
+              <a [routerLink]="['/products', rel.slug]" class="feature-box" style="padding:0;overflow:hidden;display:flex;flex-direction:column;" appScrollReveal="up">
+                <img [src]="rel.image" [alt]="rel.title" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" />
                 <div style="padding:18px;">
-                  <app-tech-icon [name]="rel.icon" [size]="24" color="#2457A7" />
-                  <h3 style="margin-top:8px;">{{ rel.title }}</h3>
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <app-tech-icon [name]="rel.icon" [size]="22" color="#2457A7" />
+                    <h3 style="margin:0;">{{ rel.title }}</h3>
+                  </div>
                   <p>{{ rel.shortDesc }}</p>
                 </div>
               </a>

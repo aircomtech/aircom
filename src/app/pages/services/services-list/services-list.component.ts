@@ -29,7 +29,7 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
         <div class="card-grid-3">
           @for (service of services; track service.slug) {
             <div class="feature-box" style="padding:0;overflow:hidden;display:flex;flex-direction:column;" appScrollReveal="up">
-              <img [src]="service.heroImage" [alt]="service.title" style="width:100%;height:175px;object-fit:cover;" />
+              <img [src]="service.heroImage" [alt]="service.title" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" />
               <div style="padding:20px;display:flex;flex-direction:column;flex:1;">
                 <div style="display:flex;align-items:center;justify-content:space-between;">
                   <span style="width:44px;height:44px;border-radius:12px;background:#EFF6FF;display:inline-flex;align-items:center;justify-content:center;">

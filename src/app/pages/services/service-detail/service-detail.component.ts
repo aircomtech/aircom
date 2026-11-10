@@ -129,7 +129,7 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
           <div class="card-grid-3">
             @for (rel of relatedServices(); track rel.slug) {
               <a [routerLink]="['/services', rel.slug]" class="feature-box" style="padding:0;overflow:hidden;display:flex;flex-direction:column;">
-                <img [src]="rel.heroImage" [alt]="rel.title" style="width:100%;height:145px;object-fit:cover;" />
+                <img [src]="rel.heroImage" [alt]="rel.title" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" />
                 <div style="padding:18px;">
                   <app-tech-icon [name]="rel.icon" [size]="24" color="#2457A7" />
                   <h3 style="margin-top:8px;">{{ rel.title }}</h3>

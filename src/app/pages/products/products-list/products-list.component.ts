@@ -28,7 +28,7 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
         <div class="card-grid-3">
           @for (p of products; track p.slug) {
             <div class="feature-box" style="padding:0;overflow:hidden;display:flex;flex-direction:column;" appScrollReveal="up">
-              <img [src]="p.image" [alt]="p.title" style="width:100%;height:190px;object-fit:cover;" />
+              <img [src]="p.image" [alt]="p.title" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" />
               <div style="padding:20px;display:flex;flex-direction:column;flex:1;">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
                   <app-tech-icon [name]="p.icon" [size]="22" color="#2457A7" />
