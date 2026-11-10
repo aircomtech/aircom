@@ -31,18 +31,32 @@ import { DialogLauncherService } from '../../../core/services/dialog-launcher.se
       padding: 48px 0 64px;
     }
     .cta-box {
-      background: linear-gradient(125deg, #0D1B3E 0%, #102A63 55%, #2457A7 100%);
+      background-color: #091638;
+      background-image:
+        linear-gradient(95deg, rgba(8, 19, 52, 0.92) 0%, rgba(13, 27, 62, 0.76) 52%, rgba(13, 27, 62, 0.22) 100%),
+        url('/assets/images/cta-banner-bg.png');
+      background-size: cover;
+      background-position: right center;
+      background-repeat: no-repeat;
       border-radius: 22px;
-      padding: 36px 32px;
+      padding: 40px 34px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 24px;
       color: #FFFFFF;
-      box-shadow: 0 22px 48px rgba(13, 27, 62, 0.22);
+      box-shadow: 0 22px 48px rgba(13, 27, 62, 0.24);
       position: relative;
       overflow: hidden;
+
+      @media (max-width: 767px) {
+        background-image:
+          linear-gradient(180deg, rgba(8, 19, 52, 0.88) 0%, rgba(13, 27, 62, 0.74) 58%, rgba(13, 27, 62, 0.55) 100%),
+          url('/assets/images/cta-banner-bg.png');
+        background-position: 78% bottom;
+        padding: 28px 22px;
+      }
     }
     .cta-tag {
       display: inline-block;

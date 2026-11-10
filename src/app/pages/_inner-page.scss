@@ -1,20 +1,27 @@
 .page-hero {
-  background: linear-gradient(125deg, #0D1B3E 0%, #102A63 58%, #2457A7 100%);
+  background-color: #091638;
+  background-image:
+    linear-gradient(90deg, rgba(8, 19, 52, 0.92) 0%, rgba(13, 27, 62, 0.78) 48%, rgba(13, 27, 62, 0.25) 100%),
+    url('/assets/images/page-hero-bg.png');
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
   color: #FFFFFF;
-  padding: 54px 0 48px;
+  padding: 58px 0 52px;
   position: relative;
   overflow: hidden;
 
-  &::after {
-    content: '';
-    position: absolute;
-    right: -120px;
-    top: -120px;
-    width: 380px;
-    height: 380px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(11, 168, 234, 0.25), transparent 70%);
-    pointer-events: none;
+  @media (max-width: 767px) {
+    background-image:
+      linear-gradient(180deg, rgba(8, 19, 52, 0.88) 0%, rgba(13, 27, 62, 0.74) 55%, rgba(13, 27, 62, 0.52) 100%),
+      url('/assets/images/page-hero-bg.png');
+    background-position: 72% bottom;
+    padding: 42px 0 40px;
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
   }
 
   .hero-badge {
