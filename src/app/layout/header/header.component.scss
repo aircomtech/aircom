@@ -3,6 +3,7 @@
   top: 0;
   z-index: 1000;
   width: 100%;
+  background: #FFFFFF;
   transition: box-shadow 0.25s ease;
 
   &.is-scrolled {
@@ -10,7 +11,7 @@
 
     .main-nav-wrap {
       background: rgba(255, 255, 255, 0.98);
-      border-bottom-color: #DCE6F5;
+      border-bottom: 1px solid #DCE6F5;
     }
   }
 }
@@ -84,10 +85,9 @@
 }
 
 .main-nav-wrap {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(220, 230, 245, 0.7);
-  transition: background 0.25s ease;
+  background: #FFFFFF;
+  border-bottom: none;
+  transition: background 0.25s ease, border-color 0.25s ease;
 }
 
 .main-nav-inner {
@@ -98,7 +98,9 @@
   height: 82px;
 
   @media (max-width: 767px) {
-    height: 70px;
+    height: 76px;
+    padding-top: 4px;
+    padding-bottom: 4px;
   }
 }
 
@@ -106,6 +108,12 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
+
+  @media (max-width: 767px) {
+    ::ng-deep .aircom-logo-img {
+      height: 50px !important;
+    }
+  }
 }
 
 .desktop-nav {

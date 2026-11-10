@@ -83,7 +83,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
               appScrollReveal="up"
               (click)="openPillar(pillar)"
             >
-              <img [src]="pillar.image" [alt]="pillar.title" style="width:100%;height:155px;object-fit:cover;" />
+              <img [src]="pillar.image" [alt]="pillar.title" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" />
               <div style="padding:20px;display:flex;flex-direction:column;flex:1;">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
                   <app-tech-icon [name]="pillar.icon" [size]="24" [color]="pillar.accent" />

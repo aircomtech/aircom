@@ -151,7 +151,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
-    <!-- 3. ABOUT US SPLIT SECTION -->
+    <!-- 3. ABOUT US SPLIT SECTION + GRAND VISION / MISSION / CORE VALUES -->
     <section class="about-section">
       <div class="container">
         <div class="about-grid">
@@ -166,7 +166,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             </div>
           </div>
 
-          <!-- Center Narrative + Interactive Popups on 4 Verified Highlights -->
+          <!-- Right Narrative + Interactive Popups on 4 Verified Highlights -->
           <div class="about-copy-col" appScrollReveal="up">
             <div class="inline-eyebrow">
               <span class="eyebrow-line"></span>
@@ -216,32 +216,37 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
               <span aria-hidden="true">→</span>
             </a>
           </div>
+        </div>
 
-          <!-- Right Interactive Vision / Mission / Core Values Card (Heavy Mobile/Desktop Popups) -->
-          <div class="about-pillars-card" appScrollReveal="right">
-            @for (pillar of pillars; track pillar.key) {
-              <button type="button" class="pillar-item pillar-btn" (click)="openPillarPopup(pillar)">
-                <div class="pillar-icon">
-                  <app-tech-icon [name]="pillar.icon" [size]="22" [color]="pillar.accent" />
-                </div>
-                <div class="pillar-text">
-                  <div class="pillar-title-row">
+        <!-- Grand 3-Card Vision / Mission / Core Values Pictorial Showcase -->
+        <div class="about-pillars-grid" appScrollReveal="up">
+          @for (pillar of pillars; track pillar.key) {
+            <button type="button" class="pillar-card" (click)="openPillarPopup(pillar)">
+              <div class="pillar-thumb">
+                <img [src]="pillar.image" [alt]="pillar.title" />
+              </div>
+              <div class="pillar-body">
+                <div class="pillar-title-row">
+                  <div class="pillar-head-left">
+                    <span class="pillar-icon">
+                      <app-tech-icon [name]="pillar.icon" [size]="20" [color]="pillar.accent" />
+                    </span>
                     <h3>{{ pillar.title }}</h3>
-                    <span class="pillar-open">View Details →</span>
                   </div>
-                  @if (pillar.key === 'values') {
-                    <div class="core-chips">
-                      @for (val of about.coreValues; track val) {
-                        <span>{{ val }}</span>
-                      }
-                    </div>
-                  } @else {
-                    <p>{{ pillar.summary }}</p>
-                  }
+                  <span class="pillar-open">View Details →</span>
                 </div>
-              </button>
-            }
-          </div>
+                @if (pillar.key === 'values') {
+                  <div class="core-chips">
+                    @for (val of about.coreValues; track val) {
+                      <span>{{ val }}</span>
+                    }
+                  </div>
+                } @else {
+                  <p>{{ pillar.summary }}</p>
+                }
+              </div>
+            </button>
+          }
         </div>
       </div>
     </section>
