@@ -878,7 +878,7 @@
 
 .industries-track {
   display: grid;
-  grid-template-columns: repeat(8, minmax(136px, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 12px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -886,7 +886,7 @@
   scrollbar-width: thin;
 
   @media (max-width: 1199px) {
-    grid-template-columns: repeat(8, minmax(190px, 1fr));
+    grid-template-columns: repeat(8, minmax(185px, 1fr));
   }
 }
 
@@ -932,13 +932,21 @@
   z-index: 2;
   padding: 12px 10px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 
   h3 {
     color: #FFFFFF;
-    font-size: 0.86rem;
+    font-size: 0.84rem;
     font-weight: 700;
     margin: 8px 0 0;
     line-height: 1.25;
+    min-height: 2.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

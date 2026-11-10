@@ -76,7 +76,7 @@ export const ABOUT_CONTENT = {
     'Continuous Improvement',
     'On-Time Delivery'
   ],
-  image: 'assets/images/about-hq.svg'
+  image: 'assets/images/about-hq.png'
 };
 
 export const WHY_CHOOSE_ITEMS = [
