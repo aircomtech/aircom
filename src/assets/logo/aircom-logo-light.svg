@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 92" width="320" height="92" role="img" aria-label="Aircom Technologies - Serving beyond boundaries">
+  <defs>
+    <linearGradient id="aircomArcMain" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0D1B3E"/>
+      <stop offset="55%" stop-color="#102A63"/>
+      <stop offset="100%" stop-color="#2457A7"/>
+    </linearGradient>
+    <linearGradient id="aircomArcAccent" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2457A7"/>
+      <stop offset="100%" stop-color="#0BA8EA"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer swoosh -->
+  <path d="M 10 56 C 12 24, 46 6, 86 12 C 66 15, 42 29, 34 52 C 30 62, 20 66, 10 56 Z" fill="url(#aircomArcMain)"/>
+  <!-- Middle swoosh -->
+  <path d="M 30 62 C 34 36, 58 22, 84 24 C 66 28, 49 41, 44 58 C 41 65, 34 66, 30 62 Z" fill="url(#aircomArcAccent)"/>
+  <!-- Inner dot/orb -->
+  <circle cx="58" cy="54" r="6.5" fill="#102A63"/>
+  <circle cx="58" cy="54" r="2.6" fill="#0BA8EA"/>
+
+  <!-- Wordmark -->
+  <text x="96" y="42" font-family="Poppins, Montserrat, 'Segoe UI', Arial, sans-serif" font-weight="800" font-size="31" letter-spacing="1.5" fill="#102A63">AIRCOM</text>
+  <text x="97" y="61" font-family="Poppins, Montserrat, 'Segoe UI', Arial, sans-serif" font-weight="700" font-size="14.5" letter-spacing="2.4" fill="#F59E0B">TECHNOLOGIES</text>
+  <text x="116" y="80" font-family="'Segoe Script', 'Brush Script MT', Georgia, cursive" font-style="italic" font-size="13" fill="#334155">Serving beyond boundaries...</text>
+</svg>
+
