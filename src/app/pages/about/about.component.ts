@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ABOUT_CONTENT, HERO_STATS, WHY_CHOOSE_ITEMS } from '../../core/data/site.data';
+import { ABOUT_CONTENT, ABOUT_PILLARS, HERO_STATS, WHY_CHOOSE_ITEMS } from '../../core/data/site.data';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
 import { SeoService } from '../../core/services/seo.service';
 import { BreadcrumbComponent } from '../../shared/components/breadcrumb/breadcrumb.component';
@@ -27,10 +27,12 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       <div class="container">
         <div class="detail-hero-grid">
           <div appScrollReveal="left">
-            <img [src]="about.image" alt="Aircom Technologies enterprise building visual" style="border-radius:20px;box-shadow:0 20px 44px rgba(16,42,99,0.14);width:100%;" />
+            <div style="border-radius:22px;overflow:hidden;border:4px solid #FFFFFF;outline:1px solid #BFDBFE;box-shadow:0 24px 54px rgba(13,27,62,0.2);">
+              <img [src]="about.image" alt="Aircom Technologies corporate glass building" style="width:100%;display:block;" />
+            </div>
           </div>
           <div appScrollReveal="right">
-            <h2 style="font-size:1.8rem;margin-bottom:14px;">Bridging Enterprise Software &amp; Resilient Infrastructure</h2>
+            <h2 style="font-size:1.85rem;margin-bottom:14px;">Bridging Enterprise Software &amp; Resilient Infrastructure</h2>
             <p style="color:#334155;margin-bottom:18px;">
               Headquartered in Secunderabad, Telangana, Aircom Technologies has spent over 17 years helping growing enterprises across India and global markets modernize operations. Unlike single-discipline vendors, our engineers unite ERPNext, TallyPrime accounting sync, HRMS &amp; biometric hardware, CRM workflows, and cloud/on-premise IT infrastructure under one accountable roof.
             </p>
@@ -51,6 +53,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
+    <!-- Vision, Mission & Core Values with Animations + Popups -->
     <section class="page-section alt-bg">
       <div class="container">
         <div class="section-header" appScrollReveal="up">
@@ -60,46 +63,57 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             <span class="eyebrow-line right"></span>
           </div>
           <h2>Vision, Mission &amp; Core Values</h2>
+          <p>Click any foundation card below to open its visual overview and commitment breakdown.</p>
         </div>
 
-        <div class="card-grid-2" style="margin-bottom:24px;">
-          <div class="feature-box" appScrollReveal="left">
-            <app-tech-icon name="eye" [size]="28" color="#102A63" />
-            <h3>Our Vision</h3>
-            <p>{{ about.vision }}</p>
-          </div>
-          <div class="feature-box" appScrollReveal="right">
-            <app-tech-icon name="rocket" [size]="28" color="#F59E0B" />
-            <h3>Our Mission</h3>
-            <p>{{ about.mission }}</p>
-          </div>
-        </div>
-
-        <div class="feature-box" appScrollReveal="up">
-          <h3 style="margin-top:0;">Our 8 Core Values</h3>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:14px;">
-            @for (val of about.coreValues; track val) {
-              <div style="background:#F4F7FC;border:1px solid #DCE6F5;padding:12px 14px;border-radius:12px;font-weight:600;color:#102A63;font-size:0.9rem;">
-                ★ {{ val }}
+        <div class="card-grid-3">
+          @for (pillar of pillars; track pillar.key) {
+            <button
+              type="button"
+              class="feature-box"
+              style="padding:0;overflow:hidden;text-align:left;cursor:pointer;display:flex;flex-direction:column;font-family:inherit;"
+              appScrollReveal="up"
+              (click)="openPillar(pillar)"
+            >
+              <img [src]="pillar.image" [alt]="pillar.title" style="width:100%;height:155px;object-fit:cover;" />
+              <div style="padding:20px;display:flex;flex-direction:column;flex:1;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                  <app-tech-icon [name]="pillar.icon" [size]="24" [color]="pillar.accent" />
+                  <h3 style="margin:0;">{{ pillar.title }}</h3>
+                </div>
+                <p style="flex:1;margin-bottom:14px;">{{ pillar.summary }}</p>
+                <span style="font-size:0.82rem;font-weight:700;color:#F59E0B;">View Visual Details →</span>
               </div>
-            }
-          </div>
+            </button>
+          }
         </div>
       </div>
     </section>
 
+    <!-- Why Businesses Partner With Aircom (Separate Pics + Pictorial Popups) -->
     <section class="page-section">
       <div class="container">
         <div class="section-header" appScrollReveal="up">
           <h2>Why Businesses Partner With Aircom</h2>
+          <p>Touch or click any partnership pillar to inspect its detailed visual blueprint and deliverables.</p>
         </div>
         <div class="card-grid-2">
           @for (item of whyItems; track item.title) {
-            <div class="feature-box" appScrollReveal="up">
-              <app-tech-icon [name]="item.icon" [size]="28" [color]="item.accent" />
-              <h3>{{ item.title }}</h3>
-              <p>{{ item.description }}</p>
-            </div>
+            <button
+              type="button"
+              class="feature-box"
+              style="padding:0;overflow:hidden;text-align:left;cursor:pointer;display:grid;grid-template-columns:190px 1fr;font-family:inherit;"
+              appScrollReveal="up"
+              (click)="openWhy(item)"
+            >
+              <img [src]="item.image" [alt]="item.title" style="width:100%;height:100%;min-height:175px;object-fit:cover;" />
+              <div style="padding:20px;">
+                <app-tech-icon [name]="item.icon" [size]="26" [color]="item.accent" />
+                <h3 style="margin-top:8px;">{{ item.title }}</h3>
+                <p style="margin-bottom:10px;">{{ item.description }}</p>
+                <span style="font-size:0.82rem;font-weight:700;color:#2457A7;">Open Visual Popup →</span>
+              </div>
+            </button>
           }
         </div>
       </div>
@@ -112,6 +126,7 @@ export class AboutComponent implements OnInit {
   private readonly seo = inject(SeoService);
   readonly dialogs = inject(DialogLauncherService);
   readonly about = ABOUT_CONTENT;
+  readonly pillars = ABOUT_PILLARS;
   readonly stats = HERO_STATS;
   readonly whyItems = WHY_CHOOSE_ITEMS;
 
@@ -123,5 +138,30 @@ export class AboutComponent implements OnInit {
       path: '/about'
     });
   }
-}
 
+  openPillar(pillar: (typeof ABOUT_PILLARS)[number]): void {
+    this.dialogs.openShowcase({
+      badge: 'Aircom Foundation',
+      title: pillar.title,
+      subtitle: pillar.subtitle,
+      image: pillar.image,
+      description: pillar.summary,
+      highlights: pillar.highlights,
+      details: pillar.details,
+      inquiryTitle: `${pillar.title} - Aircom Partnership`
+    });
+  }
+
+  openWhy(item: (typeof WHY_CHOOSE_ITEMS)[number]): void {
+    this.dialogs.openShowcase({
+      badge: 'Why Partner With Aircom',
+      title: item.title,
+      subtitle: item.subtitle,
+      image: item.image,
+      description: item.description,
+      highlights: item.highlights,
+      details: item.details,
+      inquiryTitle: `${item.title} Inquiry`
+    });
+  }
+}

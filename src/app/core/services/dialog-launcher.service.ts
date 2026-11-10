@@ -4,6 +4,7 @@ import { ContactDialogComponent } from '../../features/contact-dialog/contact-di
 import { InquiryDialogComponent, InquiryDialogData } from '../../features/inquiry-dialog/inquiry-dialog.component';
 import { NewsletterDialogComponent } from '../../features/newsletter-dialog/newsletter-dialog.component';
 import { QuoteDialogComponent } from '../../features/quote-dialog/quote-dialog.component';
+import { ShowcaseDialogComponent, ShowcaseDialogData } from '../../features/showcase-dialog/showcase-dialog.component';
 import { WelcomeDialogComponent } from '../../features/welcome-dialog/welcome-dialog.component';
 import { WhatsappDialogComponent } from '../../features/whatsapp-dialog/whatsapp-dialog.component';
 
@@ -56,6 +57,16 @@ export class DialogLauncherService {
       maxWidth: '94vw',
       maxHeight: '92vh',
       panelClass: 'aircom-dialog-panel'
+    });
+  }
+
+  openShowcase(data: ShowcaseDialogData): MatDialogRef<ShowcaseDialogComponent> {
+    return this.dialog.open(ShowcaseDialogComponent, {
+      width: '620px',
+      maxWidth: '95vw',
+      maxHeight: '92vh',
+      panelClass: 'aircom-dialog-panel',
+      data
     });
   }
 

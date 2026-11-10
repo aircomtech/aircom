@@ -79,30 +79,106 @@ export const ABOUT_CONTENT = {
   image: 'assets/images/about-hq.png'
 };
 
+export const ABOUT_PILLARS = [
+  {
+    key: 'vision',
+    title: 'Our Vision',
+    icon: 'eye',
+    accent: '#102A63',
+    image: 'assets/images/pillar-vision.png',
+    subtitle: 'Global Digital Transformation Partner',
+    summary:
+      'To become a trusted global technology partner through innovative IT infrastructure, enterprise software, and digital transformation.',
+    highlights: ['Enterprise ERP Leadership', 'Hybrid Cloud Readiness', 'Long-Term Client Trust'],
+    details: [
+      { heading: 'Unified Technology Stack', text: 'Connecting ERPNext, TallyPrime, CRM, and biometric hardware seamlessly across branches.' },
+      { heading: 'Cross-Border Footprint', text: 'Supporting growing organizations across India, Malaysia, Tanzania, and global operations.' }
+    ]
+  },
+  {
+    key: 'mission',
+    title: 'Our Mission',
+    icon: 'rocket',
+    accent: '#2457A7',
+    image: 'assets/images/pillar-mission.png',
+    subtitle: 'Reliable, Scalable & Customized Solutions',
+    summary:
+      'To provide cost-effective, reliable, scalable, and customized technology solutions tailored around real operational workflows.',
+    highlights: ['Process-First Engineering', 'Transparent Delivery', 'Zero Vendor Lock-In'],
+    details: [
+      { heading: 'Custom Fit Architecture', text: 'We adapt software workflows to your business rules instead of forcing rigid templates.' },
+      { heading: 'Predictable Ownership', text: 'Open-source ERP foundations paired with documented infrastructure and responsive SLAs.' }
+    ]
+  },
+  {
+    key: 'values',
+    title: 'Our Core Values',
+    icon: 'gem',
+    accent: '#0BA8EA',
+    image: 'assets/images/pillar-values.png',
+    subtitle: '8 Principles Guiding Every Engagement',
+    summary:
+      'Customer Satisfaction, Innovation, Quality, Integrity, Technical Excellence, Teamwork, Continuous Improvement, and On-Time Delivery.',
+    highlights: ['Customer Satisfaction', 'Innovation & Quality', 'Integrity & On-Time Delivery'],
+    details: [
+      { heading: 'Engineering Accountability', text: 'Every deployment includes validation checkpoints, backup drills, and user training.' },
+      { heading: 'Continuous Improvement', text: 'Proactive performance audits, security patching, and workflow optimization after go-live.' }
+    ]
+  }
+];
+
 export const WHY_CHOOSE_ITEMS = [
   {
     title: 'Innovative Solutions',
-    description: 'Stay ahead with cutting-edge ERP, cloud, automation, and AI-ready enterprise technology stacks.',
+    description: 'Stay ahead with cutting-edge ERPNext, cloud, API automation, and AI-ready enterprise technology stacks.',
     icon: 'cpu',
-    accent: '#0BA8EA'
+    accent: '#0BA8EA',
+    image: 'assets/images/why-innovative.png',
+    subtitle: 'Modern Enterprise Engineering & Automation',
+    highlights: ['Custom Frappe & ERPNext Apps', 'Automated TallyPrime & CRM Sync', 'Cloud-Native DevOps'],
+    details: [
+      { heading: 'Tailored Workflows', text: 'Custom DocTypes, automated approval chains, and bespoke MIS dashboards built for your industry.' },
+      { heading: 'API-First Integration', text: 'Connect Zoho, Salesforce, e-commerce, and biometric terminals with zero manual CSV re-entry.' }
+    ]
   },
   {
     title: 'Trusted Partner',
     description: 'Over 17 years of proven integrity, transparent delivery, and long-term client relationships since 2009.',
     icon: 'handshake',
-    accent: '#2457A7'
+    accent: '#2457A7',
+    image: 'assets/images/why-trusted.png',
+    subtitle: 'Proven Track Record Since 2009',
+    highlights: ['Established in 2009', 'Documented Architectures', 'Verified Data Migrations'],
+    details: [
+      { heading: 'Single Accountable Team', text: 'One partner uniting software engineers, ERP consultants, and network infrastructure specialists.' },
+      { heading: 'Audit-Ready Delivery', text: 'Clear project milestones, reconciled opening balances, and full admin handover documentation.' }
+    ]
   },
   {
     title: 'Expert Support',
     description: 'Dedicated technical engineering and managed AMC support whenever your operations need assistance.',
     icon: 'headphones',
-    accent: '#F59E0B'
+    accent: '#F59E0B',
+    image: 'assets/images/why-support.png',
+    subtitle: 'Proactive Managed IT & ERP Care',
+    highlights: ['L1–L3 Engineering Desk', '24/7 Server & Uptime Alerts', 'Comprehensive IT AMC'],
+    details: [
+      { heading: 'Rapid Response SLAs', text: 'Direct escalation to engineers familiar with your ERP configuration, firewall, and server topology.' },
+      { heading: 'Preventive Maintenance', text: 'Automated daily off-site backups, OS patching, and periodic restore verification drills.' }
+    ]
   },
   {
     title: 'Business Growth',
     description: 'Achieve measurable efficiency and scale seamlessly across locations with future-proof architecture.',
     icon: 'trending-up',
-    accent: '#102A63'
+    accent: '#102A63',
+    image: 'assets/images/why-growth.png',
+    subtitle: 'Multi-Branch Scalability Without Friction',
+    highlights: ['Multi-Company Consolidation', 'Real-Time Executive KPIs', 'Resilient Branch VPNs'],
+    details: [
+      { heading: 'Multi-Site Expansion', text: 'Onboard new outlets, factories, or offices smoothly under one unified ledger and network policy.' },
+      { heading: 'Data-Driven Decisions', text: 'Live inventory aging, cash-flow forecasting, and branch profitability dashboards.' }
+    ]
   }
 ];
 
@@ -115,7 +191,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     icon: 'monitor-cog',
     category: 'Enterprise ERP',
     tagline: 'Unified Open-Source ERP Engineered for Operational Clarity',
-    heroImage: 'assets/images/service-erpnext.svg',
+    heroImage: 'assets/images/service-erpnext.png',
     overview:
       'Aircom Technologies delivers end-to-end ERPNext implementation, custom Frappe app development, data migration, and multi-branch rollout. We configure inventory, procurement, accounting, manufacturing, and management dashboards around your exact business rules.',
     highlights: ['Custom Frappe Apps', 'Multi-Company Setup', 'GST & Tax Compliance', 'Role-Based Security'],
@@ -153,7 +229,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     icon: 'users',
     category: 'Human Capital',
     tagline: 'Complete Hire-to-Retire Workforce Automation',
-    heroImage: 'assets/images/service-hrms.svg',
+    heroImage: 'assets/images/service-hrms.png',
     overview:
       'Automate every stage of employee management from recruitment and onboarding to shift scheduling, biometric attendance capture, statutory payroll runs, and Employee Self-Service (ESS) portals.',
     highlights: ['Automated Payslips', 'Shift & Roster Engine', 'Leave & Expense Workflows', 'ESS Mobile Access'],
@@ -191,7 +267,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     icon: 'fingerprint',
     category: 'Hardware & IoT',
     tagline: 'Zero-Delay Hardware-to-Software Attendance & Access Sync',
-    heroImage: 'assets/images/service-biometric.svg',
+    heroImage: 'assets/images/service-biometric.png',
     overview:
       'Bridge physical security and attendance hardware directly with your ERPNext, HRMS, or payroll platform. We deploy and integrate fingerprint terminals, AI facial recognition devices, and RFID access controllers across single or distributed branches.',
     highlights: ['ZKTeco, eSSL & Hikvision', 'Multi-Branch Push Sync', 'Facial & RFID Support', 'Zero Proxy Punching'],
@@ -229,7 +305,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     icon: 'handshake',
     category: 'Software Integration',
     tagline: 'Connected Revenue, Support, and Accounting Pipelines',
-    heroImage: 'assets/images/service-crm.svg',
+    heroImage: 'assets/images/service-crm.png',
     overview:
       'Stop copying leads, quotes, invoices, and support tickets between disconnected apps. Aircom Technologies engineers reliable REST APIs and webhook connectors linking Zoho CRM, Zoho Books, Zoho Desk, Salesforce, and ERPNext.',
     highlights: ['Zoho Suite Integration', 'Salesforce Connectors', 'Two-Way Webhooks', 'Automated Lead-to-Cash'],
@@ -267,7 +343,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     icon: 'calculator',
     category: 'Accounting & Tax',
     tagline: 'Bridge Operational Software with TallyPrime Accounting',
-    heroImage: 'assets/images/service-tally.svg',
+    heroImage: 'assets/images/service-tally.png',
     overview:
       'Keep your finance team productive in TallyPrime while running operations in ERPNext, e-commerce, or POS systems. We deliver custom TDL extensions, automated XML/JSON voucher posting, and GST-ready reconciliation workflows.',
     highlights: ['Custom TDL Development', 'Automated Voucher Sync', 'GST & E-Invoice Ready', 'Dual-Ledger Control'],
@@ -305,7 +381,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     icon: 'utensils',
     category: 'Industry ERP',
     tagline: 'Fast POS, Smart Kitchens & Tight Food-Cost Control',
-    heroImage: 'assets/images/industry-hospitality.svg',
+    heroImage: 'assets/images/service-restaurant.png',
     overview:
       'Designed for restaurants, cloud kitchens, cafes, QSR chains, and boutique hotels. Unify table billing, KOT routing, recipe-level BOM consumption, central commissary inventory, and multi-outlet accounting in one connected suite.',
     highlights: ['Touchscreen POS & KOT', 'Recipe & Wastage Control', 'Multi-Outlet Commissary', 'Delivery Aggregator Sync'],
@@ -343,7 +419,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     icon: 'gem',
     category: 'Specialized Verticals',
     tagline: 'Precision Vertical ERP for High-Value & Project-Driven Businesses',
-    heroImage: 'assets/images/industry-jewellery.svg',
+    heroImage: 'assets/images/service-jewellery.png',
     overview:
       'Two specialized enterprise suites built for complex valuation and execution: Jewellery ERP (purity/karat tracking, daily gold/silver rate boards, karigar job-work, stone weight, RFID/barcode tagging) and Construction ERP (BOQ, project costing, RA bills, subcontractor retention, site procurement).',
     highlights: ['Purity & Metal Rate Sync', 'Karigar & Tag Inventory', 'BOQ & Project Costing', 'Subcontractor Billing'],
@@ -381,7 +457,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     icon: 'network',
     category: 'Infrastructure',
     tagline: 'Resilient On-Premise & Hybrid Enterprise Backbone',
-    heroImage: 'assets/images/service-infrastructure.svg',
+    heroImage: 'assets/images/service-infrastructure.png',
     overview:
       'Build a rock-solid physical and network foundation for your offices, warehouses, hospitals, and campuses. Aircom Technologies designs, supplies, installs, and maintains enterprise servers, structured Cat6/fiber cabling, enterprise Wi-Fi mesh, UTM firewalls, and clean server racks.',
     highlights: ['Structured LAN & Fiber', 'Firewall & VPN Security', 'Enterprise Wi-Fi Mesh', 'Server & Rack Setup'],
@@ -419,7 +495,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     icon: 'cloud-cog',
     category: 'Cloud & Managed IT',
     tagline: 'High-Availability Cloud Architecture & Proactive 24/7 Care',
-    heroImage: 'assets/images/product-cloud-erp.svg',
+    heroImage: 'assets/images/service-cloud.png',
     overview:
       'Run mission-critical ERPNext, web applications, and corporate workloads on hardened AWS, Azure, or private cloud infrastructure. We handle architecture design, CI/CD pipelines, automated off-site encrypted backups, uptime monitoring, and Annual Maintenance Contracts (AMC).',
     highlights: ['AWS & Azure Architecture', 'Automated Off-Site Backups', '24/7 Uptime Monitoring', 'Managed IT AMC'],
@@ -457,7 +533,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     icon: 'code-2',
     category: 'Digital Engineering',
     tagline: 'High-Performance Web Platforms Built for Speed & Conversion',
-    heroImage: 'assets/images/service-web.svg',
+    heroImage: 'assets/images/service-web.png',
     overview:
       'Elevate your digital presence with fast, responsive, SEO-engineered corporate websites, customer/vendor portals, and custom e-commerce storefronts built on modern frameworks and directly integrated with your ERP or CRM.',
     highlights: ['Angular & Modern Web Apps', 'ERP-Connected Portals', 'E-Commerce Platforms', 'Technical SEO & Speed'],
@@ -495,7 +571,7 @@ export const PRODUCTS_DATA: ProductItem[] = [
     title: 'Cloud ERP Solution',
     shortDesc: 'Manage finance, inventory, sales, and multi-branch operations through cloud-ready enterprise ERP.',
     icon: 'cloud',
-    image: 'assets/images/product-cloud-erp.svg',
+    image: 'assets/images/product-cloud-erp.png',
     categoryLabel: 'Enterprise Solution Category',
     tagline: 'Configured Cloud ERP Environments Built on Proven Open-Source Foundations',
     overview:
@@ -521,7 +597,7 @@ export const PRODUCTS_DATA: ProductItem[] = [
     title: 'Business Analytics Platform',
     shortDesc: 'Transform operational and financial data into meaningful dashboards and informed executive decisions.',
     icon: 'bar-chart-2',
-    image: 'assets/images/product-analytics.svg',
+    image: 'assets/images/product-analytics.png',
     categoryLabel: 'Enterprise Solution Category',
     tagline: 'Turn Disconnected Spreadsheets into Real-Time Executive Clarity',
     overview:
@@ -547,7 +623,7 @@ export const PRODUCTS_DATA: ProductItem[] = [
     title: 'Security Solutions',
     shortDesc: 'Protect business systems, networks, endpoints, and sensitive enterprise data end-to-end.',
     icon: 'shield-check',
-    image: 'assets/images/product-security.svg',
+    image: 'assets/images/product-security.png',
     categoryLabel: 'Enterprise Solution Category',
     tagline: 'Layered Perimeter, Endpoint, and Access Protection for Modern Enterprises',
     overview:
@@ -573,7 +649,7 @@ export const PRODUCTS_DATA: ProductItem[] = [
     title: 'Automation Tools',
     shortDesc: 'Automate repetitive workflows, cross-app syncing, approvals, and notifications to boost productivity.',
     icon: 'settings-2',
-    image: 'assets/images/product-automation.svg',
+    image: 'assets/images/product-automation.png',
     categoryLabel: 'Enterprise Solution Category',
     tagline: 'Eliminate Manual Repetitive Work Across Finance, HR, and Sales',
     overview:
@@ -599,7 +675,7 @@ export const PRODUCTS_DATA: ProductItem[] = [
     title: 'IT Support Services',
     shortDesc: 'Professional technical assistance, proactive server monitoring, and managed IT AMC support.',
     icon: 'headphones',
-    image: 'assets/images/product-it-support.svg',
+    image: 'assets/images/product-it-support.png',
     categoryLabel: 'Enterprise Solution Category',
     tagline: 'Dedicated Engineers Keeping Your Infrastructure & Software Performing',
     overview:
@@ -627,7 +703,7 @@ export const INDUSTRIES_DATA: IndustryItem[] = [
     slug: 'retail-ecommerce',
     name: 'Retail & E-commerce',
     icon: 'shopping-cart',
-    image: 'assets/images/industry-retail.svg',
+    image: 'assets/images/industry-retail.png',
     shortDesc: 'Omnichannel POS, centralized inventory, loyalty, GST billing, and web storefront sync.',
     overview: 'Empower retail chains and online brands with real-time stock synchronization across storefronts, warehouses, and marketplaces—paired with fast POS billing and automated TallyPrime accounting.',
     challenges: [
@@ -648,7 +724,7 @@ export const INDUSTRIES_DATA: IndustryItem[] = [
     slug: 'hospitality',
     name: 'Hospitality',
     icon: 'utensils',
-    image: 'assets/images/industry-hospitality.svg',
+    image: 'assets/images/industry-hospitality.png',
     shortDesc: 'Restaurant POS, kitchen order tickets, recipe costing, and multi-outlet control.',
     overview: 'Deliver memorable guest experiences while keeping kitchen margins tight. Our hospitality solutions unify front-of-house billing, KOT workflows, recipe consumption, and central commissary inventory.',
     challenges: [
@@ -669,7 +745,7 @@ export const INDUSTRIES_DATA: IndustryItem[] = [
     slug: 'jewellery',
     name: 'Jewellery',
     icon: 'gem',
-    image: 'assets/images/industry-jewellery.svg',
+    image: 'assets/images/industry-jewellery.png',
     shortDesc: 'Karat/purity tracking, daily metal rate sync, karigar ledgers, and barcode tagging.',
     overview: 'Built for jewellery retailers, wholesalers, and manufacturers requiring milligram-level metal accounting, stone valuation, HUID compliance, and karigar job-work traceability.',
     challenges: [
@@ -690,7 +766,7 @@ export const INDUSTRIES_DATA: IndustryItem[] = [
     slug: 'construction',
     name: 'Construction',
     icon: 'hard-hat',
-    image: 'assets/images/industry-construction.svg',
+    image: 'assets/images/industry-construction.png',
     shortDesc: 'Project costing, BOQ budgets, site indents, RA billing, and subcontractor tracking.',
     overview: 'Keep complex infrastructure and real estate projects on schedule and under budget by connecting site engineers, procurement teams, subcontractors, and project finance in one platform.',
     challenges: [
@@ -711,7 +787,7 @@ export const INDUSTRIES_DATA: IndustryItem[] = [
     slug: 'healthcare',
     name: 'Healthcare',
     icon: 'heart-pulse',
-    image: 'assets/images/industry-healthcare.svg',
+    image: 'assets/images/industry-healthcare.png',
     shortDesc: 'Clinic & pharmacy inventory, biometric staff rosters, and reliable Wi-Fi/server uptime.',
     overview: 'Support clinics, diagnostic centers, and hospitals with resilient IT networks, compliant pharmacy/consumable batch expiry tracking, and shift-based biometric workforce attendance.',
     challenges: [
@@ -732,7 +808,7 @@ export const INDUSTRIES_DATA: IndustryItem[] = [
     slug: 'manufacturing',
     name: 'Manufacturing',
     icon: 'factory',
-    image: 'assets/images/industry-manufacturing.svg',
+    image: 'assets/images/industry-manufacturing.png',
     shortDesc: 'Multi-level BOM, work orders, shop-floor job cards, quality checks, and MRP.',
     overview: 'Digitize production planning from raw material procurement to finished goods dispatch. Gain real-time visibility into machine capacity, scrap rates, subcontracting, and unit production costs.',
     challenges: [
@@ -753,7 +829,7 @@ export const INDUSTRIES_DATA: IndustryItem[] = [
     slug: 'finance',
     name: 'Finance',
     icon: 'landmark',
-    image: 'assets/images/industry-finance.svg',
+    image: 'assets/images/industry-finance.png',
     shortDesc: 'Audit-ready accounting, TallyPrime sync, secure VPN infrastructure, and BI analytics.',
     overview: 'Equip financial services firms, NBFCs, and corporate finance teams with hardened network security, automated multi-entity consolidation, and audit-compliant ERP/TallyPrime workflows.',
     challenges: [
@@ -774,7 +850,7 @@ export const INDUSTRIES_DATA: IndustryItem[] = [
     slug: 'education',
     name: 'Education',
     icon: 'graduation-cap',
-    image: 'assets/images/industry-education.svg',
+    image: 'assets/images/industry-education.png',
     shortDesc: 'Campus Wi-Fi infrastructure, biometric attendance, fee accounting, and web portals.',
     overview: 'Modernize schools, colleges, and training institutes with high-density campus networking, automated staff/student attendance systems, fee management, and responsive institutional web portals.',
     challenges: [
@@ -801,7 +877,7 @@ export const BLOG_POSTS: BlogPost[] = [
     date: 'October 18, 2026',
     readTime: '5 min read',
     author: 'Aircom ERP Engineering Team',
-    image: 'assets/images/service-erpnext.svg',
+    image: 'assets/images/service-erpnext.png',
     excerpt: 'Discover how modular open-source ERP eliminates per-seat licensing bottlenecks while giving finance, inventory, and operations a unified real-time platform.',
     content: [
       'Growing organizations frequently outgrow spreadsheets and standalone accounting software long before they are ready for rigid, high-cost legacy ERP suites. Per-user licensing fees often discourage companies from onboarding warehouse staff, site engineers, and sales executives—creating the exact data silos ERP was meant to eliminate.',
@@ -817,7 +893,7 @@ export const BLOG_POSTS: BlogPost[] = [
     date: 'October 04, 2026',
     readTime: '4 min read',
     author: 'Aircom Integration Practice',
-    image: 'assets/images/service-tally.svg',
+    image: 'assets/images/service-tally.png',
     excerpt: 'Learn how automated XML/API voucher synchronization and custom TDL extensions eliminate reconciliation errors between operational apps and TallyPrime.',
     content: [
       'In thousands of Indian and international enterprises, operations run on specialized ERP, POS, or e-commerce systems while chartered accountants and finance controllers rely on TallyPrime for statutory books and GST reporting.',
@@ -833,7 +909,7 @@ export const BLOG_POSTS: BlogPost[] = [
     date: 'September 21, 2026',
     readTime: '4 min read',
     author: 'Aircom Systems & IoT Team',
-    image: 'assets/images/service-biometric.svg',
+    image: 'assets/images/service-biometric.png',
     excerpt: 'How push-protocol biometric synchronization eliminates USB log exports, stops proxy attendance, and streamlines monthly payroll runs across branches.',
     content: [
       'Managing shift attendance across multiple warehouses, retail outlets, or construction sites often degrades into manual spreadsheet collection at month-end—delaying salary runs and causing disputes over overtime or late marks.',
@@ -849,7 +925,7 @@ export const BLOG_POSTS: BlogPost[] = [
     date: 'September 08, 2026',
     readTime: '6 min read',
     author: 'Aircom Cloud & Network Architects',
-    image: 'assets/images/service-infrastructure.svg',
+    image: 'assets/images/service-infrastructure.png',
     excerpt: 'Practical infrastructure safeguards every multi-branch organization needs—from VLAN segmentation and dual-ISP failover to automated off-site cloud snapshots.',
     content: [
       'Enterprise software is only as reliable as the network and server infrastructure beneath it. An unsegmented office LAN, single ISP dependency, or unverified local backup can halt billing and operations across an entire organization.',

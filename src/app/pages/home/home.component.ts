@@ -14,12 +14,14 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   ABOUT_CONTENT,
+  ABOUT_PILLARS,
   HERO_STATS,
   INDUSTRIES_DATA,
   PRODUCTS_DATA,
   SERVICES_DATA,
   WHY_CHOOSE_ITEMS
 } from '../../core/data/site.data';
+import { ProductItem, ServiceItem } from '../../core/models/site.models';
 import { AnimationService } from '../../core/services/animation.service';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
 import { SeoService } from '../../core/services/seo.service';
@@ -112,7 +114,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
-    <!-- 2. SERVICES SECTION (10 CARDS) -->
+    <!-- 2. SERVICES SECTION (10 CARDS WITH PICTORIAL PREVIEWS + POPUPS) -->
     <section class="services-section" id="services-section">
       <div class="container">
         <div class="section-header" appScrollReveal="up">
@@ -122,22 +124,37 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             <span class="eyebrow-line right"></span>
           </div>
           <h2>Comprehensive IT &amp; Business Solutions</h2>
-          <p>From ERP to Cloud, we provide end-to-end technology solutions for your business success.</p>
+          <p>From ERP to Cloud, click any solution to preview architecture visuals or open its full page.</p>
         </div>
 
         <div class="services-grid" #servicesGrid>
           @for (service of services; track service.slug) {
-            <a [routerLink]="['/services', service.slug]" class="service-card">
-              <div class="sc-icon-wrap">
-                <app-tech-icon [name]="service.icon" [size]="34" color="#2457A7" />
+            <article class="service-card" (click)="openServicePopup(service)">
+              <div class="sc-thumb">
+                <img [src]="service.heroImage" [alt]="service.title" loading="lazy" />
+                <div class="sc-thumb-overlay"></div>
+                <span class="sc-cat-pill">{{ service.category }}</span>
+                <span class="sc-icon-badge">
+                  <app-tech-icon [name]="service.icon" [size]="20" color="#FFFFFF" />
+                </span>
               </div>
-              <h3>{{ service.title }}</h3>
-              <p>{{ service.shortDesc }}</p>
+
+              <div class="sc-body">
+                <h3>{{ service.title }}</h3>
+                <p>{{ service.shortDesc }}</p>
+              </div>
+
               <div class="sc-footer">
-                <span class="sc-link-label">Explore Solution</span>
-                <span class="sc-arrow" aria-hidden="true">→</span>
+                <span class="sc-popup-hint">Quick Preview</span>
+                <a
+                  [routerLink]="['/services', service.slug]"
+                  class="sc-arrow"
+                  (click)="$event.stopPropagation()"
+                  [attr.aria-label]="'Open ' + service.title + ' page'"
+                  title="Open full page"
+                >→</a>
               </div>
-            </a>
+            </article>
           }
         </div>
       </div>
@@ -147,10 +164,11 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
     <section class="about-section">
       <div class="container">
         <div class="about-grid">
-          <!-- Left Building Visual -->
+          <!-- Left Grand Building Visual (image copy 8.png) -->
           <div class="about-visual-col" appScrollReveal="left">
-            <div class="about-image-frame">
-              <img [src]="about.image" alt="Modern Aircom Technologies enterprise innovation center visual" loading="lazy" />
+            <div class="about-image-frame grand-frame">
+              <img [src]="about.image" alt="Aircom Technologies corporate glass building" loading="lazy" />
+              <div class="about-frame-shine" aria-hidden="true"></div>
               <div class="about-year-badge">
                 <strong>2009</strong>
                 <span>Est. &bull; 17+ Years</span>
@@ -205,41 +223,36 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             </a>
           </div>
 
-          <!-- Right Vision / Mission / Core Values Card -->
+          <!-- Right Interactive Vision / Mission / Core Values Card -->
           <div class="about-pillars-card" appScrollReveal="right">
-            <div class="pillar-item">
-              <div class="pillar-icon"><app-tech-icon name="eye" [size]="22" color="#102A63" /></div>
-              <div>
-                <h3>Our Vision</h3>
-                <p>{{ about.vision }}</p>
-              </div>
-            </div>
-
-            <div class="pillar-item">
-              <div class="pillar-icon"><app-tech-icon name="rocket" [size]="22" color="#2457A7" /></div>
-              <div>
-                <h3>Our Mission</h3>
-                <p>{{ about.mission }}</p>
-              </div>
-            </div>
-
-            <div class="pillar-item">
-              <div class="pillar-icon"><app-tech-icon name="gem" [size]="22" color="#0BA8EA" /></div>
-              <div>
-                <h3>Our Core Values</h3>
-                <div class="core-chips">
-                  @for (val of about.coreValues; track val) {
-                    <span>{{ val }}</span>
+            @for (pillar of pillars; track pillar.key) {
+              <button type="button" class="pillar-item pillar-btn" (click)="openPillarPopup(pillar)">
+                <div class="pillar-icon">
+                  <app-tech-icon [name]="pillar.icon" [size]="22" [color]="pillar.accent" />
+                </div>
+                <div class="pillar-text">
+                  <div class="pillar-title-row">
+                    <h3>{{ pillar.title }}</h3>
+                    <span class="pillar-open">View →</span>
+                  </div>
+                  @if (pillar.key === 'values') {
+                    <div class="core-chips">
+                      @for (val of about.coreValues; track val) {
+                        <span>{{ val }}</span>
+                      }
+                    </div>
+                  } @else {
+                    <p>{{ pillar.summary }}</p>
                   }
                 </div>
-              </div>
-            </div>
+              </button>
+            }
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 4. WHY CHOOSE AIRCOM? -->
+    <!-- 4. WHY CHOOSE AIRCOM? (PICTORIAL + INTERACTIVE POPUPS) -->
     <section class="why-section">
       <div class="container">
         <div class="section-header" appScrollReveal="up">
@@ -249,25 +262,31 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
             <span class="eyebrow-line right"></span>
           </div>
           <h2>Building a Smarter, Stronger &amp; More Connected Business</h2>
-          <p>Enterprise reliability backed by deep domain expertise in ERP, integration, and IT infrastructure.</p>
+          <p>Click any pillar below to explore how our engineers deliver measurable enterprise impact.</p>
         </div>
 
         <div class="why-grid" #whyGrid>
           @for (item of whyItems; track item.title; let i = $index) {
-            <div class="why-card">
-              <div class="why-icon" [style.borderColor]="item.accent">
-                <app-tech-icon [name]="item.icon" [size]="30" [color]="item.accent" />
+            <button type="button" class="why-card" (click)="openWhyPopup(item)">
+              <div class="why-thumb">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <span class="why-step">0{{ i + 1 }}</span>
+                <div class="why-icon" [style.borderColor]="item.accent">
+                  <app-tech-icon [name]="item.icon" [size]="24" [color]="item.accent" />
+                </div>
               </div>
-              <h3>{{ item.title }}</h3>
-              <p>{{ item.description }}</p>
-              <span class="why-step">0{{ i + 1 }}</span>
-            </div>
+              <div class="why-body">
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.description }}</p>
+                <span class="why-more">Explore Advantage →</span>
+              </div>
+            </button>
           }
         </div>
       </div>
     </section>
 
-    <!-- 5. PRODUCTS SECTION (5 PRODUCTS + CTA PANEL) -->
+    <!-- 5. PRODUCTS SECTION (5 PRODUCTS + PICTORIAL POPUPS + CTA PANEL) -->
     <section class="products-section">
       <div class="container">
         <div class="section-header" appScrollReveal="up">
@@ -283,19 +302,26 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
         <div class="products-showcase" #productsGrid>
           <div class="products-cards-grid">
             @for (product of products; track product.slug) {
-              <a [routerLink]="['/products', product.slug]" class="product-card">
+              <article class="product-card" (click)="openProductPopup(product)">
                 <div class="pc-thumb">
                   <img [src]="product.image" [alt]="product.title" loading="lazy" />
                   <span class="pc-icon-badge">
-                    <app-tech-icon [name]="product.icon" [size]="22" color="#FFFFFF" />
+                    <app-tech-icon [name]="product.icon" [size]="20" color="#FFFFFF" />
                   </span>
                 </div>
                 <div class="pc-body">
                   <h3>{{ product.title }}</h3>
                   <p>{{ product.shortDesc }}</p>
-                  <span class="pc-explore">Explore Product →</span>
+                  <div class="pc-actions">
+                    <span class="pc-preview">Quick View</span>
+                    <a
+                      [routerLink]="['/products', product.slug]"
+                      class="pc-explore"
+                      (click)="$event.stopPropagation()"
+                    >Explore Product →</a>
+                  </div>
                 </div>
-              </a>
+              </article>
             }
           </div>
 
@@ -337,7 +363,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
               <div class="ind-overlay"></div>
               <div class="ind-content">
                 <div class="ind-icon-circle">
-                  <app-tech-icon [name]="ind.icon" [size]="26" color="#FFFFFF" />
+                  <app-tech-icon [name]="ind.icon" [size]="24" color="#FFFFFF" />
                 </div>
                 <h3>{{ ind.name }}</h3>
               </div>
@@ -360,6 +386,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly stats = HERO_STATS;
   readonly services = SERVICES_DATA;
   readonly about = ABOUT_CONTENT;
+  readonly pillars = ABOUT_PILLARS;
   readonly whyItems = WHY_CHOOSE_ITEMS;
   readonly products = PRODUCTS_DATA;
   readonly industries = INDUSTRIES_DATA;
@@ -432,6 +459,68 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  openServicePopup(service: ServiceItem): void {
+    this.dialogs.openShowcase({
+      badge: service.category,
+      title: service.title,
+      subtitle: service.tagline,
+      image: service.heroImage,
+      description: service.overview,
+      highlights: service.highlights,
+      details: service.features.map((f) => ({ heading: f.title, text: f.description })),
+      primaryRoute: `/services/${service.slug}`,
+      primaryRouteLabel: 'Open Full Service Page →',
+      inquiryTitle: service.title,
+      inquiryMode: 'service'
+    });
+  }
+
+  openProductPopup(product: ProductItem): void {
+    this.dialogs.openShowcase({
+      badge: product.categoryLabel,
+      title: product.title,
+      subtitle: product.tagline,
+      image: product.image,
+      description: product.overview,
+      highlights: product.deploymentOptions,
+      details: product.capabilities.map((c) => ({ heading: c.title, text: c.description })),
+      primaryRoute: `/products/${product.slug}`,
+      primaryRouteLabel: 'Open Full Product Page →',
+      inquiryTitle: product.title,
+      inquiryMode: 'product'
+    });
+  }
+
+  openWhyPopup(item: (typeof WHY_CHOOSE_ITEMS)[number]): void {
+    this.dialogs.openShowcase({
+      badge: 'Why Choose Aircom',
+      title: item.title,
+      subtitle: item.subtitle,
+      image: item.image,
+      description: item.description,
+      highlights: item.highlights,
+      details: item.details,
+      primaryRoute: '/about',
+      primaryRouteLabel: 'Explore About Aircom →',
+      inquiryTitle: `${item.title} Consultation`
+    });
+  }
+
+  openPillarPopup(pillar: (typeof ABOUT_PILLARS)[number]): void {
+    this.dialogs.openShowcase({
+      badge: 'Aircom Technologies Foundation',
+      title: pillar.title,
+      subtitle: pillar.subtitle,
+      image: pillar.image,
+      description: pillar.summary,
+      highlights: pillar.highlights,
+      details: pillar.details,
+      primaryRoute: '/about',
+      primaryRouteLabel: 'Read Full Company Profile →',
+      inquiryTitle: 'Enterprise IT & ERP Consultation'
+    });
+  }
+
   onHeroMouseMove(event: MouseEvent): void {
     if (!isPlatformBrowser(this.platformId) || this.anim.prefersReducedMotion() || window.innerWidth < 992) {
       return;
@@ -465,4 +554,3 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     ScrollTrigger.getAll().forEach((t) => t.kill());
   }
 }
-

@@ -70,14 +70,27 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
         <div class="container">
           <div class="section-header" appScrollReveal="up">
             <h2>Core Capabilities</h2>
+            <p>Click any capability below to view its visual deployment architecture and enterprise benefits.</p>
           </div>
           <div class="card-grid-2">
-            @for (cap of p.capabilities; track cap.title) {
-              <div class="feature-box" appScrollReveal="up">
-                <app-tech-icon [name]="cap.icon" [size]="26" color="#2457A7" />
-                <h3>{{ cap.title }}</h3>
-                <p>{{ cap.description }}</p>
-              </div>
+            @for (cap of p.capabilities; track cap.title; let i = $index) {
+              <button
+                type="button"
+                class="feature-box"
+                style="text-align:left;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:8px;"
+                appScrollReveal="up"
+                (click)="openCapabilityPopup(p, cap)"
+              >
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <app-tech-icon [name]="cap.icon" [size]="26" color="#2457A7" />
+                  <span style="font-size:0.72rem;font-weight:700;color:#2457A7;background:#EFF6FF;padding:3px 10px;border-radius:999px;">
+                    Capability 0{{ i + 1 }}
+                  </span>
+                </div>
+                <h3 style="margin:4px 0 0;">{{ cap.title }}</h3>
+                <p style="line-height:1.55;">{{ cap.description }} Configured with automated monitoring, granular role permissions, multi-branch reporting, and managed backup policies.</p>
+                <span style="font-size:0.8rem;font-weight:700;color:#F59E0B;margin-top:4px;">View Pictorial Overview →</span>
+              </button>
             }
           </div>
         </div>
@@ -88,10 +101,13 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
           <h2 style="margin-bottom:20px;">Related Solutions</h2>
           <div class="card-grid-2">
             @for (rel of relatedProducts(); track rel.slug) {
-              <a [routerLink]="['/products', rel.slug]" class="feature-box">
-                <app-tech-icon [name]="rel.icon" [size]="26" color="#2457A7" />
-                <h3>{{ rel.title }}</h3>
-                <p>{{ rel.shortDesc }}</p>
+              <a [routerLink]="['/products', rel.slug]" class="feature-box" style="padding:0;overflow:hidden;display:grid;grid-template-columns:180px 1fr;" appScrollReveal="up">
+                <img [src]="rel.image" [alt]="rel.title" style="width:100%;height:100%;min-height:150px;object-fit:cover;" />
+                <div style="padding:18px;">
+                  <app-tech-icon [name]="rel.icon" [size]="24" color="#2457A7" />
+                  <h3 style="margin-top:8px;">{{ rel.title }}</h3>
+                  <p>{{ rel.shortDesc }}</p>
+                </div>
               </a>
             }
           </div>
@@ -120,6 +136,20 @@ export class ProductDetailComponent implements OnInit {
     const curr = this.product();
     return curr ? PRODUCTS_DATA.filter((item) => curr.relatedSlugs.includes(item.slug)) : [];
   });
+
+  openCapabilityPopup(p: (typeof PRODUCTS_DATA)[number], cap: (typeof PRODUCTS_DATA)[number]['capabilities'][number]): void {
+    this.dialogs.openShowcase({
+      badge: p.title,
+      title: cap.title,
+      subtitle: p.tagline,
+      image: p.image,
+      description: `${cap.description} Configured and supported by Aircom Technologies with high-availability cloud or hybrid deployment options.`,
+      highlights: p.deploymentOptions,
+      details: p.benefits.map((b, idx) => ({ heading: `Business Outcome 0${idx + 1}`, text: b })),
+      inquiryTitle: `${p.title} — ${cap.title}`,
+      inquiryMode: 'product'
+    });
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
