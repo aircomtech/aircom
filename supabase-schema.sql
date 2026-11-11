@@ -268,13 +268,18 @@ INSERT INTO public.site_settings (key, data) VALUES (
   }'::jsonb
 ) ON CONFLICT (key) DO UPDATE SET data = EXCLUDED.data;
 
--- Seed Sample Services
+-- Seed All 10 Services
 INSERT INTO public.services (slug, title, tagline, short_desc, full_desc, hero_image, icon, category, is_published, order_index) VALUES
 ('erpnext', 'ERPNext Implementation & Customization', 'Complete ERP Solution for Growing Enterprises', 'Streamline inventory, accounting, sales, purchasing, and reporting.', 'Aircom Technologies delivers end-to-end ERPNext implementation, custom Frappe app development, and multi-branch rollout.', 'assets/images/service-erpnext.png', 'monitor-cog', 'Enterprise ERP', true, 1),
 ('hrms', 'HRMS & Payroll Management', 'Automated Workforce & Salary Processing', 'Employee onboarding, attendance tracking, payroll, and leave management.', 'Automate every stage of employee management from recruitment to payroll runs.', 'assets/images/service-hrms.png', 'users', 'Human Capital', true, 2),
 ('biometric', 'Biometric & Hardware Integration', 'Automated Time & Attendance Synchronization', 'Connect biometric fingerprint and facial attendance with ERP.', 'Seamless two-way integration linking hardware access control directly to payroll.', 'assets/images/service-biometric.png', 'fingerprint', 'Hardware & IoT', true, 3),
 ('crm', 'CRM & Business Software Integration', 'Unified Omnichannel Customer Intelligence', 'Lead tracking, customer management, sales automation, and omnichannel support.', 'Empower sales and support teams with unified customer intelligence.', 'assets/images/service-crm.png', 'user-check', 'Sales & CRM', true, 4),
-('tally', 'TallyPrime Integration & Customization', 'Bridging TallyPrime with Modern ERP Systems', 'Automate voucher sync, custom TDL modules, and GST invoicing.', 'Two-way synchronization between TallyPrime, ERPNext, and third-party portals.', 'assets/images/service-tally.png', 'file-spreadsheet', 'Accounting', true, 5)
+('tally', 'TallyPrime Integration & Customization', 'Bridging TallyPrime with Modern ERP Systems', 'Automate voucher sync, custom TDL modules, and GST invoicing.', 'Two-way synchronization between TallyPrime, ERPNext, and third-party portals.', 'assets/images/service-tally.png', 'file-spreadsheet', 'Accounting', true, 5),
+('restaurant', 'Restaurant & Hospitality POS Solutions', 'High-Speed F&B Point of Sale & Kitchen Control', 'KOT routing, table management, recipe costing, and multi-outlet billing.', 'Streamline dining, cloud kitchens, and cafes with real-time food cost analytics.', 'assets/images/service-restaurant.png', 'utensils', 'Hospitality', true, 6),
+('jewellery', 'Jewellery Management & Bullion ERP', 'Hallmark, Karat Purity & Rate Lock Billing', 'RFID tag tracking, weight-based inventory, custom repair orders, and Chit schemes.', 'Specialized ERP engineered for multi-branch jewellery showrooms.', 'assets/images/service-jewellery.png', 'gem', 'Jewellery ERP', true, 7),
+('infrastructure', 'IT Infrastructure & Networking Solutions', 'Enterprise Firewalls, Switching & Server AMC', 'Structured cabling, UTM firewalls, site-to-site VPNs, and managed office networks.', 'Resilient corporate networking, Wi-Fi coverage, and proactive IT AMC support.', 'assets/images/service-infrastructure.png', 'server', 'IT Infrastructure', true, 8),
+('cloud', 'Cloud Hosting, VPS & Backup Automation', 'Managed ERPNext Cloud & Ransomware Protection', 'High-availability cloud instances, automated encrypted snapshots, and 99.9% uptime.', 'Hardened cloud hosting tuned for ERPNext, databases, and mission-critical workloads.', 'assets/images/service-cloud.png', 'cloud', 'Cloud Solutions', true, 9),
+('web-development', 'Web Development, SEO & Digital Portals', 'Custom B2B Client Portals & Corporate Platforms', 'Responsive Angular web applications, B2B ordering portals, and technical SEO.', 'Fast, secure corporate websites and customer portals connected directly to ERP.', 'assets/images/service-web.png', 'globe', 'Web & Digital', true, 10)
 ON CONFLICT (slug) DO UPDATE SET 
   title = EXCLUDED.title,
   tagline = EXCLUDED.tagline,
@@ -282,13 +287,13 @@ ON CONFLICT (slug) DO UPDATE SET
   full_desc = EXCLUDED.full_desc,
   hero_image = EXCLUDED.hero_image;
 
--- Seed Products
+-- Seed All 5 Products
 INSERT INTO public.products (slug, title, category, description, image, hero_image, is_published, order_index) VALUES
-('cloud-erp', 'Aircom Cloud ERP Suite', 'Enterprise Software', 'Comprehensive cloud-hosted ERP system designed for manufacturing, trading, and distribution businesses.', 'assets/images/product-cloud-erp.png', 'assets/images/product-cloud-erp.png', true, 1),
-('hrms-portal', 'Aircom Smart HRMS Portal', 'Human Resources', 'Unified attendance, self-service employee portal, automated payroll, and leave management system.', 'assets/images/product-hrms.png', 'assets/images/product-hrms.png', true, 2),
-('pos-retail', 'Aircom Smart POS Retail', 'Retail & POS', 'High-speed point of sale solution with barcode scanning, batch tracking, offline billing, and GST compliance.', 'assets/images/product-pos.png', 'assets/images/product-pos.png', true, 3),
-('warehouse-wms', 'Aircom Inventory & WMS', 'Supply Chain', 'Real-time multi-warehouse inventory tracking, serial number control, and automated reorder triggers.', 'assets/images/product-inventory.png', 'assets/images/product-inventory.png', true, 4),
-('analytics-bi', 'Aircom Enterprise Analytics BI', 'Business Intelligence', 'Executive dashboards, financial health metrics, and automated KPI visualization for leadership teams.', 'assets/images/product-analytics.png', 'assets/images/product-analytics.png', true, 5)
+('cloud-erp', 'Cloud ERP Platform', 'Enterprise Suite', 'All-in-one cloud ERP for accounting, inventory, CRM, HR, and multi-branch operations.', 'assets/images/product-cloud-erp.png', 'assets/images/product-cloud-erp.png', true, 1),
+('analytics', 'Business Analytics & BI', 'Intelligence & Reporting', 'Executive KPI dashboards, automated MIS reports, and real-time financial metrics.', 'assets/images/product-analytics.png', 'assets/images/product-analytics.png', true, 2),
+('security', 'Cybersecurity & Backup Vault', 'Data Protection', 'Perimeter firewalls, endpoint defense, and immutable encrypted cloud backups.', 'assets/images/product-security.png', 'assets/images/product-security.png', true, 3),
+('automation', 'Enterprise Workflow Automation', 'Process Automation', 'Automated approvals, WhatsApp/email triggers, and cross-system API connectors.', 'assets/images/product-automation.png', 'assets/images/product-automation.png', true, 4),
+('it-support', 'Managed IT & AMC Support', 'Infrastructure Care', 'Proactive L1-L3 monitoring, server patching, and rapid on-site technical support.', 'assets/images/product-it-support.png', 'assets/images/product-it-support.png', true, 5)
 ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title,
   category = EXCLUDED.category,
@@ -296,21 +301,22 @@ ON CONFLICT (slug) DO UPDATE SET
   image = EXCLUDED.image,
   hero_image = EXCLUDED.hero_image;
 
--- Seed Industries
-INSERT INTO public.industries (slug, name, short_desc, overview, image, is_published, order_index) VALUES
-('retail', 'Retail & Supermarkets', 'End-to-end POS, inventory control, and multi-store retail sync.', 'Aircom equips retailers with point-of-sale efficiency, multi-location inventory synchronization, and omnichannel loyalty programs.', 'assets/images/industry-retail.png', true, 1),
-('hospitality', 'Hospitality & Restaurants', 'Kitchen order tickets, table management, and real-time recipe costing.', 'Streamline dining operations with automated kitchen displays, table reservations, and seamless inventory tracking.', 'assets/images/industry-hospitality.png', true, 2),
-('jewellery', 'Jewellery & Luxury Goods', 'Hallmark tracking, precious metal rates, and Karat purity management.', 'Specialized ERP architecture managing metal wastage, stone certificates, daily rate updates, and customized CAD orders.', 'assets/images/industry-jewellery.png', true, 3),
-('construction', 'Construction & Real Estate', 'Project site budgeting, material requisitions, and contractor billing.', 'Maintain strict fiscal discipline across construction phases, equipment tracking, and sub-contractor reconciliation.', 'assets/images/industry-construction.png', true, 4),
-('healthcare', 'Healthcare & Clinics', 'Patient appointment management, clinic billing, and pharmacy stock.', 'Unified clinic operations linking consultations, pharmacy POS, and lab reports into a compliant digital medical record.', 'assets/images/industry-healthcare.png', true, 5),
-('manufacturing', 'Manufacturing & Assembly', 'BOM explosion, batch traceability, production work orders, and QA audits.', 'End-to-end manufacturing execution from raw material procurement to finished good inspection and dispatch.', 'assets/images/industry-manufacturing.png', true, 6),
-('finance', 'Financial Services & NBFCs', 'Automated loan books, ledger reconciliation, and regulatory compliance.', 'Robust accounting infrastructure with multi-currency handling, audit logs, and automated reconciliations.', 'assets/images/industry-finance.png', true, 7),
-('education', 'Education & Academic Institutes', 'Student admissions, fee schedules, automated attendance, and LMS.', 'Complete institutional governance software automating student lifecycles, examination schedules, and fee receipts.', 'assets/images/industry-education.png', true, 8)
+-- Seed All 8 Industries (Exact columns: title, headline, description)
+INSERT INTO public.industries (slug, title, headline, description, image, hero_image, is_published, order_index) VALUES
+('retail-ecommerce', 'Retail & E-commerce', 'Omnichannel POS, centralized inventory, loyalty, GST billing, and web storefront sync.', 'Aircom equips retailers with high-speed point-of-sale efficiency, multi-location inventory synchronization, and omnichannel loyalty programs.', 'assets/images/industry-retail.png', 'assets/images/industry-retail.png', true, 1),
+('hospitality', 'Hospitality', 'Kitchen order tickets, table management, and real-time recipe costing.', 'Streamline dining operations with automated kitchen displays, table reservations, and seamless inventory tracking.', 'assets/images/industry-hospitality.png', 'assets/images/industry-hospitality.png', true, 2),
+('jewellery', 'Jewellery', 'Hallmark tracking, precious metal rates, and Karat purity management.', 'Specialized ERP architecture managing metal wastage, stone certificates, daily rate updates, and customized CAD orders.', 'assets/images/industry-jewellery.png', 'assets/images/industry-jewellery.png', true, 3),
+('construction', 'Construction', 'Project site budgeting, material requisitions, and contractor billing.', 'Maintain strict fiscal discipline across construction phases, equipment tracking, and sub-contractor reconciliation.', 'assets/images/industry-construction.png', 'assets/images/industry-construction.png', true, 4),
+('healthcare', 'Healthcare', 'Patient appointment management, clinic billing, and pharmacy stock.', 'Unified clinic operations linking consultations, pharmacy POS, and lab reports into a compliant digital medical record.', 'assets/images/industry-healthcare.png', 'assets/images/industry-healthcare.png', true, 5),
+('manufacturing', 'Manufacturing', 'BOM explosion, batch traceability, production work orders, and QA audits.', 'End-to-end manufacturing execution from raw material procurement to finished good inspection and dispatch.', 'assets/images/industry-manufacturing.png', 'assets/images/industry-manufacturing.png', true, 6),
+('finance', 'Finance', 'Automated loan books, ledger reconciliation, and regulatory compliance.', 'Robust accounting infrastructure with multi-currency handling, audit logs, and automated reconciliations.', 'assets/images/industry-finance.png', 'assets/images/industry-finance.png', true, 7),
+('education', 'Education', 'Student admissions, fee schedules, automated attendance, and LMS.', 'Complete institutional governance software automating student lifecycles, examination schedules, and fee receipts.', 'assets/images/industry-education.png', 'assets/images/industry-education.png', true, 8)
 ON CONFLICT (slug) DO UPDATE SET
-  name = EXCLUDED.name,
-  short_desc = EXCLUDED.short_desc,
-  overview = EXCLUDED.overview,
-  image = EXCLUDED.image;
+  title = EXCLUDED.title,
+  headline = EXCLUDED.headline,
+  description = EXCLUDED.description,
+  image = EXCLUDED.image,
+  hero_image = EXCLUDED.hero_image;
 
 -- Seed Blogs (All 6 Live Articles)
 INSERT INTO public.blogs (slug, title, excerpt, author, date, read_time, category, hero_image, content, tags, is_published) VALUES

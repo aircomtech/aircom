@@ -308,6 +308,81 @@ export class ContentService {
     } as BlogPost;
   }
 
+  private getDeletedSlugs(collection: 'services' | 'products' | 'industries' | 'blogs'): string[] {
+    try {
+      const fromSettings = (this.settingsSubject.value as any)?.deletedItems?.[collection];
+      const fromStorage = JSON.parse(localStorage.getItem(`aircom_deleted_${collection}`) || '[]');
+      const set = new Set<string>([
+        ...(Array.isArray(fromSettings) ? fromSettings : []),
+        ...(Array.isArray(fromStorage) ? fromStorage : [])
+      ]);
+      return Array.from(set);
+    } catch {
+      return [];
+    }
+  }
+
+  private async markDeletedSlug(collection: 'services' | 'products' | 'industries' | 'blogs', slug: string): Promise<void> {
+    try {
+      const existing = this.getDeletedSlugs(collection);
+      if (!existing.includes(slug)) {
+        const next = [...existing, slug];
+        localStorage.setItem(`aircom_deleted_${collection}`, JSON.stringify(next));
+        const currentDeleted = { ...((this.settingsSubject.value as any)?.deletedItems || {}) };
+        currentDeleted[collection] = next;
+        await this.saveSetting('deletedItems' as any, currentDeleted);
+      }
+    } catch {
+      // Ignore storage error
+    }
+  }
+
+  private async unmarkDeletedSlug(collection: 'services' | 'products' | 'industries' | 'blogs', slug: string): Promise<void> {
+    try {
+      const existing = this.getDeletedSlugs(collection);
+      if (existing.includes(slug)) {
+        const next = existing.filter((s) => s !== slug);
+        localStorage.setItem(`aircom_deleted_${collection}`, JSON.stringify(next));
+        const currentDeleted = { ...((this.settingsSubject.value as any)?.deletedItems || {}) };
+        currentDeleted[collection] = next;
+        await this.saveSetting('deletedItems' as any, currentDeleted);
+      }
+    } catch {
+      // Ignore storage error
+    }
+  }
+
+  private mergeWithDefaults<T extends { slug: string }>(
+    defaults: T[],
+    dbRows: any[],
+    mapper: (r: any) => T,
+    deletedSlugs: string[]
+  ): T[] {
+    const mappedDb = dbRows.map((r) => mapper(r));
+    const dbBySlug = new Map<string, T>();
+    for (const item of mappedDb) {
+      dbBySlug.set(item.slug, item);
+    }
+
+    const result: T[] = [];
+    for (const def of defaults) {
+      if (deletedSlugs.includes(def.slug)) continue;
+      const override = dbBySlug.get(def.slug);
+      if (override) {
+        result.push(override);
+        dbBySlug.delete(def.slug);
+      } else {
+        result.push(def);
+      }
+    }
+    for (const custom of dbBySlug.values()) {
+      if (!deletedSlugs.includes(custom.slug)) {
+        result.push(custom);
+      }
+    }
+    return result;
+  }
+
   /**
    * Initializes data from Supabase and sets up real-time subscriptions.
    */
@@ -332,50 +407,66 @@ export class ContentService {
         this.liveSyncActiveSubject.next(true);
       }
 
-      // 2. Fetch services
+      // 2. Fetch services & merge with built-in defaults
       const { data: servicesRows, error: servicesError } = await client
         .from('services')
         .select('*')
         .eq('is_published', true)
         .order('order_index', { ascending: true });
 
-      if (!servicesError && servicesRows && servicesRows.length > 0) {
-        this.servicesSubject.next(servicesRows.map((r: any) => this.mapDbServiceToItem(r)));
+      if (!servicesError && servicesRows) {
+        this.servicesSubject.next(
+          this.mergeWithDefaults(SERVICES_DATA, servicesRows, (r) => this.mapDbServiceToItem(r), this.getDeletedSlugs('services'))
+        );
         this.liveSyncActiveSubject.next(true);
       }
 
-      // 3. Fetch products
+      // 3. Fetch products & merge with built-in defaults
       const { data: productsRows, error: productsError } = await client
         .from('products')
         .select('*')
         .eq('is_published', true)
         .order('order_index', { ascending: true });
 
-      if (!productsError && productsRows && productsRows.length > 0) {
-        this.productsSubject.next(productsRows.map((r: any) => this.mapDbProductToItem(r)));
+      if (!productsError && productsRows) {
+        this.productsSubject.next(
+          this.mergeWithDefaults(PRODUCTS_DATA, productsRows, (r) => this.mapDbProductToItem(r), this.getDeletedSlugs('products'))
+        );
         this.liveSyncActiveSubject.next(true);
       }
 
-      // 4. Fetch industries
+      // 4. Fetch industries & merge with built-in defaults
       const { data: industriesRows, error: industriesError } = await client
         .from('industries')
         .select('*')
         .eq('is_published', true)
         .order('order_index', { ascending: true });
 
-      if (!industriesError && industriesRows && industriesRows.length > 0) {
-        this.industriesSubject.next(industriesRows.map((r: any) => this.mapDbIndustryToItem(r)));
+      if (!industriesError && industriesRows) {
+        const normalizedRows = industriesRows.map((r: any) =>
+          r.slug === 'retail' ? { ...r, slug: 'retail-ecommerce' } : r
+        );
+        this.industriesSubject.next(
+          this.mergeWithDefaults(
+            INDUSTRIES_DATA,
+            normalizedRows,
+            (r) => this.mapDbIndustryToItem(r),
+            this.getDeletedSlugs('industries')
+          )
+        );
         this.liveSyncActiveSubject.next(true);
       }
 
-      // 5. Fetch blogs
+      // 5. Fetch blogs & merge with built-in defaults
       const { data: blogsRows, error: blogsError } = await client
         .from('blogs')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (!blogsError && blogsRows && blogsRows.length > 0) {
-        this.blogsSubject.next(blogsRows.map((r: any) => this.mapDbBlogToItem(r)));
+      if (!blogsError && blogsRows) {
+        this.blogsSubject.next(
+          this.mergeWithDefaults(BLOG_POSTS, blogsRows, (r) => this.mapDbBlogToItem(r), this.getDeletedSlugs('blogs'))
+        );
         this.liveSyncActiveSubject.next(true);
       }
 
@@ -422,7 +513,11 @@ export class ContentService {
               .select('*')
               .eq('is_published', true)
               .order('order_index', { ascending: true });
-            if (data) this.servicesSubject.next(data.map((r: any) => this.mapDbServiceToItem(r)));
+            if (data) {
+              this.servicesSubject.next(
+                this.mergeWithDefaults(SERVICES_DATA, data, (r) => this.mapDbServiceToItem(r), this.getDeletedSlugs('services'))
+              );
+            }
           }
         )
         .on(
@@ -434,7 +529,11 @@ export class ContentService {
               .select('*')
               .eq('is_published', true)
               .order('order_index', { ascending: true });
-            if (data) this.productsSubject.next(data.map((r: any) => this.mapDbProductToItem(r)));
+            if (data) {
+              this.productsSubject.next(
+                this.mergeWithDefaults(PRODUCTS_DATA, data, (r) => this.mapDbProductToItem(r), this.getDeletedSlugs('products'))
+              );
+            }
           }
         )
         .on(
@@ -446,7 +545,17 @@ export class ContentService {
               .select('*')
               .eq('is_published', true)
               .order('order_index', { ascending: true });
-            if (data) this.industriesSubject.next(data.map((r: any) => this.mapDbIndustryToItem(r)));
+            if (data) {
+              const normalized = data.map((r: any) => (r.slug === 'retail' ? { ...r, slug: 'retail-ecommerce' } : r));
+              this.industriesSubject.next(
+                this.mergeWithDefaults(
+                  INDUSTRIES_DATA,
+                  normalized,
+                  (r) => this.mapDbIndustryToItem(r),
+                  this.getDeletedSlugs('industries')
+                )
+              );
+            }
           }
         )
         .on(
@@ -457,7 +566,11 @@ export class ContentService {
               .from('blogs')
               .select('*')
               .order('created_at', { ascending: false });
-            if (data) this.blogsSubject.next(data.map((r: any) => this.mapDbBlogToItem(r)));
+            if (data) {
+              this.blogsSubject.next(
+                this.mergeWithDefaults(BLOG_POSTS, data, (r) => this.mapDbBlogToItem(r), this.getDeletedSlugs('blogs'))
+              );
+            }
           }
         )
         .on(
@@ -519,6 +632,7 @@ export class ContentService {
   }
 
   async saveService(service: ServiceItem): Promise<boolean> {
+    await this.unmarkDeletedSlug('services', service.slug);
     const list = [...this.servicesSubject.value];
     const index = list.findIndex((s) => s.slug === service.slug);
     if (index >= 0) {
@@ -559,6 +673,7 @@ export class ContentService {
   async deleteService(slug: string): Promise<boolean> {
     const list = this.servicesSubject.value.filter((s) => s.slug !== slug);
     this.servicesSubject.next(list);
+    await this.markDeletedSlug('services', slug);
 
     const client = this.sb.getClient();
     if (client) {
@@ -573,6 +688,7 @@ export class ContentService {
   }
 
   async saveProduct(product: ProductItem): Promise<boolean> {
+    await this.unmarkDeletedSlug('products', product.slug);
     const list = [...this.productsSubject.value];
     const index = list.findIndex((p) => p.slug === product.slug);
     if (index >= 0) {
@@ -614,6 +730,7 @@ export class ContentService {
   async deleteProduct(slug: string): Promise<boolean> {
     const list = this.productsSubject.value.filter((p) => p.slug !== slug);
     this.productsSubject.next(list);
+    await this.markDeletedSlug('products', slug);
 
     const client = this.sb.getClient();
     if (client) {
@@ -628,6 +745,7 @@ export class ContentService {
   }
 
   async saveIndustry(industry: IndustryItem): Promise<boolean> {
+    await this.unmarkDeletedSlug('industries', industry.slug);
     const list = [...this.industriesSubject.value];
     const index = list.findIndex((i) => i.slug === industry.slug);
     if (index >= 0) {
@@ -668,6 +786,7 @@ export class ContentService {
   async deleteIndustry(slug: string): Promise<boolean> {
     const list = this.industriesSubject.value.filter((i) => i.slug !== slug);
     this.industriesSubject.next(list);
+    await this.markDeletedSlug('industries', slug);
 
     const client = this.sb.getClient();
     if (client) {
@@ -682,6 +801,7 @@ export class ContentService {
   }
 
   async saveBlog(blog: BlogPost): Promise<boolean> {
+    await this.unmarkDeletedSlug('blogs', blog.slug);
     const img = blog.heroImage || blog.image || 'assets/images/service-erpnext.png';
     const updatedBlog: BlogPost = {
       ...blog,
@@ -739,6 +859,7 @@ export class ContentService {
   async deleteBlog(slug: string): Promise<boolean> {
     const list = this.blogsSubject.value.filter((b) => b.slug !== slug);
     this.blogsSubject.next(list);
+    await this.markDeletedSlug('blogs', slug);
 
     const client = this.sb.getClient();
     if (client) {
@@ -750,6 +871,36 @@ export class ContentService {
       }
     }
     return true;
+  }
+
+  /**
+   * Restores all default backup data (services, products, industries, and blogs)
+   * into live reactive state and persists every record to Supabase.
+   */
+  async restoreAllDefaultData(): Promise<void> {
+    ['services', 'products', 'industries', 'blogs'].forEach((k) => {
+      localStorage.removeItem(`aircom_deleted_${k}`);
+    });
+    await this.saveSetting('deletedItems' as any, { services: [], products: [], industries: [], blogs: [] });
+
+    this.servicesSubject.next([...SERVICES_DATA]);
+    this.productsSubject.next([...PRODUCTS_DATA]);
+    this.industriesSubject.next([...INDUSTRIES_DATA]);
+    this.blogsSubject.next([...BLOG_POSTS]);
+
+    for (const s of SERVICES_DATA) {
+      await this.saveService(s);
+    }
+    for (const p of PRODUCTS_DATA) {
+      await this.saveProduct(p);
+    }
+    for (const ind of INDUSTRIES_DATA) {
+      await this.saveIndustry(ind);
+    }
+    for (const blg of BLOG_POSTS) {
+      await this.saveBlog(blg);
+    }
+    await this.logActivity('Restore Backup', 'Restored all default Services, Products, Industries & Blog articles');
   }
 
   // --- INQUIRIES MANAGEMENT ---

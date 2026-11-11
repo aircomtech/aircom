@@ -261,7 +261,10 @@
               <h2>Dashboard Overview</h2>
               <p class="subtitle">Live status, metrics, and instant content management shortcuts.</p>
             </div>
-            <div class="header-actions">
+            <div class="header-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-action-outline" (click)="restoreAllBackup()">
+                ↻ Restore All Backup Data
+              </button>
               <button class="btn-action-primary" (click)="setModule('activity')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
@@ -784,7 +787,8 @@
               <h2>Blog &amp; Knowledge Base Management</h2>
               <p class="subtitle">Create, edit, delete, and publish articles with pictures that sync live to the public website.</p>
             </div>
-            <div class="header-actions">
+            <div class="header-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-action-outline" (click)="restoreAllBackup()">↻ Restore All Articles</button>
               <button class="btn-action-primary" (click)="addNewBlog()">+ Write New Article</button>
             </div>
           </div>
@@ -1287,7 +1291,8 @@
               <h2>Industries Management (All 8 Sectors)</h2>
               <p class="subtitle">Retail, Hospitality, Jewellery, Construction, Healthcare, Manufacturing, Finance, and Education.</p>
             </div>
-            <div class="header-actions">
+            <div class="header-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-action-outline" (click)="restoreAllBackup()">↻ Restore All 8 Sectors</button>
               <button class="btn-action-primary" (click)="addNewIndustry()">+ Add Industry</button>
             </div>
           </div>

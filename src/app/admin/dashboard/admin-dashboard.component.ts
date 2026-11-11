@@ -661,6 +661,16 @@ export class AdminDashboardComponent implements OnInit {
     this.activityLogs.set(logs);
   }
 
+  async restoreAllBackup(): Promise<void> {
+    try {
+      this.showToast('info', 'Restoring all default Industries, Blogs, Services & Products...');
+      await this.content.restoreAllDefaultData();
+      this.showToast('success', 'All backup data (10 Services, 5 Products, 8 Industries, 6 Blogs) restored live!');
+    } catch (e: any) {
+      this.showToast('error', `Restore failed: ${e.message}`);
+    }
+  }
+
   // --- HELPERS ---
 
   formatSectionName(key: string): string {
