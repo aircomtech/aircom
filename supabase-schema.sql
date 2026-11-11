@@ -230,3 +230,4 @@ INSERT INTO public.services (slug, title, short_desc, full_desc, icon, category,
 ('crm', 'CRM & Business Software Integration', 'Lead tracking, customer management, sales automation, and omnichannel support.', 'Empower sales and support teams with unified customer intelligence.', 'user-check', 'Sales & CRM', true, 4),
 ('tally', 'TallyPrime Integration & Customization', 'Automate voucher sync, custom TDL modules, and GST invoicing.', 'Two-way synchronization between TallyPrime, ERPNext, and third-party portals.', 'file-spreadsheet', 'Accounting', true, 5)
 ON CONFLICT (slug) DO NOTHING;
+

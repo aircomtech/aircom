@@ -111,3 +111,4 @@ export class SupabaseService {
     return this.currentUserSubject.value?.email || localStorage.getItem('aircom_admin_email') || 'admin@aircomtech.com';
   }
 }
+
