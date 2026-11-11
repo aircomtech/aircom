@@ -26,7 +26,7 @@ import { CtaBannerComponent } from '../../../shared/components/cta-banner/cta-ba
 
       <section class="page-section">
         <div class="container" style="max-width:860px;">
-          <img [src]="p.image" [alt]="p.title" style="width:100%;max-height:380px;object-fit:cover;border-radius:18px;margin-bottom:28px;" />
+          <img [src]="p.heroImage || p.image" [alt]="p.title" style="width:100%;max-height:380px;object-fit:cover;border-radius:18px;margin-bottom:28px;" />
           <div style="display:grid;gap:18px;font-size:1.05rem;line-height:1.75;color:#202B3C;">
             @for (para of p.content; track para) {
               <p style="margin:0;">{{ para }}</p>

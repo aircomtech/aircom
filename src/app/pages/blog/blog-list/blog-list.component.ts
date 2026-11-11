@@ -42,7 +42,7 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
         <div class="card-grid-2">
           @for (post of filteredPosts(); track post.slug) {
             <article class="feature-box" style="padding:0;overflow:hidden;display:flex;flex-direction:column;" appScrollReveal="up">
-              <img [src]="post.image" [alt]="post.title" style="width:100%;height:210px;object-fit:cover;" />
+              <img [src]="post.heroImage || post.image" [alt]="post.title" style="width:100%;height:210px;object-fit:cover;" />
               <div style="padding:22px;display:flex;flex-direction:column;flex:1;">
                 <div style="display:flex;gap:12px;font-size:0.78rem;color:#64748B;margin-bottom:8px;">
                   <span style="color:#F59E0B;font-weight:700;">{{ post.category }}</span>

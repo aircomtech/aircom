@@ -800,7 +800,7 @@
                     <tr>
                       <td>
                         <div class="table-img-cell">
-                          <img [src]="blg.heroImage || 'assets/images/service-erpnext.png'" [alt]="blg.title" class="table-thumb" />
+                          <img [src]="blg.heroImage || blg.image || 'assets/images/service-erpnext.png'" [alt]="blg.title" class="table-thumb" />
                         </div>
                       </td>
                       <td>
@@ -876,10 +876,10 @@
                   <div class="form-group">
                     <label>Article Picture</label>
                     <div class="image-preview-box" style="margin-bottom: 8px;">
-                      <img [src]="blg.heroImage || 'assets/images/service-erpnext.png'" alt="Article Preview" />
+                      <img [src]="blg.heroImage || blg.image || 'assets/images/service-erpnext.png'" alt="Article Preview" />
                     </div>
                     <div class="media-controls">
-                      <input type="text" [(ngModel)]="blg.heroImage" placeholder="Image URL or upload a picture..." />
+                      <input type="text" [(ngModel)]="blg.heroImage" (ngModelChange)="blg.image = $event" placeholder="Image URL or upload a picture..." />
                       <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'blog', property: 'heroImage' })">
                         Upload Picture
                       </button>

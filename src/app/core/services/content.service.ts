@@ -288,17 +288,21 @@ export class ContentService {
 
   private mapDbBlogToItem(row: any): BlogPost {
     const def = BLOG_POSTS.find((b) => b.slug === row.slug) || ({} as Partial<BlogPost>);
+    const img = row.hero_image || row.image || def.heroImage || def.image || 'assets/images/service-erpnext.png';
     return {
       ...def,
       ...row,
       title: row.title || def.title || '',
       category: row.category || def.category || 'Enterprise IT',
       date: row.date || def.date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-      readTime: row.readTime || row.read_time || def.readTime || '5 min read',
+      readTime: row.read_time || row.readTime || def.readTime || '5 min read',
       author: row.author || def.author || 'Aircom Technologies Team',
-      image: row.image || def.image || 'assets/images/service-erpnext.png',
+      image: img,
+      heroImage: img,
       excerpt: row.excerpt || def.excerpt || '',
-      content: Array.isArray(row.content) ? row.content : (def.content || []),
+      content: Array.isArray(row.content)
+        ? row.content
+        : (typeof row.content === 'string' ? row.content.split('\n\n').filter((s: string) => s.trim().length > 0) : (def.content || [])),
       tags: Array.isArray(row.tags) ? row.tags : (def.tags || [])
     } as BlogPost;
   }
@@ -656,32 +660,53 @@ export class ContentService {
   }
 
   async saveBlog(blog: BlogPost): Promise<boolean> {
+    const img = blog.heroImage || blog.image || 'assets/images/service-erpnext.png';
+    const updatedBlog: BlogPost = {
+      ...blog,
+      image: img,
+      heroImage: img
+    };
+
     const list = [...this.blogsSubject.value];
-    const index = list.findIndex((b) => b.slug === blog.slug);
+    const index = list.findIndex((b) => b.slug === updatedBlog.slug);
     if (index >= 0) {
-      list[index] = { ...blog };
+      list[index] = { ...updatedBlog };
     } else {
-      list.unshift(blog);
+      list.unshift({ ...updatedBlog });
     }
     this.blogsSubject.next(list);
 
     const client = this.sb.getClient();
     if (client) {
       try {
-        await client.from('blogs').upsert({
-          slug: blog.slug,
-          title: blog.title,
-          category: blog.category,
-          date: blog.date,
-          read_time: blog.readTime,
-          author: blog.author,
-          image: blog.image,
-          excerpt: blog.excerpt,
-          content: blog.content,
-          tags: blog.tags,
+        const payload: any = {
+          slug: updatedBlog.slug,
+          title: updatedBlog.title,
+          category: updatedBlog.category,
+          date: updatedBlog.date,
+          read_time: updatedBlog.readTime,
+          author: updatedBlog.author,
+          hero_image: img,
+          excerpt: updatedBlog.excerpt,
+          content: updatedBlog.content,
+          tags: updatedBlog.tags,
+          is_published: true,
           updated_at: new Date().toISOString()
-        }, { onConflict: 'slug' });
-        await this.logActivity('Save', `Blog: ${blog.title}`);
+        };
+
+        let { error } = await client.from('blogs').upsert(payload, { onConflict: 'slug' });
+        // If table uses 'image' instead of 'hero_image', retry with 'image'
+        if (error && (error.message.includes('hero_image') || error.message.includes('column'))) {
+          delete payload.hero_image;
+          payload.image = img;
+          const retry = await client.from('blogs').upsert(payload, { onConflict: 'slug' });
+          error = retry.error;
+        }
+
+        if (error) {
+          console.warn('Supabase blogs upsert error:', error.message);
+        }
+        await this.logActivity('Save', `Blog: ${updatedBlog.title}`);
       } catch (e) {
         console.warn('Error saving blog to Supabase:', e);
       }

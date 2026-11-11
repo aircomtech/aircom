@@ -313,7 +313,22 @@ export class AdminDashboardComponent implements OnInit {
 
   async saveBlog(blog: BlogPost): Promise<void> {
     try {
+      const img = blog.heroImage || blog.image;
+      if (img) {
+        blog.image = img;
+        blog.heroImage = img;
+      }
       await this.content.saveBlog(blog);
+      this.blogsList.update((list) => {
+        const idx = list.findIndex((b) => b.slug === blog.slug);
+        if (idx >= 0) {
+          const updated = [...list];
+          updated[idx] = { ...blog };
+          return updated;
+        } else {
+          return [{ ...blog }, ...list];
+        }
+      });
       this.selectedBlog.set(null);
       this.showToast('success', `Article "${blog.title}" published and live!`);
     } catch (e: any) {
@@ -611,6 +626,15 @@ export class AdminDashboardComponent implements OnInit {
           blg.heroImage = url;
           this.selectedBlog.set(blg);
           await this.content.saveBlog(blg);
+          this.blogsList.update((list) => {
+            const idx = list.findIndex((b) => b.slug === blg.slug);
+            if (idx >= 0) {
+              const updated = [...list];
+              updated[idx] = { ...blg };
+              return updated;
+            }
+            return list;
+          });
         }
       }
       if (notify) {
