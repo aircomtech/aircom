@@ -656,6 +656,26 @@
     font-size: 0.8rem;
     color: #0369A1;
   }
+
+  .action-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #E2E8F0;
+    color: #334155;
+    display: inline-block;
+
+    &.action-save {
+      background: #DCFCE7;
+      color: #15803D;
+    }
+
+    &.action-delete {
+      background: #FEE2E2;
+      color: #B91C1C;
+    }
+  }
 }
 
 .empty-state {
@@ -715,11 +735,23 @@
         gap: 6px;
 
         .action-tag {
-          font-size: 0.7rem;
+          font-size: 0.72rem;
           font-weight: 700;
-          padding: 1px 6px;
+          padding: 2px 7px;
           border-radius: 4px;
           background: #E2E8F0;
+          color: #334155;
+          display: inline-block;
+
+          &.action-save {
+            background: #DCFCE7;
+            color: #15803D;
+          }
+
+          &.action-delete {
+            background: #FEE2E2;
+            color: #B91C1C;
+          }
         }
       }
 

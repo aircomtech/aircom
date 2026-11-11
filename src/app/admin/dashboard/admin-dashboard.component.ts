@@ -34,7 +34,6 @@ type AdminModule =
   | 'why_us'
   | 'partners'
   | 'testimonials'
-  | 'media'
   | 'contact_info'
   | 'inquiries'
   | 'footer'
@@ -124,7 +123,7 @@ export class AdminDashboardComponent implements OnInit {
     const totalBlogs = this.blogsList().length;
     const inquiries = this.inquiriesList();
     const newInquiries = inquiries.filter((i) => i.status === 'new').length;
-    const totalMedia = this.mediaAssets().length;
+    const totalLogs = this.activityLogs().length;
     return {
       totalServices,
       totalProducts,
@@ -132,7 +131,7 @@ export class AdminDashboardComponent implements OnInit {
       totalBlogs,
       totalInquiries: inquiries.length,
       newInquiries,
-      totalMedia
+      totalLogs
     };
   });
 
@@ -145,6 +144,7 @@ export class AdminDashboardComponent implements OnInit {
     this.productsList.set(JSON.parse(JSON.stringify(this.content.currentProducts)));
     this.industriesList.set(JSON.parse(JSON.stringify(this.content.currentIndustries)));
     this.blogsList.set(JSON.parse(JSON.stringify(this.content.currentBlogs)));
+    this.activityLogs.set(this.content.currentActivityLogs);
 
     // Subscribe to live sync changes
     this.content.liveSyncActive$.subscribe((active) => {
@@ -171,10 +171,13 @@ export class AdminDashboardComponent implements OnInit {
       this.blogsList.set(JSON.parse(JSON.stringify(blogs)));
     });
 
-    // Fetch inquiries, logs, media
+    this.content.activityLogs$.subscribe((logs) => {
+      this.activityLogs.set(logs);
+    });
+
+    // Fetch inquiries and initial sync
     this.loadInquiries();
     this.loadActivityLogs();
-    this.loadMediaAssets();
   }
 
   setModule(module: AdminModule): void {
@@ -584,14 +587,6 @@ export class AdminDashboardComponent implements OnInit {
       this.showToast('success', 'Image assigned to target field!');
     }
     this.closeMediaUploadModal();
-  }
-
-  async deleteMedia(asset: MediaAssetRecord): Promise<void> {
-    if (asset.id && confirm(`Delete "${asset.name}" from library?`)) {
-      await this.content.deleteMediaAsset(asset.id);
-      await this.loadMediaAssets();
-      this.showToast('info', 'Media asset removed.');
-    }
   }
 
   // --- ACTIVITY LOGS ---

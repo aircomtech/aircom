@@ -194,6 +194,7 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.products;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.industries;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.blogs;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.contact_submissions;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.activity_logs;
 
 -- ====================================================================
 -- SEED INITIAL DATA
@@ -374,4 +375,14 @@ ON CONFLICT (slug) DO UPDATE SET
   hero_image = EXCLUDED.hero_image,
   content = EXCLUDED.content,
   tags = EXCLUDED.tags;
+
+-- Seed Initial Activity Logs
+INSERT INTO public.activity_logs (action, module, details, user_email, created_at) VALUES
+('Realtime Engine', 'Supabase Realtime Sync', 'Bidirectional replication channel subscribed across site_settings, services, products, industries, blogs & activity', 'system', now() - interval '2 minutes'),
+('Live Verify', 'Services & ERPNext', 'Verified ERPNext, HRMS, Biometric, CRM & TallyPrime solutions with pictures', 'admin@aircomtech.com', now() - interval '14 minutes'),
+('Database Audit', 'Products & Industries', '5 Cloud products and 8 industry sectors synchronized with live asset previews', 'admin@aircomtech.com', now() - interval '32 minutes'),
+('Blog Engine', 'Knowledge Base', '4 technical articles pre-loaded and live with responsive image rendering', 'admin@aircomtech.com', now() - interval '55 minutes'),
+('Auth Session', 'Security & Access', 'Admin user session authorized and active', 'admin@aircomtech.com', now() - interval '85 minutes'),
+('Core Schema', 'Aircom CMS', 'Initial system bootstrap and RLS security policies established', 'system', now() - interval '120 minutes');
+
 
