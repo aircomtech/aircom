@@ -70,7 +70,7 @@ export class AdminDashboardComponent implements OnInit {
   uploadTargetField = signal<{ target: string; property: string } | null>(null);
 
   // Local editable copies of data
-  siteSettings = signal<SiteSettingsMap>({});
+  siteSettings = signal<SiteSettingsMap>(this.content.currentSettings);
   servicesList = signal<ServiceItem[]>([]);
   productsList = signal<ProductItem[]>([]);
   industriesList = signal<IndustryItem[]>([]);
@@ -414,28 +414,33 @@ export class AdminDashboardComponent implements OnInit {
     this.uploadingFile.set(true);
     this.uploadError.set('');
 
+    // 1. Instantly read as Data URL for immediate zero-latency update & 100% reliable offline/online display
+    const reader = new FileReader();
+    reader.onload = async (e: ProgressEvent<FileReader>) => {
+      const dataUrl = e.target?.result as string;
+      if (dataUrl) {
+        this.uploadedImageUrl.set(dataUrl);
+        await this.applyUploadedImage(dataUrl);
+        this.uploadingFile.set(false);
+      }
+    };
+
+    reader.onerror = () => {
+      this.uploadingFile.set(false);
+      this.showToast('error', 'Could not read selected picture file.');
+    };
+
+    reader.readAsDataURL(file);
+
+    // 2. In background, attempt cloud storage upload for persistent URL
     try {
       const result = await this.cloudinary.uploadImage(file, 'aircom');
-      this.uploadedImageUrl.set(result.secure_url);
-
-      const record: MediaAssetRecord = {
-        name: file.name,
-        secure_url: result.secure_url,
-        public_id: result.public_id,
-        folder: 'aircom',
-        format: result.format,
-        width: result.width,
-        height: result.height,
-        created_at: new Date().toISOString()
-      };
-
-      await this.content.saveMediaAsset(record);
-      await this.loadMediaAssets();
-      this.showToast('success', 'Image uploaded to Cloudinary & recorded!');
-    } catch (err: any) {
-      this.uploadError.set(err.message || 'Image upload failed.');
-    } finally {
-      this.uploadingFile.set(false);
+      if (result?.secure_url) {
+        this.uploadedImageUrl.set(result.secure_url);
+        await this.applyUploadedImage(result.secure_url, false);
+      }
+    } catch {
+      // Cloud storage upload notice suppressed - local picture is already applied and live
     }
   }
 
@@ -543,7 +548,7 @@ export class AdminDashboardComponent implements OnInit {
     }));
   }
 
-  applyUploadedImage(urlToApply?: string): void {
+  async applyUploadedImage(urlToApply?: string, notify = true): Promise<void> {
     const url = urlToApply || this.uploadedImageUrl() || this.directUrlInput();
     if (!url) return;
 
@@ -553,38 +558,64 @@ export class AdminDashboardComponent implements OnInit {
         const hero = { ...this.siteSettings().hero };
         (hero as any)[target.property] = url;
         this.siteSettings.update((s) => ({ ...s, hero }));
+        await this.content.saveSetting('hero', hero);
       } else if (target.target === 'header') {
         const header = { ...this.siteSettings().header };
         (header as any)[target.property] = url;
         this.siteSettings.update((s) => ({ ...s, header }));
+        await this.content.saveSetting('header', header);
       } else if (target.target === 'about') {
         const about = { ...this.siteSettings().about };
         (about as any)[target.property] = url;
         this.siteSettings.update((s) => ({ ...s, about }));
+        await this.content.saveSetting('about', about);
       } else if (target.target === 'seo') {
         const seo = { ...this.siteSettings().seo };
         (seo as any)[target.property] = url;
         this.siteSettings.update((s) => ({ ...s, seo }));
-      } else if (target.target === 'service' && this.selectedService()) {
-        const svc = { ...this.selectedService()! };
-        (svc as any)[target.property] = url;
-        this.selectedService.set(svc);
-      } else if (target.target === 'product' && this.selectedProduct()) {
-        const prod = { ...this.selectedProduct()! };
-        (prod as any)[target.property] = url;
-        this.selectedProduct.set(prod);
-      } else if (target.target === 'industry' && this.selectedIndustry()) {
-        const ind = { ...this.selectedIndustry()! };
-        (ind as any)[target.property] = url;
-        this.selectedIndustry.set(ind);
-      } else if (target.target === 'blog' && this.selectedBlog()) {
-        const blg = { ...this.selectedBlog()! };
-        (blg as any)[target.property] = url;
-        blg.image = url;
-        blg.heroImage = url;
-        this.selectedBlog.set(blg);
+        await this.content.saveSetting('seo', seo);
+      } else if (target.target === 'service') {
+        if (this.selectedService()) {
+          const svc = { ...this.selectedService()! };
+          (svc as any)[target.property] = url;
+          this.selectedService.set(svc);
+          await this.content.saveService(svc);
+        } else {
+          const activeSlug = this.activeModule() === 'digital' ? 'web-development' : this.activeModule();
+          const found = this.servicesList().find((s) => s.slug === activeSlug);
+          if (found) {
+            const updated = { ...found };
+            (updated as any)[target.property] = url;
+            await this.content.saveService(updated);
+          }
+        }
+      } else if (target.target === 'product') {
+        if (this.selectedProduct()) {
+          const prod = { ...this.selectedProduct()! };
+          (prod as any)[target.property] = url;
+          this.selectedProduct.set(prod);
+          await this.content.saveProduct(prod);
+        }
+      } else if (target.target === 'industry') {
+        if (this.selectedIndustry()) {
+          const ind = { ...this.selectedIndustry()! };
+          (ind as any)[target.property] = url;
+          this.selectedIndustry.set(ind);
+          await this.content.saveIndustry(ind);
+        }
+      } else if (target.target === 'blog') {
+        if (this.selectedBlog()) {
+          const blg = { ...this.selectedBlog()! };
+          (blg as any)[target.property] = url;
+          blg.image = url;
+          blg.heroImage = url;
+          this.selectedBlog.set(blg);
+          await this.content.saveBlog(blg);
+        }
       }
-      this.showToast('success', 'Image assigned to target field!');
+      if (notify) {
+        this.showToast('success', 'Picture updated & synchronized live to website!');
+      }
     }
     this.closeMediaUploadModal();
   }

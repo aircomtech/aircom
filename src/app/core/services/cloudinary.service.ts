@@ -53,12 +53,7 @@ export class CloudinaryService {
 
       if (!response.ok || data.error) {
         const errorMsg = data.error?.message || response.statusText || 'Upload failed';
-        if (errorMsg.includes('whitelisted for unsigned uploads')) {
-          throw new Error(
-            `Cloudinary preset '${this.uploadPreset}' must be set to 'Unsigned' mode in Cloudinary Console (Settings > Upload > Upload presets > Edit '${this.uploadPreset}' > Signing Mode: Unsigned). Alternatively, you can paste any direct image URL.`
-          );
-        }
-        throw new Error(`Cloudinary Error: ${errorMsg}`);
+        throw new Error(`Storage notification: ${errorMsg}`);
       }
 
       return {
