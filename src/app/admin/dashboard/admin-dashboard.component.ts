@@ -387,6 +387,110 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  getServiceBySlug(slug: string): ServiceItem | undefined {
+    return this.servicesList().find((s) => s.slug === slug);
+  }
+
+  addNewProduct(): void {
+    this.selectedProduct.set({
+      slug: 'product-' + Date.now(),
+      title: 'New Product Solution',
+      shortDesc: 'Product description',
+      categoryLabel: 'Enterprise Software',
+      tagline: 'Streamlined operational efficiency',
+      overview: 'Comprehensive product overview...',
+      capabilities: [],
+      benefits: [],
+      deploymentOptions: ['Cloud Hosted', 'On-Premise'],
+      image: 'assets/images/product-erp.png',
+      icon: 'box',
+      relatedSlugs: [],
+      seoTitle: 'New Product Solution | Aircom Technologies',
+      seoDescription: 'Enterprise product solution by Aircom Technologies'
+    });
+  }
+
+  addNewIndustry(): void {
+    this.selectedIndustry.set({
+      slug: 'industry-' + Date.now(),
+      name: 'New Industry Sector',
+      shortDesc: 'Sector description and overview',
+      overview: 'Full industry workflow transformation...',
+      image: 'assets/images/industry-retail.png',
+      icon: 'briefcase',
+      challenges: ['Legacy Silos', 'Manual Reconciliation'],
+      solutions: ['Unified ERPNext Architecture', 'Real-Time Visibility'],
+      recommendedServices: ['erpnext', 'tally'],
+      seoTitle: 'New Industry Sector | Aircom Technologies',
+      seoDescription: 'Industry sector IT solutions by Aircom Technologies'
+    });
+  }
+
+  addNavItem(): void {
+    const current = this.siteSettings().header || {};
+    const navItems = [...(current.navItems || [])];
+    navItems.push({ label: 'New Link', route: '/services' });
+    this.siteSettings.update((s) => ({
+      ...s,
+      header: { ...current, navItems }
+    }));
+  }
+
+  deleteNavItem(index: number): void {
+    const current = this.siteSettings().header || {};
+    const navItems = [...(current.navItems || [])];
+    navItems.splice(index, 1);
+    this.siteSettings.update((s) => ({
+      ...s,
+      header: { ...current, navItems }
+    }));
+  }
+
+  addCoreValue(): void {
+    const about = this.siteSettings().about || {};
+    const coreValues = [...(about.coreValues || [])];
+    coreValues.push('New Core Value');
+    this.siteSettings.update((s) => ({
+      ...s,
+      about: { ...about, coreValues }
+    }));
+  }
+
+  deleteCoreValue(index: number): void {
+    const about = this.siteSettings().about || {};
+    const coreValues = [...(about.coreValues || [])];
+    coreValues.splice(index, 1);
+    this.siteSettings.update((s) => ({
+      ...s,
+      about: { ...about, coreValues }
+    }));
+  }
+
+  addStatCounter(): void {
+    const hero = this.siteSettings().hero || {};
+    const stats = [...(hero.stats || [])];
+    stats.push({
+      value: '100%',
+      label: 'New Statistic',
+      sublabel: 'Verified Performance',
+      icon: 'award'
+    });
+    this.siteSettings.update((s) => ({
+      ...s,
+      hero: { ...hero, stats }
+    }));
+  }
+
+  deleteStatCounter(index: number): void {
+    const hero = this.siteSettings().hero || {};
+    const stats = [...(hero.stats || [])];
+    stats.splice(index, 1);
+    this.siteSettings.update((s) => ({
+      ...s,
+      hero: { ...hero, stats }
+    }));
+  }
+
   applyUploadedImage(urlToApply?: string): void {
     const url = urlToApply || this.uploadedImageUrl() || this.directUrlInput();
     if (!url) return;
@@ -397,10 +501,18 @@ export class AdminDashboardComponent implements OnInit {
         const hero = { ...this.siteSettings().hero };
         (hero as any)[target.property] = url;
         this.siteSettings.update((s) => ({ ...s, hero }));
+      } else if (target.target === 'header') {
+        const header = { ...this.siteSettings().header };
+        (header as any)[target.property] = url;
+        this.siteSettings.update((s) => ({ ...s, header }));
       } else if (target.target === 'about') {
         const about = { ...this.siteSettings().about };
         (about as any)[target.property] = url;
         this.siteSettings.update((s) => ({ ...s, about }));
+      } else if (target.target === 'seo') {
+        const seo = { ...this.siteSettings().seo };
+        (seo as any)[target.property] = url;
+        this.siteSettings.update((s) => ({ ...s, seo }));
       } else if (target.target === 'service' && this.selectedService()) {
         const svc = { ...this.selectedService()! };
         (svc as any)[target.property] = url;

@@ -161,12 +161,6 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect width="16" height="20" x="4" y="2" rx="2" ry="2"/>
           <path d="M9 22v-4h6v4"/>
-          <path d="M8 6h.01"/>
-          <path d="M16 6h.01"/>
-          <path d="M8 10h.01"/>
-          <path d="M16 10h.01"/>
-          <path d="M8 14h.01"/>
-          <path d="M16 14h.01"/>
         </svg>
         <span>Industries Management</span>
         <span class="nav-badge">{{ industriesList().length }}</span>
@@ -412,6 +406,116 @@
       }
 
       <!-- ==================================================== -->
+      <!-- MODULE: HEADER & NAVIGATION -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'header') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Header &amp; Navigation Management</h2>
+              <p class="subtitle">Edit website logos, tagline, header CTA button, and top navigation menu links.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-save-publish" (click)="saveSettingsSection('header')">
+                Save &amp; Publish Header
+              </button>
+            </div>
+          </div>
+
+          @if (siteSettings().header; as h) {
+            <div class="edit-grid">
+              <div class="panel-card form-column">
+                <h3>Header Settings</h3>
+                <div class="form-group">
+                  <label>Company Tagline (Subhead)</label>
+                  <input type="text" [(ngModel)]="h.tagline" placeholder="Serving beyond boundaries..." />
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group flex-1">
+                    <label>Header CTA Button Text</label>
+                    <input type="text" [(ngModel)]="h.ctaText" placeholder="Get a Quote" />
+                  </div>
+                  <div class="form-group flex-1">
+                    <label>Header CTA Button Link</label>
+                    <input type="text" [(ngModel)]="h.ctaHref" placeholder="/contact" />
+                  </div>
+                </div>
+
+                <div class="nav-items-management" style="margin-top: 20px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <h4 style="margin:0;">Navigation Menu Items ({{ h.navItems?.length || 0 }})</h4>
+                    <button class="btn-action-outline btn-sm" (click)="addNavItem()">+ Add Menu Item</button>
+                  </div>
+
+                  <div class="table-responsive">
+                    <table class="data-table">
+                      <thead>
+                        <tr>
+                          <th>Menu Label</th>
+                          <th>Route / Destination</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (nav of h.navItems; track nav.label; let idx = $index) {
+                          <tr>
+                            <td>
+                              <input type="text" [(ngModel)]="nav.label" style="padding:6px;font-weight:600;" />
+                            </td>
+                            <td>
+                              <input type="text" [(ngModel)]="nav.route" style="padding:6px;" />
+                            </td>
+                            <td>
+                              <button class="btn-icon btn-danger" (click)="deleteNavItem(idx)" title="Remove Menu Item">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                              </button>
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-card media-column">
+                <h3>Brand Assets</h3>
+                <div class="media-upload-block">
+                  <label>Light Logo (For Dark Header Background)</label>
+                  <div class="image-preview-box">
+                    <img [src]="h.logoUrl || 'assets/logo/aircom-logo-light.png'" alt="Light Logo" />
+                  </div>
+                  <div class="media-controls">
+                    <input type="text" [(ngModel)]="h.logoUrl" placeholder="Image URL" />
+                    <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'header', property: 'logoUrl' })">
+                      Cloudinary
+                    </button>
+                  </div>
+                </div>
+
+                <div class="media-upload-block">
+                  <label>Dark Logo (For White Scrolled Background)</label>
+                  <div class="image-preview-box" style="background:#FFFFFF;border:1px solid #CBD5E1;">
+                    <img [src]="h.logoDarkUrl || 'assets/logo/aircom-logo-dark.png'" alt="Dark Logo" />
+                  </div>
+                  <div class="media-controls">
+                    <input type="text" [(ngModel)]="h.logoDarkUrl" placeholder="Image URL" />
+                    <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'header', property: 'logoDarkUrl' })">
+                      Cloudinary
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
       <!-- MODULE: HERO SECTION -->
       <!-- ==================================================== -->
       @if (activeModule() === 'hero') {
@@ -436,7 +540,7 @@
           @if (siteSettings().hero; as hero) {
             <div class="edit-grid">
               <div class="panel-card form-column">
-                <h3>Content & Messaging</h3>
+                <h3>Content &amp; Messaging</h3>
                 <div class="form-group">
                   <label>Eyebrow Badge Text</label>
                   <input type="text" [(ngModel)]="hero.eyebrow" placeholder="INNOVATIVE • SCALABLE • RELIABLE" />
@@ -516,7 +620,274 @@
       }
 
       <!-- ==================================================== -->
-      <!-- MODULE: SERVICES CRUD -->
+      <!-- MODULE: ABOUT COMPANY -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'about') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>About Company Management</h2>
+              <p class="subtitle">Edit company background, Mission, Vision, 8 Core Values, and headquarters imagery.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-save-publish" (click)="saveSettingsSection('about')">
+                Save &amp; Publish About
+              </button>
+            </div>
+          </div>
+
+          @if (siteSettings().about; as ab) {
+            <div class="edit-grid">
+              <div class="panel-card form-column">
+                <h3>Company Overview</h3>
+                <div class="form-group">
+                  <label>Section Eyebrow</label>
+                  <input type="text" [(ngModel)]="ab.eyebrow" />
+                </div>
+                <div class="form-group">
+                  <label>Main Heading</label>
+                  <input type="text" [(ngModel)]="ab.heading" />
+                </div>
+                <div class="form-group">
+                  <label>Description Paragraph</label>
+                  <textarea rows="4" [(ngModel)]="ab.description"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Our Vision</label>
+                  <textarea rows="3" [(ngModel)]="ab.vision"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Our Mission</label>
+                  <textarea rows="3" [(ngModel)]="ab.mission"></textarea>
+                </div>
+
+                <div style="margin-top:20px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <h4 style="margin:0;">Core Values ({{ ab.coreValues?.length || 0 }})</h4>
+                    <button class="btn-action-outline btn-sm" (click)="addCoreValue()">+ Add Value</button>
+                  </div>
+                  <div class="chips-edit-list" style="display:flex;flex-wrap:wrap;gap:8px;">
+                    @for (val of ab.coreValues; track $index; let idx = $index) {
+                      <div style="display:inline-flex;align-items:center;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;padding:4px 8px;gap:6px;">
+                        <input type="text" [(ngModel)]="ab.coreValues[idx]" style="border:none;background:transparent;font-size:0.85rem;font-weight:600;color:#102A63;outline:none;" />
+                        <button (click)="deleteCoreValue(idx)" style="background:none;border:none;cursor:pointer;color:#DC2626;font-size:0.85rem;">✕</button>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-card media-column">
+                <h3>Headquarters Image</h3>
+                <div class="media-upload-block">
+                  <div class="image-preview-box">
+                    <img [src]="ab.image || 'assets/images/about-hq.png'" alt="About HQ" />
+                  </div>
+                  <div class="media-controls">
+                    <input type="text" [(ngModel)]="ab.image" />
+                    <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'about', property: 'image' })">
+                      Cloudinary
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: WHY CHOOSE US -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'why_us') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Why Choose Aircom Section</h2>
+              <p class="subtitle">Manage the 4 core value proposition pillars and operational strengths.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-save-publish" (click)="saveSettingsSection('whyChooseUs')">
+                Save &amp; Publish Pillars
+              </button>
+            </div>
+          </div>
+
+          @if (siteSettings().whyChooseUs; as why) {
+            <div class="panel-card" style="margin-bottom:20px;">
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label>Section Eyebrow</label>
+                  <input type="text" [(ngModel)]="why.eyebrow" />
+                </div>
+                <div class="form-group flex-1">
+                  <label>Section Heading</label>
+                  <input type="text" [(ngModel)]="why.heading" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Section Description</label>
+                <textarea rows="2" [(ngModel)]="why.description"></textarea>
+              </div>
+            </div>
+
+            <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+              @for (item of why.items; track item.title; let idx = $index) {
+                <div class="panel-card">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <h3 style="margin:0;">Pillar #{{ idx + 1 }}: {{ item.title }}</h3>
+                  </div>
+                  <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" [(ngModel)]="item.title" />
+                  </div>
+                  <div class="form-group">
+                    <label>Subtitle / Headline</label>
+                    <input type="text" [(ngModel)]="item.subtitle" />
+                  </div>
+                  <div class="form-group">
+                    <label>Description</label>
+                    <textarea rows="3" [(ngModel)]="item.description"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Image Asset URL</label>
+                    <input type="text" [(ngModel)]="item.image" />
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: STATISTICS & COUNTERS -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'statistics') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Statistics &amp; Counters Management</h2>
+              <p class="subtitle">Modify the 4 hero counters (Years of Excellence, Customer Solutions, Quality, Support).</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-action-outline" (click)="addStatCounter()">+ Add Counter</button>
+              <button class="btn-save-publish" (click)="saveSettingsSection('hero')">
+                Save &amp; Publish Stats
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+            @for (st of siteSettings().hero?.stats; track $index; let idx = $index) {
+              <div class="panel-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                  <h3 style="margin:0;">Counter #{{ idx + 1 }}</h3>
+                  <button class="btn-icon btn-danger" (click)="deleteStatCounter(idx)" title="Remove Counter">✕</button>
+                </div>
+                <div class="form-row">
+                  <div class="form-group flex-1">
+                    <label>Displayed Value</label>
+                    <input type="text" [(ngModel)]="st.value" placeholder="17+" />
+                  </div>
+                  <div class="form-group flex-1">
+                    <label>Icon Name</label>
+                    <input type="text" [(ngModel)]="st.icon" placeholder="trophy, users, headphones..." />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Main Label</label>
+                  <input type="text" [(ngModel)]="st.label" placeholder="Years of Excellence" />
+                </div>
+                <div class="form-group">
+                  <label>Sublabel</label>
+                  <input type="text" [(ngModel)]="st.sublabel" placeholder="Established in 2009" />
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: FOOTER MANAGEMENT -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'footer') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Footer Management</h2>
+              <p class="subtitle">Update footer tagline, copyright text, and legal links.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-save-publish" (click)="saveSettingsSection('footer')">
+                Save &amp; Publish Footer
+              </button>
+            </div>
+          </div>
+
+          @if (siteSettings().footer; as f) {
+            <div class="panel-card form-column">
+              <div class="form-group">
+                <label>Footer Tagline</label>
+                <input type="text" [(ngModel)]="f.tagline" placeholder="Serving beyond boundaries..." />
+              </div>
+              <div class="form-group">
+                <label>Copyright Statement</label>
+                <input type="text" [(ngModel)]="f.copyrightText" />
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: SEO MANAGEMENT -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'seo') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>SEO Management</h2>
+              <p class="subtitle">Configure global page titles, Open Graph sharing cards, and search keywords.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-save-publish" (click)="saveSettingsSection('seo')">
+                Save &amp; Publish SEO
+              </button>
+            </div>
+          </div>
+
+          @if (siteSettings().seo; as s) {
+            <div class="panel-card form-column">
+              <div class="form-group">
+                <label>Default Page Title (Browser Tab)</label>
+                <input type="text" [(ngModel)]="s.defaultTitle" />
+              </div>
+              <div class="form-group">
+                <label>Meta Description</label>
+                <textarea rows="3" [(ngModel)]="s.defaultDescription"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Keywords (Comma-separated)</label>
+                <input type="text" [(ngModel)]="s.defaultKeywords" />
+              </div>
+              <div class="form-group">
+                <label>Social Sharing Image (og:image)</label>
+                <div class="media-controls">
+                  <input type="text" [(ngModel)]="s.ogImage" placeholder="assets/images/hero-desktop.png" />
+                  <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'seo', property: 'ogImage' })">
+                    Cloudinary
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: SERVICES CRUD (ALL 10 SERVICES) -->
       <!-- ==================================================== -->
       @if (activeModule() === 'services') {
         <div class="module-view">
@@ -537,7 +908,7 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Title & Category</th>
+                    <th>Title &amp; Category</th>
                     <th>Slug</th>
                     <th>Key Highlights</th>
                     <th>Actions</th>
@@ -630,7 +1001,7 @@
                 </div>
                 <div class="modal-footer">
                   <button class="btn-cancel" (click)="selectedService.set(null)">Cancel</button>
-                  <button class="btn-save-publish" (click)="saveService(editSvc)">Save & Publish</button>
+                  <button class="btn-save-publish" (click)="saveService(editSvc)">Save &amp; Publish</button>
                 </div>
               </div>
             </div>
@@ -646,18 +1017,56 @@
           <div class="view-header">
             <div>
               <h2>{{ formatSectionName(activeModule()) }} Management</h2>
-              <p class="subtitle">Dedicated configuration panel for {{ formatSectionName(activeModule()) }}.</p>
+              <p class="subtitle">Direct configuration editor for {{ formatSectionName(activeModule()) }}.</p>
             </div>
           </div>
 
-          <div class="panel-card">
-            <p>You can edit and manage this service directly from the <strong>All Services</strong> catalog or modify its custom content parameters below:</p>
-            <div class="quick-link-box">
-              <button class="btn-action-primary" (click)="setModule('services')">
-                Open in Services CRUD Catalog →
-              </button>
+          <!-- Deep Direct Service Editor -->
+          @if (getServiceBySlug(activeModule() === 'digital' ? 'web-development' : activeModule()); as svc) {
+            <div class="panel-card form-column">
+              <h3>Live Service Details</h3>
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label>Title</label>
+                  <input type="text" [(ngModel)]="svc.title" />
+                </div>
+                <div class="form-group flex-1">
+                  <label>Category</label>
+                  <input type="text" [(ngModel)]="svc.category" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Tagline</label>
+                <input type="text" [(ngModel)]="svc.tagline" />
+              </div>
+              <div class="form-group">
+                <label>Short Summary</label>
+                <textarea rows="2" [(ngModel)]="svc.shortDesc"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Full Overview</label>
+                <textarea rows="4" [(ngModel)]="svc.overview"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Hero Image</label>
+                <div class="media-controls">
+                  <input type="text" [(ngModel)]="svc.heroImage" />
+                  <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'service', property: 'heroImage' })">
+                    Cloudinary
+                  </button>
+                </div>
+              </div>
+
+              <div style="margin-top:14px;display:flex;justify-content:flex-end;">
+                <button class="btn-save-publish" (click)="saveService(svc)">Save &amp; Update {{ svc.shortTitle || svc.title }}</button>
+              </div>
             </div>
-          </div>
+          } @else {
+            <div class="panel-card">
+              <p>Service record ready. Manage all services dynamically from the catalog:</p>
+              <button class="btn-action-primary" (click)="setModule('services')">Open Services CRUD Catalog →</button>
+            </div>
+          }
         </div>
       }
 
@@ -669,7 +1078,10 @@
           <div class="view-header">
             <div>
               <h2>Products Management</h2>
-              <p class="subtitle">Cloud ERP, Business Analytics, Inventory & Warehouse, POS, and HRMS Portal products.</p>
+              <p class="subtitle">Cloud ERP, Business Analytics, Inventory &amp; Warehouse, POS, and HRMS Portal products.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-action-primary" (click)="addNewProduct()">+ Add Product</button>
             </div>
           </div>
 
@@ -691,7 +1103,10 @@
                       <td>{{ prod.categoryLabel }}</td>
                       <td><code>/products/{{ prod.slug }}</code></td>
                       <td>
-                        <button class="btn-action-outline btn-sm" (click)="selectedProduct.set(prod)">Edit Details</button>
+                        <div class="btn-group">
+                          <button class="btn-action-outline btn-sm" (click)="selectedProduct.set(prod)">Edit Details</button>
+                          <button class="btn-icon btn-danger" (click)="deleteProduct(prod)" title="Delete">✕</button>
+                        </div>
                       </td>
                     </tr>
                   }
@@ -742,13 +1157,97 @@
       }
 
       <!-- ==================================================== -->
+      <!-- MODULE: INDUSTRIES -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'industries') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Industries Management (All 8 Sectors)</h2>
+              <p class="subtitle">Retail, Hospitality, Jewellery, Construction, Healthcare, Manufacturing, Finance, and Education.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-action-primary" (click)="addNewIndustry()">+ Add Industry</button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Industry Sector</th>
+                    <th>Slug</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (ind of industriesList(); track ind.slug) {
+                    <tr>
+                      <td><strong>{{ ind.name }}</strong></td>
+                      <td><code>/industries/{{ ind.slug }}</code></td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn-action-outline btn-sm" (click)="selectedIndustry.set(ind)">Edit Details</button>
+                          <button class="btn-icon btn-danger" (click)="deleteIndustry(ind)">✕</button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Edit Industry Modal -->
+          @if (selectedIndustry(); as ind) {
+            <div class="modal-backdrop" (click)="selectedIndustry.set(null)">
+              <div class="modal-card modal-lg" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Edit Industry: {{ ind.name }}</h3>
+                  <button class="btn-close" (click)="selectedIndustry.set(null)">✕</button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label>Sector Name</label>
+                    <input type="text" [(ngModel)]="ind.name" />
+                  </div>
+                  <div class="form-group">
+                    <label>Short Headline / Description</label>
+                    <textarea rows="2" [(ngModel)]="ind.shortDesc"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Full Overview</label>
+                    <textarea rows="4" [(ngModel)]="ind.overview"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Hero Image</label>
+                    <div class="media-controls">
+                      <input type="text" [(ngModel)]="ind.image" />
+                      <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'industry', property: 'image' })">
+                        Cloudinary
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn-cancel" (click)="selectedIndustry.set(null)">Cancel</button>
+                  <button class="btn-save-publish" (click)="saveIndustry(ind)">Save Industry</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
       <!-- MODULE: CONTACT INQUIRIES -->
       <!-- ==================================================== -->
       @if (activeModule() === 'inquiries') {
         <div class="module-view">
           <div class="view-header">
             <div>
-              <h2>Website Inquiries & Leads</h2>
+              <h2>Website Inquiries &amp; Leads</h2>
               <p class="subtitle">Stored securely in Supabase. Real-time leads received from the website contact forms.</p>
             </div>
             <div class="header-actions">
@@ -930,7 +1429,7 @@
             </div>
             <div class="header-actions">
               <button class="btn-save-publish" (click)="saveSettingsSection('contactInfo')">
-                Save & Synchronize
+                Save &amp; Synchronize
               </button>
             </div>
           </div>
@@ -980,7 +1479,7 @@
         <div class="module-view">
           <div class="view-header">
             <div>
-              <h2>Database & Cloudinary Settings</h2>
+              <h2>Database &amp; Cloudinary Settings</h2>
               <p class="subtitle">Live backend integration configuration status.</p>
             </div>
           </div>
@@ -997,7 +1496,7 @@
             <p><strong>Cloud Name:</strong> <code>flppuodw</code></p>
             <p><strong>Upload Preset:</strong> <code>ml_default</code></p>
             <div class="info-note">
-              <strong>Tip:</strong> In your Cloudinary console, verify that <code>ml_default</code> upload preset has <strong>Signing Mode</strong> set to <em>Unsigned</em> (Settings > Upload > Upload presets > Edit 'ml_default' > Unsigned).
+              <strong>Tip:</strong> In your Cloudinary console, verify that <code>ml_default</code> upload preset has <strong>Signing Mode</strong> set to <em>Unsigned</em> (Settings &gt; Upload &gt; Upload presets &gt; Edit 'ml_default' &gt; Unsigned).
             </div>
           </div>
         </div>
@@ -1010,7 +1509,7 @@
         <div class="module-view">
           <div class="view-header">
             <div>
-              <h2>Audit & Activity Logs</h2>
+              <h2>Audit &amp; Activity Logs</h2>
               <p class="subtitle">Chronological record of CMS modifications, publishes, and uploads.</p>
             </div>
           </div>
