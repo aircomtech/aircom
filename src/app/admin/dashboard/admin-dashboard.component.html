@@ -82,14 +82,6 @@
         </svg>
         <span>Why Choose Us</span>
       </button>
-      <button class="nav-item" [class.active]="activeModule() === 'statistics'" (click)="setModule('statistics')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="20" x2="18" y2="10"/>
-          <line x1="12" y1="20" x2="12" y2="4"/>
-          <line x1="6" y1="20" x2="6" y2="14"/>
-        </svg>
-        <span>Statistics & Counters</span>
-      </button>
       <button class="nav-item" [class.active]="activeModule() === 'footer'" (click)="setModule('footer')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect width="20" height="14" x="2" y="5" rx="2"/>
@@ -165,6 +157,14 @@
         <span>Industries Management</span>
         <span class="nav-badge">{{ industriesList().length }}</span>
       </button>
+      <button class="nav-item" [class.active]="activeModule() === 'blogs'" (click)="setModule('blogs')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5 A2.5 2.5 0 0 1 6.5 17 H20"/>
+          <path d="M6.5 2 H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <span>Blog Management</span>
+        <span class="nav-badge">{{ blogsList().length }}</span>
+      </button>
 
       <!-- MEDIA & LEADS -->
       <div class="nav-section-title">OPERATIONS</div>
@@ -174,7 +174,7 @@
           <circle cx="9" cy="9" r="2"/>
           <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
         </svg>
-        <span>Cloudinary Media Library</span>
+        <span>Media Library</span>
       </button>
       <button class="nav-item" [class.active]="activeModule() === 'inquiries'" (click)="setModule('inquiries')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -203,7 +203,7 @@
           <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
           <circle cx="12" cy="12" r="3"/>
         </svg>
-        <span>Database & Cloudinary</span>
+        <span>Backend &amp; Storage</span>
       </button>
 
       <div class="nav-divider"></div>
@@ -422,7 +422,7 @@
             </div>
           </div>
 
-          @if (siteSettings().header; as h) {
+          @if (siteSettings().header || {}; as h) {
             <div class="edit-grid">
               <div class="panel-card form-column">
                 <h3>Header Settings</h3>
@@ -444,7 +444,7 @@
 
                 <div class="nav-items-management" style="margin-top: 20px;">
                   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <h4 style="margin:0;">Navigation Menu Items ({{ h.navItems?.length || 0 }})</h4>
+                    <h4 style="margin:0;">Navigation Menu Items ({{ (h.navItems || []).length }})</h4>
                     <button class="btn-action-outline btn-sm" (click)="addNavItem()">+ Add Menu Item</button>
                   </div>
 
@@ -458,7 +458,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        @for (nav of h.navItems; track nav.label; let idx = $index) {
+                        @for (nav of (h.navItems || []); track $index; let idx = $index) {
                           <tr>
                             <td>
                               <input type="text" [(ngModel)]="nav.label" style="padding:6px;font-weight:600;" />
@@ -492,7 +492,7 @@
                   <div class="media-controls">
                     <input type="text" [(ngModel)]="h.logoUrl" placeholder="Image URL" />
                     <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'header', property: 'logoUrl' })">
-                      Cloudinary
+                      Upload Picture
                     </button>
                   </div>
                 </div>
@@ -505,7 +505,7 @@
                   <div class="media-controls">
                     <input type="text" [(ngModel)]="h.logoDarkUrl" placeholder="Image URL" />
                     <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'header', property: 'logoDarkUrl' })">
-                      Cloudinary
+                      Upload Picture
                     </button>
                   </div>
                 </div>
@@ -596,7 +596,7 @@
                   <div class="media-controls">
                     <input type="text" [(ngModel)]="hero.desktopBgImage" placeholder="Image URL" />
                     <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'hero', property: 'desktopBgImage' })">
-                      Change via Cloudinary
+                      Change Picture
                     </button>
                   </div>
                 </div>
@@ -609,7 +609,7 @@
                   <div class="media-controls">
                     <input type="text" [(ngModel)]="hero.mobileBgImage" placeholder="Image URL" />
                     <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'hero', property: 'mobileBgImage' })">
-                      Change via Cloudinary
+                      Change Picture
                     </button>
                   </div>
                 </div>
@@ -686,7 +686,7 @@
                   <div class="media-controls">
                     <input type="text" [(ngModel)]="ab.image" />
                     <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'about', property: 'image' })">
-                      Cloudinary
+                      Change Picture
                     </button>
                   </div>
                 </div>
@@ -761,51 +761,137 @@
       }
 
       <!-- ==================================================== -->
-      <!-- MODULE: STATISTICS & COUNTERS -->
+      <!-- MODULE: BLOG MANAGEMENT -->
       <!-- ==================================================== -->
-      @if (activeModule() === 'statistics') {
+      @if (activeModule() === 'blogs') {
         <div class="module-view">
           <div class="view-header">
             <div>
-              <h2>Statistics &amp; Counters Management</h2>
-              <p class="subtitle">Modify the 4 hero counters (Years of Excellence, Customer Solutions, Quality, Support).</p>
+              <h2>Blog &amp; Knowledge Base Management</h2>
+              <p class="subtitle">Create, edit, delete, and publish articles with pictures that sync live to the public website.</p>
             </div>
             <div class="header-actions">
-              <button class="btn-action-outline" (click)="addStatCounter()">+ Add Counter</button>
-              <button class="btn-save-publish" (click)="saveSettingsSection('hero')">
-                Save &amp; Publish Stats
-              </button>
+              <button class="btn-action-primary" (click)="addNewBlog()">+ Write New Article</button>
             </div>
           </div>
 
-          <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
-            @for (st of siteSettings().hero?.stats; track $index; let idx = $index) {
-              <div class="panel-card">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                  <h3 style="margin:0;">Counter #{{ idx + 1 }}</h3>
-                  <button class="btn-icon btn-danger" (click)="deleteStatCounter(idx)" title="Remove Counter">✕</button>
+          <div class="panel-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 80px;">Picture</th>
+                    <th>Article Title</th>
+                    <th>Category</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                    <th>Read Time</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (blg of blogsList(); track blg.slug) {
+                    <tr>
+                      <td>
+                        <div class="table-img-cell">
+                          <img [src]="blg.heroImage || 'assets/images/service-erpnext.png'" [alt]="blg.title" class="table-thumb" />
+                        </div>
+                      </td>
+                      <td>
+                        <strong>{{ blg.title }}</strong>
+                        <div class="text-muted small">/blog/{{ blg.slug }}</div>
+                      </td>
+                      <td><span class="badge-item">{{ blg.category }}</span></td>
+                      <td>{{ blg.author }}</td>
+                      <td>{{ blg.date }}</td>
+                      <td>{{ blg.readTime }}</td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn-action-outline btn-sm" (click)="selectedBlog.set(blg)">Edit Article</button>
+                          <button class="btn-icon btn-danger" (click)="deleteBlog(blg)" title="Delete Article">✕</button>
+                        </div>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="7" class="empty-state">No blog articles found. Click "+ Write New Article" to create one.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Edit Blog Article Modal -->
+          @if (selectedBlog(); as blg) {
+            <div class="modal-backdrop" (click)="selectedBlog.set(null)">
+              <div class="modal-card modal-lg" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Edit Article: {{ blg.title }}</h3>
+                  <button class="btn-close" (click)="selectedBlog.set(null)">✕</button>
                 </div>
-                <div class="form-row">
-                  <div class="form-group flex-1">
-                    <label>Displayed Value</label>
-                    <input type="text" [(ngModel)]="st.value" placeholder="17+" />
+                <div class="modal-body">
+                  <div class="form-row">
+                    <div class="form-group flex-2">
+                      <label>Article Title</label>
+                      <input type="text" [(ngModel)]="blg.title" placeholder="Article Headline" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>URL Slug</label>
+                      <input type="text" [(ngModel)]="blg.slug" placeholder="article-slug" />
+                    </div>
                   </div>
-                  <div class="form-group flex-1">
-                    <label>Icon Name</label>
-                    <input type="text" [(ngModel)]="st.icon" placeholder="trophy, users, headphones..." />
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Category</label>
+                      <input type="text" [(ngModel)]="blg.category" placeholder="Enterprise Tech, Cloud, ERP..." />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Author</label>
+                      <input type="text" [(ngModel)]="blg.author" placeholder="Author name" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Publish Date</label>
+                      <input type="text" [(ngModel)]="blg.date" placeholder="YYYY-MM-DD" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Read Time</label>
+                      <input type="text" [(ngModel)]="blg.readTime" placeholder="4 min read" />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Excerpt / Short Summary</label>
+                    <textarea rows="2" [(ngModel)]="blg.excerpt" placeholder="Brief overview shown on cards..."></textarea>
+                  </div>
+
+                  <!-- Article Picture with Visual Preview -->
+                  <div class="form-group">
+                    <label>Article Picture</label>
+                    <div class="image-preview-box" style="margin-bottom: 8px;">
+                      <img [src]="blg.heroImage || 'assets/images/service-erpnext.png'" alt="Article Preview" />
+                    </div>
+                    <div class="media-controls">
+                      <input type="text" [(ngModel)]="blg.heroImage" placeholder="Image URL or upload a picture..." />
+                      <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'blog', property: 'heroImage' })">
+                        Upload Picture
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Article Content (Paragraphs)</label>
+                    <textarea rows="6" [ngModel]="(blg.content || []).join('\n\n')" (ngModelChange)="blg.content = $event.split('\n\n')" placeholder="Enter article body paragraphs separated by empty lines..."></textarea>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label>Main Label</label>
-                  <input type="text" [(ngModel)]="st.label" placeholder="Years of Excellence" />
-                </div>
-                <div class="form-group">
-                  <label>Sublabel</label>
-                  <input type="text" [(ngModel)]="st.sublabel" placeholder="Established in 2009" />
+                <div class="modal-footer">
+                  <button class="btn-cancel" (click)="selectedBlog.set(null)">Cancel</button>
+                  <button class="btn-save-publish" (click)="saveBlog(blg)">Publish &amp; Synchronize Article</button>
                 </div>
               </div>
-            }
-          </div>
+            </div>
+          }
         </div>
       }
 
@@ -877,7 +963,7 @@
                 <div class="media-controls">
                   <input type="text" [(ngModel)]="s.ogImage" placeholder="assets/images/hero-desktop.png" />
                   <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'seo', property: 'ogImage' })">
-                    Cloudinary
+                    Upload Picture
                   </button>
                 </div>
               </div>
@@ -908,6 +994,7 @@
               <table class="data-table">
                 <thead>
                   <tr>
+                    <th style="width: 80px;">Picture</th>
                     <th>Title &amp; Category</th>
                     <th>Slug</th>
                     <th>Key Highlights</th>
@@ -917,6 +1004,11 @@
                 <tbody>
                   @for (svc of servicesList(); track svc.slug) {
                     <tr>
+                      <td>
+                        <div class="table-img-cell">
+                          <img [src]="svc.heroImage || 'assets/images/service-erpnext.png'" [alt]="svc.title" class="table-thumb" />
+                        </div>
+                      </td>
                       <td>
                         <strong>{{ svc.title }}</strong>
                         <div class="text-muted small">{{ svc.category }}</div>
@@ -991,10 +1083,13 @@
 
                   <div class="form-group">
                     <label>Hero Image</label>
+                    <div class="image-preview-box" style="margin-bottom: 8px;">
+                      <img [src]="editSvc.heroImage || 'assets/images/service-erpnext.png'" alt="Service Picture" />
+                    </div>
                     <div class="media-controls">
                       <input type="text" [(ngModel)]="editSvc.heroImage" placeholder="Image URL" />
                       <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'service', property: 'heroImage' })">
-                        Cloudinary Upload
+                        Upload Picture
                       </button>
                     </div>
                   </div>
@@ -1049,10 +1144,13 @@
               </div>
               <div class="form-group">
                 <label>Hero Image</label>
+                <div class="image-preview-box" style="margin-bottom: 8px;">
+                  <img [src]="svc.heroImage || 'assets/images/service-erpnext.png'" alt="Service Picture" />
+                </div>
                 <div class="media-controls">
                   <input type="text" [(ngModel)]="svc.heroImage" />
                   <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'service', property: 'heroImage' })">
-                    Cloudinary
+                    Upload Picture
                   </button>
                 </div>
               </div>
@@ -1090,6 +1188,7 @@
               <table class="data-table">
                 <thead>
                   <tr>
+                    <th style="width: 80px;">Picture</th>
                     <th>Product Name</th>
                     <th>Category</th>
                     <th>Slug</th>
@@ -1099,6 +1198,11 @@
                 <tbody>
                   @for (prod of productsList(); track prod.slug) {
                     <tr>
+                      <td>
+                        <div class="table-img-cell">
+                          <img [src]="prod.image || 'assets/images/product-cloud-erp.png'" [alt]="prod.title" class="table-thumb" />
+                        </div>
+                      </td>
                       <td><strong>{{ prod.title }}</strong></td>
                       <td>{{ prod.categoryLabel }}</td>
                       <td><code>/products/{{ prod.slug }}</code></td>
@@ -1138,10 +1242,13 @@
                   </div>
                   <div class="form-group">
                     <label>Product Image</label>
+                    <div class="image-preview-box" style="margin-bottom: 8px;">
+                      <img [src]="p.image || 'assets/images/product-cloud-erp.png'" alt="Product Picture" />
+                    </div>
                     <div class="media-controls">
                       <input type="text" [(ngModel)]="p.image" />
                       <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'product', property: 'image' })">
-                        Upload via Cloudinary
+                        Upload Picture
                       </button>
                     </div>
                   </div>
@@ -1176,6 +1283,7 @@
               <table class="data-table">
                 <thead>
                   <tr>
+                    <th style="width: 80px;">Picture</th>
                     <th>Industry Sector</th>
                     <th>Slug</th>
                     <th>Actions</th>
@@ -1184,6 +1292,11 @@
                 <tbody>
                   @for (ind of industriesList(); track ind.slug) {
                     <tr>
+                      <td>
+                        <div class="table-img-cell">
+                          <img [src]="ind.image || 'assets/images/industry-retail.png'" [alt]="ind.name" class="table-thumb" />
+                        </div>
+                      </td>
                       <td><strong>{{ ind.name }}</strong></td>
                       <td><code>/industries/{{ ind.slug }}</code></td>
                       <td>
@@ -1222,10 +1335,13 @@
                   </div>
                   <div class="form-group">
                     <label>Hero Image</label>
+                    <div class="image-preview-box" style="margin-bottom: 8px;">
+                      <img [src]="ind.image || 'assets/images/industry-retail.png'" alt="Industry Picture" />
+                    </div>
                     <div class="media-controls">
                       <input type="text" [(ngModel)]="ind.image" />
                       <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'industry', property: 'image' })">
-                        Cloudinary
+                        Upload Picture
                       </button>
                     </div>
                   </div>
@@ -1378,18 +1494,18 @@
       }
 
       <!-- ==================================================== -->
-      <!-- MODULE: MEDIA LIBRARY (CLOUDINARY) -->
+      <!-- MODULE: MEDIA LIBRARY -->
       <!-- ==================================================== -->
       @if (activeModule() === 'media') {
         <div class="module-view">
           <div class="view-header">
             <div>
-              <h2>Cloudinary Media Library</h2>
-              <p class="subtitle">Cloud Name: <code>flppuodw</code> | Upload Preset: <code>ml_default</code></p>
+              <h2>Media Library</h2>
+              <p class="subtitle">Cloud Media Storage: <code>flppuodw</code> | Upload Preset: <code>ml_default</code></p>
             </div>
             <div class="header-actions">
               <button class="btn-action-primary" (click)="openMediaUploadModal()">
-                + Upload New Image
+                + Upload New Picture
               </button>
             </div>
           </div>
@@ -1403,14 +1519,14 @@
                 <div class="media-info">
                   <span class="media-name" [title]="asset.name">{{ asset.name }}</span>
                   <div class="media-actions">
-                    <button class="btn-text small" (click)="applyUploadedImage(asset.secure_url)">Use</button>
+                    <button class="btn-text small" (click)="applyUploadedImage(asset.secure_url)">Use Picture</button>
                     <button class="btn-text text-danger small" (click)="deleteMedia(asset)">Delete</button>
                   </div>
                 </div>
               </div>
             } @empty {
               <div class="empty-state panel-card" style="grid-column: 1 / -1;">
-                <p>No media files uploaded yet. Click <strong>Upload New Image</strong> to upload to Cloudinary.</p>
+                <p>No media files uploaded yet. Click <strong>Upload New Picture</strong> to upload an image.</p>
               </div>
             }
           </div>
@@ -1479,7 +1595,7 @@
         <div class="module-view">
           <div class="view-header">
             <div>
-              <h2>Database &amp; Cloudinary Settings</h2>
+              <h2>Backend &amp; Cloud Storage Settings</h2>
               <p class="subtitle">Live backend integration configuration status.</p>
             </div>
           </div>
@@ -1492,8 +1608,8 @@
           </div>
 
           <div class="panel-card" style="margin-top: 20px;">
-            <h3>Cloudinary Cloud Settings</h3>
-            <p><strong>Cloud Name:</strong> <code>flppuodw</code></p>
+            <h3>Cloud Media Storage Settings</h3>
+            <p><strong>Storage Cloud:</strong> <code>flppuodw</code></p>
             <p><strong>Upload Preset:</strong> <code>ml_default</code></p>
             <div class="info-note">
               <strong>Tip:</strong> In your Cloudinary console, verify that <code>ml_default</code> upload preset has <strong>Signing Mode</strong> set to <em>Unsigned</em> (Settings &gt; Upload &gt; Upload presets &gt; Edit 'ml_default' &gt; Unsigned).
@@ -1549,13 +1665,13 @@
   </main>
 
   <!-- ==================================================== -->
-  <!-- MODAL: CLOUDINARY MEDIA UPLOADER -->
+  <!-- MODAL: PICTURE & MEDIA UPLOADER -->
   <!-- ==================================================== -->
   @if (uploadModalOpen()) {
     <div class="modal-backdrop" (click)="closeMediaUploadModal()">
       <div class="modal-card" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h3>Cloudinary Media Uploader</h3>
+          <h3>Picture &amp; Media Uploader</h3>
           <button class="btn-close" (click)="closeMediaUploadModal()">✕</button>
         </div>
 
@@ -1567,14 +1683,14 @@
               <line x1="12" y1="3" x2="12" y2="15"/>
             </svg>
             <h4>Select an image to upload</h4>
-            <p class="text-muted small">Target Cloud: <code>flppuodw</code> | Preset: <code>ml_default</code></p>
+            <p class="text-muted small">Target Storage: <code>flppuodw</code> | Preset: <code>ml_default</code></p>
             <input type="file" accept="image/*" (change)="handleFileUpload($event)" [disabled]="uploadingFile()" />
           </div>
 
           @if (uploadingFile()) {
             <div class="upload-progress-state">
               <div class="spinner"></div>
-              <span>Uploading to Cloudinary...</span>
+              <span>Uploading Picture...</span>
             </div>
           }
 

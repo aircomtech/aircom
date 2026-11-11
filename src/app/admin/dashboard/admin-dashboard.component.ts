@@ -12,7 +12,7 @@ import {
 } from '../../core/services/content.service';
 import { CloudinaryService } from '../../core/services/cloudinary.service';
 import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-logo.component';
-import { ServiceItem, ProductItem, IndustryItem } from '../../core/models/site.models';
+import { ServiceItem, ProductItem, IndustryItem, BlogPost } from '../../core/models/site.models';
 
 type AdminModule =
   | 'overview'
@@ -29,9 +29,9 @@ type AdminModule =
   | 'digital'
   | 'products'
   | 'industries'
+  | 'blogs'
   | 'projects'
   | 'why_us'
-  | 'statistics'
   | 'partners'
   | 'testimonials'
   | 'media'
@@ -75,6 +75,7 @@ export class AdminDashboardComponent implements OnInit {
   servicesList = signal<ServiceItem[]>([]);
   productsList = signal<ProductItem[]>([]);
   industriesList = signal<IndustryItem[]>([]);
+  blogsList = signal<BlogPost[]>([]);
   inquiriesList = signal<InquiryRecord[]>([]);
   activityLogs = signal<ActivityLogRecord[]>([]);
   mediaAssets = signal<MediaAssetRecord[]>([]);
@@ -87,6 +88,7 @@ export class AdminDashboardComponent implements OnInit {
   selectedService = signal<ServiceItem | null>(null);
   selectedProduct = signal<ProductItem | null>(null);
   selectedIndustry = signal<IndustryItem | null>(null);
+  selectedBlog = signal<BlogPost | null>(null);
   selectedInquiry = signal<InquiryRecord | null>(null);
 
   // Real-time synchronization indicator
@@ -119,6 +121,7 @@ export class AdminDashboardComponent implements OnInit {
     const totalServices = this.servicesList().length;
     const totalProducts = this.productsList().length;
     const totalIndustries = this.industriesList().length;
+    const totalBlogs = this.blogsList().length;
     const inquiries = this.inquiriesList();
     const newInquiries = inquiries.filter((i) => i.status === 'new').length;
     const totalMedia = this.mediaAssets().length;
@@ -126,6 +129,7 @@ export class AdminDashboardComponent implements OnInit {
       totalServices,
       totalProducts,
       totalIndustries,
+      totalBlogs,
       totalInquiries: inquiries.length,
       newInquiries,
       totalMedia
@@ -140,6 +144,7 @@ export class AdminDashboardComponent implements OnInit {
     this.servicesList.set(JSON.parse(JSON.stringify(this.content.currentServices)));
     this.productsList.set(JSON.parse(JSON.stringify(this.content.currentProducts)));
     this.industriesList.set(JSON.parse(JSON.stringify(this.content.currentIndustries)));
+    this.blogsList.set(JSON.parse(JSON.stringify(this.content.currentBlogs)));
 
     // Subscribe to live sync changes
     this.content.liveSyncActive$.subscribe((active) => {
@@ -160,6 +165,10 @@ export class AdminDashboardComponent implements OnInit {
 
     this.content.industries$.subscribe((industries) => {
       this.industriesList.set(JSON.parse(JSON.stringify(industries)));
+    });
+
+    this.content.blogs$.subscribe((blogs) => {
+      this.blogsList.set(JSON.parse(JSON.stringify(blogs)));
     });
 
     // Fetch inquiries, logs, media
@@ -276,6 +285,46 @@ export class AdminDashboardComponent implements OnInit {
         this.showToast('info', `Industry deleted.`);
       } catch (e: any) {
         this.showToast('error', `Delete failed.`);
+      }
+    }
+  }
+
+  addNewBlog(): void {
+    this.selectedBlog.set({
+      slug: 'post-' + Date.now(),
+      title: 'New Article Title',
+      excerpt: 'Brief overview of this enterprise technology article...',
+      date: new Date().toISOString().split('T')[0],
+      readTime: '4 min read',
+      category: 'Enterprise Tech',
+      author: 'Aircom Solutions Team',
+      image: 'assets/images/service-erpnext.png',
+      heroImage: 'assets/images/service-erpnext.png',
+      content: [
+        'Enterprise technology continues to transform how businesses orchestrate daily operations and strategic expansion.',
+        'By integrating modern digital workflows, organizations achieve greater operational velocity and transparency.'
+      ],
+      tags: ['ERPNext', 'Cloud', 'Integration']
+    });
+  }
+
+  async saveBlog(blog: BlogPost): Promise<void> {
+    try {
+      await this.content.saveBlog(blog);
+      this.selectedBlog.set(null);
+      this.showToast('success', `Article "${blog.title}" published and live!`);
+    } catch (e: any) {
+      this.showToast('error', `Error saving article: ${e.message}`);
+    }
+  }
+
+  async deleteBlog(blog: BlogPost): Promise<void> {
+    if (confirm(`Are you sure you want to delete article "${blog.title}"?`)) {
+      try {
+        await this.content.deleteBlog(blog.slug);
+        this.showToast('info', `Article "${blog.title}" removed.`);
+      } catch (e: any) {
+        this.showToast('error', `Delete failed: ${e.message}`);
       }
     }
   }
@@ -525,6 +574,12 @@ export class AdminDashboardComponent implements OnInit {
         const ind = { ...this.selectedIndustry()! };
         (ind as any)[target.property] = url;
         this.selectedIndustry.set(ind);
+      } else if (target.target === 'blog' && this.selectedBlog()) {
+        const blg = { ...this.selectedBlog()! };
+        (blg as any)[target.property] = url;
+        blg.image = url;
+        blg.heroImage = url;
+        this.selectedBlog.set(blg);
       }
       this.showToast('success', 'Image assigned to target field!');
     }

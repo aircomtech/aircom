@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { BLOG_POSTS } from '../../../core/data/site.data';
+import { ContentService } from '../../../core/services/content.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
 import { CtaBannerComponent } from '../../../shared/components/cta-banner/cta-banner.component';
@@ -58,13 +59,16 @@ import { CtaBannerComponent } from '../../../shared/components/cta-banner/cta-ba
 export class BlogDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly seo = inject(SeoService);
+  private readonly content = inject(ContentService);
 
   private readonly slug = toSignal(this.route.paramMap.pipe(map((p) => p.get('slug') || '')));
-  readonly post = computed(() => BLOG_POSTS.find((b) => b.slug === this.slug()));
+  private readonly blogsList = toSignal(this.content.blogs$, { initialValue: BLOG_POSTS });
+  readonly post = computed(() => this.blogsList().find((b) => b.slug === this.slug()));
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      const item = BLOG_POSTS.find((b) => b.slug === params.get('slug'));
+      const slug = params.get('slug');
+      const item = this.content.currentBlogs.find((b) => b.slug === slug);
       if (item) {
         this.seo.updateSeo({
           title: `${item.title} | Aircom Technologies`,

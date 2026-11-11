@@ -607,6 +607,25 @@
   border-collapse: collapse;
   font-size: 0.88rem;
 
+  .table-img-cell {
+    width: 60px;
+    height: 44px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #0B1428;
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img.table-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
   th {
     text-align: left;
     padding: 10px 14px;

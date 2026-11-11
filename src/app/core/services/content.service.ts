@@ -4,6 +4,7 @@ import { SupabaseService } from './supabase.service';
 import {
   ABOUT_CONTENT,
   ABOUT_PILLARS,
+  BLOG_POSTS,
   CONTACT_INFO,
   HERO_STATS,
   INDUSTRIES_DATA,
@@ -12,7 +13,7 @@ import {
   SERVICES_DATA,
   WHY_CHOOSE_ITEMS
 } from '../data/site.data';
-import { IndustryItem, NavItem, ProductItem, ServiceItem } from '../models/site.models';
+import { BlogPost, IndustryItem, NavItem, ProductItem, ServiceItem } from '../models/site.models';
 
 export interface SiteSettingsMap {
   header?: {
@@ -145,6 +146,7 @@ export class ContentService {
   private servicesSubject = new BehaviorSubject<ServiceItem[]>(SERVICES_DATA);
   private productsSubject = new BehaviorSubject<ProductItem[]>(PRODUCTS_DATA);
   private industriesSubject = new BehaviorSubject<IndustryItem[]>(INDUSTRIES_DATA);
+  private blogsSubject = new BehaviorSubject<BlogPost[]>(BLOG_POSTS);
   private liveSyncActiveSubject = new BehaviorSubject<boolean>(false);
 
   // Public Observables
@@ -152,6 +154,7 @@ export class ContentService {
   public readonly services$ = this.servicesSubject.asObservable();
   public readonly products$ = this.productsSubject.asObservable();
   public readonly industries$ = this.industriesSubject.asObservable();
+  public readonly blogs$ = this.blogsSubject.asObservable();
   public readonly liveSyncActive$ = this.liveSyncActiveSubject.asObservable();
 
   constructor() {
@@ -173,6 +176,82 @@ export class ContentService {
 
   get currentIndustries(): IndustryItem[] {
     return this.industriesSubject.value;
+  }
+
+  get currentBlogs(): BlogPost[] {
+    return this.blogsSubject.value;
+  }
+
+  // --- MAPPERS: Ensure NO field or image is EVER blank ---
+  private mapDbServiceToItem(row: any): ServiceItem {
+    const def = SERVICES_DATA.find((s) => s.slug === row.slug) || ({} as Partial<ServiceItem>);
+    return {
+      ...def,
+      ...row,
+      shortTitle: row.shortTitle || row.short_title || def.shortTitle || row.title,
+      shortDesc: row.shortDesc || row.short_desc || def.shortDesc || '',
+      tagline: row.tagline || def.tagline || '',
+      overview: row.overview || row.full_desc || row.fullDesc || def.overview || '',
+      heroImage: row.heroImage || row.hero_image || def.heroImage || 'assets/images/service-erpnext.png',
+      category: row.category || def.category || 'Enterprise ERP',
+      icon: row.icon || def.icon || 'monitor-cog',
+      features: row.features && row.features.length ? row.features : (def.features || []),
+      benefits: row.benefits && row.benefits.length ? row.benefits : (def.benefits || []),
+      highlights: row.highlights && row.highlights.length ? row.highlights : (def.highlights || []),
+      deliverables: row.deliverables && row.deliverables.length ? row.deliverables : (def.deliverables || []),
+      faqs: row.faqs && row.faqs.length ? row.faqs : (def.faqs || []),
+      relatedSlugs: row.relatedSlugs || row.related_slugs || def.relatedSlugs || []
+    } as ServiceItem;
+  }
+
+  private mapDbProductToItem(row: any): ProductItem {
+    const def = PRODUCTS_DATA.find((p) => p.slug === row.slug) || ({} as Partial<ProductItem>);
+    return {
+      ...def,
+      ...row,
+      title: row.title || def.title || '',
+      categoryLabel: row.categoryLabel || row.category || def.categoryLabel || 'Enterprise Solution',
+      shortDesc: row.shortDesc || row.short_desc || def.shortDesc || '',
+      overview: row.overview || row.description || def.overview || '',
+      tagline: row.tagline || def.tagline || '',
+      image: row.image || def.image || 'assets/images/product-cloud-erp.png',
+      icon: row.icon || def.icon || 'layers',
+      capabilities: row.capabilities || row.features || def.capabilities || [],
+      benefits: row.benefits || def.benefits || [],
+      deploymentOptions: row.deploymentOptions || def.deploymentOptions || ['Cloud Hosted', 'On-Premise']
+    } as ProductItem;
+  }
+
+  private mapDbIndustryToItem(row: any): IndustryItem {
+    const def = INDUSTRIES_DATA.find((i) => i.slug === row.slug) || ({} as Partial<IndustryItem>);
+    return {
+      ...def,
+      ...row,
+      name: row.name || row.title || def.name || '',
+      shortDesc: row.shortDesc || row.headline || def.shortDesc || '',
+      overview: row.overview || row.description || def.overview || '',
+      image: row.image || def.image || 'assets/images/industry-retail.png',
+      icon: row.icon || def.icon || 'briefcase',
+      challenges: row.challenges || row.impact || def.challenges || [],
+      solutions: row.solutions || def.solutions || []
+    } as IndustryItem;
+  }
+
+  private mapDbBlogToItem(row: any): BlogPost {
+    const def = BLOG_POSTS.find((b) => b.slug === row.slug) || ({} as Partial<BlogPost>);
+    return {
+      ...def,
+      ...row,
+      title: row.title || def.title || '',
+      category: row.category || def.category || 'Enterprise IT',
+      date: row.date || def.date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      readTime: row.readTime || row.read_time || def.readTime || '5 min read',
+      author: row.author || def.author || 'Aircom Technologies Team',
+      image: row.image || def.image || 'assets/images/service-erpnext.png',
+      excerpt: row.excerpt || def.excerpt || '',
+      content: Array.isArray(row.content) ? row.content : (def.content || []),
+      tags: Array.isArray(row.tags) ? row.tags : (def.tags || [])
+    } as BlogPost;
   }
 
   /**
@@ -205,7 +284,7 @@ export class ContentService {
         .order('order_index', { ascending: true });
 
       if (!servicesError && servicesRows && servicesRows.length > 0) {
-        this.servicesSubject.next(servicesRows as any);
+        this.servicesSubject.next(servicesRows.map((r: any) => this.mapDbServiceToItem(r)));
         this.liveSyncActiveSubject.next(true);
       }
 
@@ -217,7 +296,7 @@ export class ContentService {
         .order('order_index', { ascending: true });
 
       if (!productsError && productsRows && productsRows.length > 0) {
-        this.productsSubject.next(productsRows as any);
+        this.productsSubject.next(productsRows.map((r: any) => this.mapDbProductToItem(r)));
         this.liveSyncActiveSubject.next(true);
       }
 
@@ -229,7 +308,18 @@ export class ContentService {
         .order('order_index', { ascending: true });
 
       if (!industriesError && industriesRows && industriesRows.length > 0) {
-        this.industriesSubject.next(industriesRows as any);
+        this.industriesSubject.next(industriesRows.map((r: any) => this.mapDbIndustryToItem(r)));
+        this.liveSyncActiveSubject.next(true);
+      }
+
+      // 5. Fetch blogs
+      const { data: blogsRows, error: blogsError } = await client
+        .from('blogs')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!blogsError && blogsRows && blogsRows.length > 0) {
+        this.blogsSubject.next(blogsRows.map((r: any) => this.mapDbBlogToItem(r)));
         this.liveSyncActiveSubject.next(true);
       }
 
@@ -264,7 +354,7 @@ export class ContentService {
               .select('*')
               .eq('is_published', true)
               .order('order_index', { ascending: true });
-            if (data) this.servicesSubject.next(data as any);
+            if (data) this.servicesSubject.next(data.map((r: any) => this.mapDbServiceToItem(r)));
           }
         )
         .on(
@@ -276,7 +366,7 @@ export class ContentService {
               .select('*')
               .eq('is_published', true)
               .order('order_index', { ascending: true });
-            if (data) this.productsSubject.next(data as any);
+            if (data) this.productsSubject.next(data.map((r: any) => this.mapDbProductToItem(r)));
           }
         )
         .on(
@@ -288,7 +378,18 @@ export class ContentService {
               .select('*')
               .eq('is_published', true)
               .order('order_index', { ascending: true });
-            if (data) this.industriesSubject.next(data as any);
+            if (data) this.industriesSubject.next(data.map((r: any) => this.mapDbIndustryToItem(r)));
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'blogs' },
+          async () => {
+            const { data } = await client
+              .from('blogs')
+              .select('*')
+              .order('created_at', { ascending: false });
+            if (data) this.blogsSubject.next(data.map((r: any) => this.mapDbBlogToItem(r)));
           }
         )
         .subscribe((status: string) => {
@@ -352,6 +453,7 @@ export class ContentService {
         const { error } = await client.from('services').upsert({
           slug: service.slug,
           title: service.title,
+          tagline: service.tagline,
           short_desc: service.shortDesc,
           full_desc: service.overview,
           icon: service.icon,
@@ -480,6 +582,56 @@ export class ContentService {
         await this.logActivity('Delete', `Industry: ${slug}`);
       } catch (e) {
         console.warn('Error deleting industry:', e);
+      }
+    }
+    return true;
+  }
+
+  async saveBlog(blog: BlogPost): Promise<boolean> {
+    const list = [...this.blogsSubject.value];
+    const index = list.findIndex((b) => b.slug === blog.slug);
+    if (index >= 0) {
+      list[index] = { ...blog };
+    } else {
+      list.unshift(blog);
+    }
+    this.blogsSubject.next(list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('blogs').upsert({
+          slug: blog.slug,
+          title: blog.title,
+          category: blog.category,
+          date: blog.date,
+          read_time: blog.readTime,
+          author: blog.author,
+          image: blog.image,
+          excerpt: blog.excerpt,
+          content: blog.content,
+          tags: blog.tags,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'slug' });
+        await this.logActivity('Save', `Blog: ${blog.title}`);
+      } catch (e) {
+        console.warn('Error saving blog to Supabase:', e);
+      }
+    }
+    return true;
+  }
+
+  async deleteBlog(slug: string): Promise<boolean> {
+    const list = this.blogsSubject.value.filter((b) => b.slug !== slug);
+    this.blogsSubject.next(list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('blogs').delete().eq('slug', slug);
+        await this.logActivity('Delete', `Blog: ${slug}`);
+      } catch (e) {
+        console.warn('Error deleting blog from Supabase:', e);
       }
     }
     return true;

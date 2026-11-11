@@ -70,6 +70,7 @@ export interface BlogPost {
   readTime: string;
   author: string;
   image: string;
+  heroImage?: string;
   excerpt: string;
   content: string[];
   tags: string[];

@@ -1,6 +1,8 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BLOG_POSTS } from '../../../core/data/site.data';
+import { BlogPost } from '../../../core/models/site.models';
+import { ContentService } from '../../../core/services/content.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
 import { CtaBannerComponent } from '../../../shared/components/cta-banner/cta-banner.component';
@@ -24,7 +26,7 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
     <section class="page-section">
       <div class="container">
         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;">
-          @for (cat of categories; track cat) {
+          @for (cat of categories(); track cat) {
             <button
               type="button"
               (click)="activeCategory.set(cat)"
@@ -68,17 +70,25 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
 })
 export class BlogListComponent implements OnInit {
   private readonly seo = inject(SeoService);
-  readonly posts = BLOG_POSTS;
-  readonly categories = ['All', ...new Set(BLOG_POSTS.map((p) => p.category))];
+  private readonly content = inject(ContentService);
+
+  posts = signal<BlogPost[]>(BLOG_POSTS);
+  readonly categories = computed(() => ['All', ...new Set(this.posts().map((p) => p.category))]);
   readonly activeCategory = signal('All');
 
   readonly filteredPosts = computed(() =>
     this.activeCategory() === 'All'
-      ? this.posts
-      : this.posts.filter((p) => p.category === this.activeCategory())
+      ? this.posts()
+      : this.posts().filter((p) => p.category === this.activeCategory())
   );
 
   ngOnInit(): void {
+    this.posts.set(this.content.currentBlogs);
+
+    this.content.blogs$.subscribe((blogs) => {
+      this.posts.set(blogs);
+    });
+
     this.seo.updateSeo({
       title: 'Blog & Insights | Aircom Technologies',
       description: 'Read articles on ERPNext implementation, TallyPrime integration, biometric HRMS, and enterprise IT security.',
