@@ -589,6 +589,16 @@ export class AdminDashboardComponent implements OnInit {
         (seo as any)[target.property] = url;
         this.siteSettings.update((s) => ({ ...s, seo }));
         await this.content.saveSetting('seo', seo);
+      } else if (target.target === 'why_item') {
+        const whyChooseUs = { ...(this.siteSettings().whyChooseUs || {}) };
+        const items = [...(whyChooseUs.items || [])];
+        const idx = parseInt(target.property, 10);
+        if (!isNaN(idx) && items[idx]) {
+          items[idx] = { ...items[idx], image: url };
+          whyChooseUs.items = items;
+          this.siteSettings.update((s) => ({ ...s, whyChooseUs }));
+          await this.content.saveSetting('whyChooseUs', whyChooseUs);
+        }
       } else if (target.target === 'service') {
         if (this.selectedService()) {
           const svc = { ...this.selectedService()! };

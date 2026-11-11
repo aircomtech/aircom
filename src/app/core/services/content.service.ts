@@ -255,18 +255,19 @@ export class ContentService {
 
   private mapDbProductToItem(row: any): ProductItem {
     const def = PRODUCTS_DATA.find((p) => p.slug === row.slug) || ({} as Partial<ProductItem>);
+    const img = row.image || row.hero_image || def.image || 'assets/images/product-cloud-erp.png';
     return {
       ...def,
       ...row,
       title: row.title || def.title || '',
       categoryLabel: row.categoryLabel || row.category || def.categoryLabel || 'Enterprise Solution',
-      shortDesc: row.shortDesc || row.short_desc || def.shortDesc || '',
+      shortDesc: row.shortDesc || row.short_desc || def.shortDesc || row.description || '',
       overview: row.overview || row.description || def.overview || '',
       tagline: row.tagline || def.tagline || '',
-      image: row.image || def.image || 'assets/images/product-cloud-erp.png',
+      image: img,
       icon: row.icon || def.icon || 'layers',
       capabilities: row.capabilities || row.features || def.capabilities || [],
-      benefits: row.benefits || def.benefits || [],
+      benefits: row.benefits || row.highlights || def.benefits || [],
       deploymentOptions: row.deploymentOptions || def.deploymentOptions || ['Cloud Hosted', 'On-Premise']
     } as ProductItem;
   }
@@ -323,7 +324,9 @@ export class ContentService {
       if (!settingsError && settingsRows && settingsRows.length > 0) {
         const merged: SiteSettingsMap = { ...this.settingsSubject.value };
         for (const row of settingsRows) {
-          (merged as any)[row.key] = row.data;
+          const normalizedKey =
+            row.key === 'contact_info' ? 'contactInfo' : row.key === 'why_choose_us' ? 'whyChooseUs' : row.key;
+          (merged as any)[normalizedKey] = row.data;
         }
         this.settingsSubject.next(merged);
         this.liveSyncActiveSubject.next(true);
@@ -399,7 +402,13 @@ export class ContentService {
           (payload: any) => {
             if (payload.new && payload.new.key) {
               const current = { ...this.settingsSubject.value };
-              (current as any)[payload.new.key] = payload.new.data;
+              const normalizedKey =
+                payload.new.key === 'contact_info'
+                  ? 'contactInfo'
+                  : payload.new.key === 'why_choose_us'
+                    ? 'whyChooseUs'
+                    : payload.new.key;
+              (current as any)[normalizedKey] = payload.new.data;
               this.settingsSubject.next(current);
             }
           }
@@ -490,7 +499,7 @@ export class ContentService {
           data,
           updated_at: new Date().toISOString(),
           updated_by: this.sb.getAdminEmail()
-        });
+        }, { onConflict: 'key' });
 
         if (error) {
           console.error(`Error saving site setting '${key}' to Supabase:`, error);
@@ -576,17 +585,24 @@ export class ContentService {
     const client = this.sb.getClient();
     if (client) {
       try {
-        await client.from('products').upsert({
+        const payload: any = {
           slug: product.slug,
           title: product.title,
           category: product.categoryLabel,
           description: product.overview || product.shortDesc,
           image: product.image,
+          hero_image: product.image,
           features: product.capabilities,
-          benefits: product.benefits,
+          highlights: product.benefits,
           is_published: true,
           updated_at: new Date().toISOString()
-        }, { onConflict: 'slug' });
+        };
+        let { error } = await client.from('products').upsert(payload, { onConflict: 'slug' });
+        if (error && (error.message.includes('highlights') || error.message.includes('hero_image'))) {
+          delete payload.highlights;
+          delete payload.hero_image;
+          await client.from('products').upsert(payload, { onConflict: 'slug' });
+        }
         await this.logActivity('Save', `Product: ${product.title}`);
       } catch (e) {
         console.warn('Error saving product:', e);
@@ -624,17 +640,23 @@ export class ContentService {
     const client = this.sb.getClient();
     if (client) {
       try {
-        await client.from('industries').upsert({
+        const payload: any = {
           slug: industry.slug,
           title: industry.name,
           headline: industry.shortDesc,
           description: industry.overview,
           image: industry.image,
+          hero_image: industry.image,
           solutions: industry.solutions,
           impact: industry.challenges,
           is_published: true,
           updated_at: new Date().toISOString()
-        }, { onConflict: 'slug' });
+        };
+        let { error } = await client.from('industries').upsert(payload, { onConflict: 'slug' });
+        if (error && error.message.includes('hero_image')) {
+          delete payload.hero_image;
+          await client.from('industries').upsert(payload, { onConflict: 'slug' });
+        }
         await this.logActivity('Save', `Industry: ${industry.name}`);
       } catch (e) {
         console.warn('Error saving industry:', e);

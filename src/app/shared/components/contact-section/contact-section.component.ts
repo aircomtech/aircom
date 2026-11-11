@@ -1,7 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CONTACT_INFO, SERVICES_DATA } from '../../../core/data/site.data';
+import { ContentService } from '../../../core/services/content.service';
 import { DialogLauncherService } from '../../../core/services/dialog-launcher.service';
 import { SubmissionResult, SubmissionService } from '../../../core/services/submission.service';
 import { InquiryResultBannerComponent } from '../../../features/shared/inquiry-result-banner.component';
@@ -146,15 +147,31 @@ import { ScrollRevealDirective } from '../../directives/scroll-reveal.directive'
     </section>
   `
 })
-export class ContactSectionComponent {
+export class ContactSectionComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly submission = inject(SubmissionService);
+  private readonly content = inject(ContentService);
   readonly dialogs = inject(DialogLauncherService);
-  readonly contact = CONTACT_INFO;
-  readonly services = SERVICES_DATA;
+  contact = { ...CONTACT_INFO };
+  services = SERVICES_DATA;
 
   readonly loading = signal(false);
   readonly result = signal<SubmissionResult | null>(null);
+
+  ngOnInit(): void {
+    if (this.content.currentSettings.contactInfo) {
+      this.contact = { ...this.contact, ...this.content.currentSettings.contactInfo };
+    }
+    this.services = this.content.currentServices;
+    this.content.settings$.subscribe((st) => {
+      if (st.contactInfo) {
+        this.contact = { ...this.contact, ...st.contactInfo };
+      }
+    });
+    this.content.services$.subscribe((svcs) => {
+      this.services = svcs;
+    });
+  }
 
   readonly form = this.fb.nonNullable.group({
     fullName: ['', [Validators.required, Validators.minLength(2)]],

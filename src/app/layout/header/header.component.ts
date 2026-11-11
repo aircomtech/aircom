@@ -111,7 +111,7 @@ import { TechIconComponent } from '../../shared/components/tech-icon/tech-icon.c
 
           <div class="header-actions">
             <button type="button" class="btn-orange quote-cta" (click)="dialogs.openQuote()">
-              Get a Quote
+              {{ ctaText }}
               <span aria-hidden="true">→</span>
             </button>
 
@@ -201,6 +201,7 @@ export class HeaderComponent implements OnInit {
 
   contact = CONTACT_INFO;
   navItems = MAIN_NAV_ITEMS;
+  ctaText = 'Get a Quote';
 
   readonly scrolled = signal(false);
   readonly mobileOpen = signal(false);
@@ -213,9 +214,13 @@ export class HeaderComponent implements OnInit {
     if (this.content.currentSettings.header?.navItems) {
       this.navItems = this.content.currentSettings.header.navItems;
     }
+    if (this.content.currentSettings.header?.ctaText) {
+      this.ctaText = this.content.currentSettings.header.ctaText;
+    }
     this.content.settings$.subscribe((st) => {
       if (st.contactInfo) this.contact = { ...this.contact, ...st.contactInfo };
       if (st.header?.navItems) this.navItems = st.header.navItems;
+      if (st.header?.ctaText) this.ctaText = st.header.ctaText;
     });
   }
 

@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { CONTACT_INFO, SERVICES_DATA } from '../../core/data/site.data';
 import { ContentService } from '../../core/services/content.service';
@@ -20,7 +21,7 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
               <app-aircom-logo variant="dark" [height]="76" />
             </a>
             <p class="footer-about">
-              Enterprise ERP, TallyPrime integration, HRMS automation, IT infrastructure, and cloud solutions trusted since 2009.
+              {{ footerTagline }}
             </p>
             <button type="button" class="newsletter-trigger" (click)="dialogs.openNewsletter()">
               Subscribe to Updates →
@@ -57,7 +58,7 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
             <ul class="contact-list">
               <li>
                 <span class="c-icon">📞</span>
-                <a [href]="contact.phoneHref">{{ contact.phone }}</a>
+                <a [href]="contact.phoneHref || 'tel:' + contact.phone">{{ contact.phone }}</a>
               </li>
               <li>
                 <span class="c-icon">✉️</span>
@@ -90,8 +91,33 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
           </div>
         </div>
 
+        <!-- Interactive Location Map Section -->
+        <div class="footer-map-section">
+          <div class="footer-map-header">
+            <div class="map-address-info">
+              <span class="map-badge">📍 HEADQUARTERS LOCATION</span>
+              <h4>Aircom Technologies — {{ contact.address }}</h4>
+            </div>
+            <a [href]="googleMapsDirectUrl" target="_blank" rel="noopener noreferrer" class="map-directions-btn">
+              Open in Google Maps →
+            </a>
+          </div>
+          <div class="footer-map-frame">
+            <iframe
+              [src]="safeMapUrl"
+              width="100%"
+              height="240"
+              style="border:0; display:block;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Aircom Technologies Location Map - Plot No.12, Simhadri Nagar Colony, Near PBDAV School, Hyderabad, Telangana, India"
+            ></iframe>
+          </div>
+        </div>
+
         <div class="footer-bottom">
-          <p>© 2026 Aircom Technologies. All Rights Reserved.</p>
+          <p>{{ copyrightText }}</p>
           <div class="legal-links">
             <a routerLink="/privacy-policy">Privacy Policy</a>
             <span>|</span>
@@ -106,29 +132,48 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
 })
 export class FooterComponent implements OnInit {
   private readonly content = inject(ContentService);
+  private readonly sanitizer = inject(DomSanitizer);
   readonly dialogs = inject(DialogLauncherService);
 
   contact = CONTACT_INFO;
   featuredServices = SERVICES_DATA.slice(0, 6);
+  footerTagline = 'Enterprise ERP, TallyPrime integration, HRMS automation, IT infrastructure, and cloud solutions trusted since 2009.';
   copyrightText = `© ${new Date().getFullYear()} Aircom Technologies. All Rights Reserved.`;
+  safeMapUrl!: SafeResourceUrl;
+  googleMapsDirectUrl = '';
 
   ngOnInit(): void {
     if (this.content.currentSettings.contactInfo) {
       this.contact = { ...this.contact, ...this.content.currentSettings.contactInfo };
     }
+    if (this.content.currentSettings.footer?.tagline) {
+      this.footerTagline = this.content.currentSettings.footer.tagline;
+    }
     if (this.content.currentSettings.footer?.copyrightText) {
       this.copyrightText = this.content.currentSettings.footer.copyrightText;
     }
     this.featuredServices = this.content.currentServices.slice(0, 6);
+    this.updateMapUrl();
 
     this.content.settings$.subscribe((st) => {
-      if (st.contactInfo) this.contact = { ...this.contact, ...st.contactInfo };
+      if (st.contactInfo) {
+        this.contact = { ...this.contact, ...st.contactInfo };
+        this.updateMapUrl();
+      }
+      if (st.footer?.tagline) this.footerTagline = st.footer.tagline;
       if (st.footer?.copyrightText) this.copyrightText = st.footer.copyrightText;
     });
 
     this.content.services$.subscribe((svcs) => {
       this.featuredServices = svcs.slice(0, 6);
     });
+  }
+
+  private updateMapUrl(): void {
+    const query = encodeURIComponent(`Aircom Technologies, ${this.contact.address}`);
+    const embedUrl = `https://maps.google.com/maps?q=${query}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+    this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+    this.googleMapsDirectUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
   }
 }
 

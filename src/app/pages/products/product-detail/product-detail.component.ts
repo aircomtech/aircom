@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { PRODUCTS_DATA } from '../../../core/data/site.data';
+import { ContentService } from '../../../core/services/content.service';
 import { DialogLauncherService } from '../../../core/services/dialog-launcher.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
@@ -130,13 +131,15 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
 export class ProductDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly seo = inject(SeoService);
+  private readonly content = inject(ContentService);
   readonly dialogs = inject(DialogLauncherService);
 
   private readonly slug = toSignal(this.route.paramMap.pipe(map((p) => p.get('slug') || '')));
-  readonly product = computed(() => PRODUCTS_DATA.find((item) => item.slug === this.slug()));
+  private readonly productsList = toSignal(this.content.products$, { initialValue: PRODUCTS_DATA });
+  readonly product = computed(() => this.productsList().find((item) => item.slug === this.slug()));
   readonly relatedProducts = computed(() => {
     const curr = this.product();
-    return curr ? PRODUCTS_DATA.filter((item) => curr.relatedSlugs.includes(item.slug)) : [];
+    return curr ? this.productsList().filter((item) => (curr.relatedSlugs || []).includes(item.slug)) : [];
   });
 
   openCapabilityPopup(p: (typeof PRODUCTS_DATA)[number], cap: (typeof PRODUCTS_DATA)[number]['capabilities'][number]): void {
@@ -155,7 +158,7 @@ export class ProductDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      const item = PRODUCTS_DATA.find((p) => p.slug === params.get('slug'));
+      const item = this.content.currentProducts.find((p) => p.slug === params.get('slug'));
       if (item) {
         this.seo.updateSeo({
           title: item.seoTitle,

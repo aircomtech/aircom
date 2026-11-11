@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { INDUSTRIES_DATA, SERVICES_DATA } from '../../../core/data/site.data';
+import { ContentService } from '../../../core/services/content.service';
 import { DialogLauncherService } from '../../../core/services/dialog-launcher.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
@@ -90,18 +91,21 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
 export class IndustryDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly seo = inject(SeoService);
+  private readonly content = inject(ContentService);
   readonly dialogs = inject(DialogLauncherService);
 
   private readonly slug = toSignal(this.route.paramMap.pipe(map((p) => p.get('slug') || '')));
-  readonly industry = computed(() => INDUSTRIES_DATA.find((i) => i.slug === this.slug()));
+  private readonly industriesList = toSignal(this.content.industries$, { initialValue: INDUSTRIES_DATA });
+  private readonly servicesList = toSignal(this.content.services$, { initialValue: SERVICES_DATA });
+  readonly industry = computed(() => this.industriesList().find((i) => i.slug === this.slug()));
   readonly recommendedServices = computed(() => {
     const curr = this.industry();
-    return curr ? SERVICES_DATA.filter((s) => curr.recommendedServices.includes(s.slug)) : [];
+    return curr ? this.servicesList().filter((s) => (curr.recommendedServices || []).includes(s.slug)) : [];
   });
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      const item = INDUSTRIES_DATA.find((i) => i.slug === params.get('slug'));
+      const item = this.content.currentIndustries.find((i) => i.slug === params.get('slug'));
       if (item) {
         this.seo.updateSeo({
           title: item.seoTitle,

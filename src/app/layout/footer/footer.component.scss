@@ -141,6 +141,69 @@
   }
 }
 
+.footer-map-section {
+  margin-top: 34px;
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.footer-map-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.map-address-info {
+  .map-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #FCD34D;
+    margin-bottom: 4px;
+  }
+
+  h4 {
+    margin: 0;
+    color: #FFFFFF;
+    font-size: 0.94rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+}
+
+.map-directions-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(11, 168, 234, 0.16);
+  border: 1px solid rgba(11, 168, 234, 0.45);
+  color: #7DD3FC;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #0BA8EA;
+    color: #08122B;
+  }
+}
+
+.footer-map-frame {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
 .footer-bottom {
   margin-top: 38px;
   padding-top: 20px;

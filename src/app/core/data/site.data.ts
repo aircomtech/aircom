@@ -17,7 +17,7 @@ export const CONTACT_INFO: ContactInfo = {
   whatsappHref: 'https://wa.me/917799899429?text=Hello%20Aircom%20Technologies%2C%20I%20would%20like%20to%20discuss%20an%20IT%20%2F%20ERP%20solution.',
   salesEmail: 'sales@aircomtech.com',
   infoEmail: 'info@aircomtech.com',
-  address: '#462, Block C, Fourth Floor, CTC, Near ParkLane Hotel, Secunderabad, Telangana – 500003, India.',
+  address: 'Plot No.12, Simhadri Nagar Colony, Near PBDAV School, Hyderabad, Telangana, India',
   workingHours: 'Monday – Saturday: 9:30 AM – 6:30 PM IST',
   socials: [
     { name: 'LinkedIn', url: 'https://www.linkedin.com/company/aircom-technologies', icon: 'linkedin' },
@@ -875,14 +875,18 @@ export const BLOG_POSTS: BlogPost[] = [
     title: 'Why Growing Enterprises Are Switching to ERPNext & Open-Source ERP Architecture',
     category: 'ERP & Automation',
     date: 'October 18, 2026',
-    readTime: '5 min read',
+    readTime: '7 min read',
     author: 'Aircom ERP Engineering Team',
     image: 'assets/images/service-erpnext.png',
+    heroImage: 'assets/images/service-erpnext.png',
     excerpt: 'Discover how modular open-source ERP eliminates per-seat licensing bottlenecks while giving finance, inventory, and operations a unified real-time platform.',
     content: [
       'Growing organizations frequently outgrow spreadsheets and standalone accounting software long before they are ready for rigid, high-cost legacy ERP suites. Per-user licensing fees often discourage companies from onboarding warehouse staff, site engineers, and sales executives—creating the exact data silos ERP was meant to eliminate.',
-      'ERPNext, built on the extensible Frappe framework, flips this model. Organizations get unified modules for accounting, inventory, buying, selling, manufacturing, and HRMS without punitive seat taxes—allowing every stakeholder to work from a single source of truth.',
-      'At Aircom Technologies, our 17+ years of enterprise IT experience helps clients go beyond default setups: we tailor custom DocTypes, automate approvals, integrate TallyPrime and Zoho CRM, and host workloads on hardened cloud infrastructure with daily encrypted backups.'
+      'Legacy proprietary platforms also impose steep annual maintenance renewals, expensive customization retainers, and closed-source database constraints that slow down operational agility. Whenever a business adds a new warehouse, branch, or product vertical, software costs escalate disproportionately to team headcount.',
+      'ERPNext, built on the extensible Frappe framework, flips this model completely. Organizations receive unified, production-grade modules for multi-company accounting, batch-tracked inventory, procurement, manufacturing BOMs, CRM, and HRMS without punitive seat taxes—allowing every stakeholder to work from a single source of truth.',
+      'From automated GST e-invoicing and multi-warehouse stock transfers to mobile field approvals and barcode picking, teams operate in real time across locations. Role-based permission matrices keep sensitive financial ledgers secure while giving floor supervisors instant visibility into job cards and material requests.',
+      'Migration does not have to disrupt daily operations. A structured phased rollout—starting with chart-of-accounts mapping, opening stock validation, master data cleansing, and parallel runs—ensures zero downtime during cutover.',
+      'At Aircom Technologies, our 17+ years of enterprise IT experience helps clients go far beyond default setups: we tailor custom DocTypes, automate approval matrices, integrate TallyPrime and Zoho CRM, and host workloads on hardened cloud infrastructure with daily encrypted backups.'
     ],
     tags: ['ERPNext Implementation', 'Digital Transformation', 'Open Source ERP']
   },
@@ -891,14 +895,18 @@ export const BLOG_POSTS: BlogPost[] = [
     title: 'Bridging Operations & Finance: Automating TallyPrime Voucher Sync Without Manual Re-Entry',
     category: 'Accounting Integration',
     date: 'October 04, 2026',
-    readTime: '4 min read',
+    readTime: '6 min read',
     author: 'Aircom Integration Practice',
     image: 'assets/images/service-tally.png',
+    heroImage: 'assets/images/service-tally.png',
     excerpt: 'Learn how automated XML/API voucher synchronization and custom TDL extensions eliminate reconciliation errors between operational apps and TallyPrime.',
     content: [
-      'In thousands of Indian and international enterprises, operations run on specialized ERP, POS, or e-commerce systems while chartered accountants and finance controllers rely on TallyPrime for statutory books and GST reporting.',
-      'When teams export Excel sheets and manually re-key hundreds of invoices each week, delays and clerical errors become inevitable. Dual-entry bottlenecks also prevent management from seeing up-to-date receivables and cash positions.',
-      'Our TallyPrime integration architecture validates customer masters, tax ledgers, HSN codes, and voucher numbering rules before automatically posting sales, purchase, credit note, and receipt entries—keeping both operational teams and finance auditors aligned.'
+      'In thousands of Indian and international enterprises, day-to-day operations run on specialized ERP, POS, or e-commerce systems while chartered accountants and finance controllers rely on TallyPrime for statutory books and GST reporting.',
+      'When teams export Excel sheets and manually re-key hundreds of invoices, debit notes, and payment receipts each week, delays and clerical errors become inevitable. Dual-entry bottlenecks also prevent management from seeing up-to-date receivables, aged payables, and real-time cash positions.',
+      'Manual reconciliation at month-end wastes dozens of skilled accounting hours hunting down mismatched tax ledgers, rounded-off paise discrepancies, or duplicate supplier names across operational and financial tools.',
+      'Our TallyPrime integration architecture solves this using bidirectional XML/HTTP API connectors and tailored Tally Definition Language (TDL) extensions. Every sales invoice, purchase bill, credit note, and receipt generated in ERPNext, custom web portals, or retail POS terminals is queued and validated automatically.',
+      'Before posting any voucher to TallyPrime, our middleware verifies customer masters, GSTIN numbers, HSN/SAC codes, cost centers, and voucher numbering rules—eliminating broken imports and guaranteeing audit compliance.',
+      'With scheduled or instant push-sync triggers, comprehensive sync audit logs, and automated retry queues, both operational teams and finance auditors remain 100% aligned without touching manual spreadsheets.'
     ],
     tags: ['TallyPrime Integration', 'TDL Development', 'GST Automation']
   },
@@ -907,14 +915,18 @@ export const BLOG_POSTS: BlogPost[] = [
     title: 'Real-Time Biometric & Facial Attendance Integration for Multi-Branch Payroll Accuracy',
     category: 'HRMS & Hardware',
     date: 'September 21, 2026',
-    readTime: '4 min read',
+    readTime: '6 min read',
     author: 'Aircom Systems & IoT Team',
     image: 'assets/images/service-biometric.png',
+    heroImage: 'assets/images/service-biometric.png',
     excerpt: 'How push-protocol biometric synchronization eliminates USB log exports, stops proxy attendance, and streamlines monthly payroll runs across branches.',
     content: [
-      'Managing shift attendance across multiple warehouses, retail outlets, or construction sites often degrades into manual spreadsheet collection at month-end—delaying salary runs and causing disputes over overtime or late marks.',
-      'By connecting ZKTeco, eSSL, or Hikvision fingerprint and facial recognition terminals over secure push protocols directly into HRMS, punch logs appear in central shift dashboards within seconds.',
-      'Even when a remote branch experiences temporary internet loss, modern terminals buffer attendance punches locally and backfill automatically once connectivity returns—ensuring accurate, audit-ready payroll every month.'
+      'Managing shift attendance across multiple warehouses, retail outlets, factories, or construction sites often degrades into manual USB pen-drive exports and spreadsheet consolidation at month-end—delaying salary runs and causing frequent disputes over overtime or late marks.',
+      'Traditional polling utilities installed on a single local PC fail whenever the local computer is turned off or loses VPN connectivity, creating blind spots in HR visibility across regional branches.',
+      'By connecting ZKTeco, eSSL, or Hikvision fingerprint and AI facial recognition terminals over secure cloud push protocols directly into HRMS and ERPNext, employee punch logs appear in central shift dashboards within seconds.',
+      'Automated attendance rules immediately classify first-in/last-out punches, rotational night shifts, grace periods, half-day deductions, and overtime slabs—eliminating manual attendance registers altogether.',
+      'Even when a remote construction site or retail store experiences temporary internet loss, enterprise biometric terminals buffer tens of thousands of attendance punches locally and backfill automatically once connectivity returns.',
+      'The result is a transparent, tamper-proof HR pipeline where leave balances, geo-fenced mobile check-ins for field teams, and biometric terminal logs feed directly into one-click payroll and statutory PF/ESI/PT compliance.'
     ],
     tags: ['Biometric Integration', 'HRMS Software', 'Payroll Automation']
   },
@@ -923,16 +935,60 @@ export const BLOG_POSTS: BlogPost[] = [
     title: 'Enterprise IT Resilience Checklist: Firewalls, Branch VPNs, and Ransomware-Proof Backups',
     category: 'Infrastructure & Cloud',
     date: 'September 08, 2026',
-    readTime: '6 min read',
+    readTime: '7 min read',
     author: 'Aircom Cloud & Network Architects',
     image: 'assets/images/service-infrastructure.png',
+    heroImage: 'assets/images/service-infrastructure.png',
     excerpt: 'Practical infrastructure safeguards every multi-branch organization needs—from VLAN segmentation and dual-ISP failover to automated off-site cloud snapshots.',
     content: [
-      'Enterprise software is only as reliable as the network and server infrastructure beneath it. An unsegmented office LAN, single ISP dependency, or unverified local backup can halt billing and operations across an entire organization.',
-      'We recommend a four-layer resilience model: next-generation UTM firewalls with dual-WAN automatic failover, VLAN separation for guest Wi-Fi and IoT/CCTV devices, encrypted site-to-site VPNs connecting branches, and automated off-site immutable cloud backups tested through regular restore drills.',
-      'Through Aircom Managed IT AMC services, organizations gain continuous uptime monitoring, timely patching, and rapid L1–L3 escalation support.'
+      'Enterprise software is only as reliable as the network, server, and security infrastructure beneath it. An unsegmented office LAN, single ISP dependency, or unverified local backup can halt billing, ERP workflows, and customer service across an entire organization.',
+      'Many growing companies discover backup failures only after an unexpected hardware crash, power surge, or ransomware incident—when critical financial databases and project files are already at risk.',
+      'We recommend a four-layer resilience architecture starting at the perimeter: next-generation UTM firewalls (Fortinet, Sophos, or SonicWall) configured with dual-WAN automatic ISP failover so branch billing and cloud ERP connections never drop.',
+      'Inside the office network, strict VLAN segmentation isolates guest Wi-Fi, CCTV/IoT cameras, VoIP phones, and corporate ERP workstations—preventing lateral movement if an endpoint is compromised.',
+      'Encrypted IPsec or WireGuard site-to-site VPN tunnels connect head offices, factories, and regional warehouses seamlessly, while the 3-2-1 backup strategy ensures daily automated snapshots are replicated to immutable off-site cloud storage.',
+      'Through Aircom Managed IT AMC services, organizations gain continuous uptime monitoring, proactive server patching, quarterly restore verification drills, and rapid L1–L3 engineering escalation support.'
     ],
     tags: ['IT Infrastructure', 'Cloud Hosting', 'Cybersecurity']
+  },
+  {
+    slug: 'crm-erp-integration-sales-pipeline-automation',
+    title: 'Connecting Sales & Delivery: Why CRM-to-ERP Integration Eliminates Revenue Leakage',
+    category: 'CRM & Sales Ops',
+    date: 'August 24, 2026',
+    readTime: '6 min read',
+    author: 'Aircom CRM & Automation Team',
+    image: 'assets/images/service-crm.png',
+    heroImage: 'assets/images/service-crm.png',
+    excerpt: 'Unifying Salesforce, Zoho CRM, and WhatsApp lead capture with ERPNext inventory and billing ensures zero lost leads and faster order fulfillment.',
+    content: [
+      'When sales executives track leads in spreadsheets or a disconnected CRM while operations teams manage stock and invoicing inside an ERP, vital customer commitments frequently fall through the cracks during handover.',
+      'Sales representatives often quote items without checking live warehouse availability or pending customer credit limits—leading to delayed dispatches, margin erosion, and frustrated clients.',
+      'By integrating Zoho CRM, Salesforce, or Frappe CRM directly with ERPNext and TallyPrime, every won deal converts automatically into a validated Sales Order complete with accurate pricing tiers, tax rules, and delivery schedules.',
+      'Lead capture pipelines from website contact forms, WhatsApp Business APIs, and inbound phone calls are routed instantaneously to the right regional sales manager with automated follow-up reminders and SLA escalation alerts.',
+      'Inside the CRM view, account managers can inspect live ERP stock levels, recent dispatch tracking numbers, and overdue invoice balances before picking up the phone with a client.',
+      'Aircom Technologies builds clean, fault-tolerant REST webhook integrations that unify marketing attribution, pipeline forecasting, and post-sales billing into a seamless revenue engine.'
+    ],
+    tags: ['CRM Integration', 'Sales Automation', 'WhatsApp API']
+  },
+  {
+    slug: 'enterprise-web-portals-customer-self-service',
+    title: 'Modern B2B Client & Vendor Portals: Automating Orders, Tickets & Invoices Online',
+    category: 'Web & Portals',
+    date: 'August 10, 2026',
+    readTime: '6 min read',
+    author: 'Aircom Digital & Web Practice',
+    image: 'assets/images/service-web.png',
+    heroImage: 'assets/images/service-web.png',
+    excerpt: 'Empower distributors, dealers, and enterprise clients with 24/7 self-service portals connected directly to live ERP pricing, inventory, and statements.',
+    content: [
+      'High-growth B2B distributors, manufacturers, and service providers spend enormous support bandwidth answering routine phone calls and WhatsApp messages asking for ledger statements, invoice PDFs, order dispatch statuses, and price lists.',
+      'Replacing repetitive manual requests with a fast, mobile-responsive B2B Customer & Vendor Self-Service Portal dramatically lowers administrative overhead while improving partner satisfaction.',
+      'Built on modern Angular and cloud-native APIs synchronized directly with ERPNext or TallyPrime, authenticated dealers can log in anytime to browse contract-specific catalog pricing, check real-time stock, and place bulk repeat orders in seconds.',
+      'Vendors gain dedicated portal views to submit RFQs, upload GST invoices, track goods receipt notes (GRNs), and monitor upcoming payment schedules without calling accounts payable.',
+      'Integrated support ticketing, automated email/WhatsApp order notifications, and digital payment gateway links shorten invoice collection cycles and keep every stakeholder informed automatically.',
+      'Whether you need a high-converting corporate website, an interactive distributor portal, or a custom operational web application, Aircom Technologies engineers fast, SEO-ready platforms built to scale.'
+    ],
+    tags: ['Web Portals', 'B2B E-Commerce', 'Angular Development']
   }
 ];
 

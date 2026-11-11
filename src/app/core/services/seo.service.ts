@@ -63,10 +63,9 @@ export class SeoService {
       telephone: '+91-77998-99429',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: '#462, Block C, Fourth Floor, CTC, Near ParkLane Hotel',
-        addressLocality: 'Secunderabad',
+        streetAddress: 'Plot No.12, Simhadri Nagar Colony, Near PBDAV School',
+        addressLocality: 'Hyderabad',
         addressRegion: 'Telangana',
-        postalCode: '500003',
         addressCountry: 'IN'
       }
     };

@@ -258,11 +258,11 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
         <div class="section-header" appScrollReveal="up">
           <div class="eyebrow-row">
             <span class="eyebrow-line"></span>
-            <span class="eyebrow-text">Why Choose Aircom?</span>
+            <span class="eyebrow-text">{{ whySectionHeader.eyebrow }}</span>
             <span class="eyebrow-line right"></span>
           </div>
-          <h2>Building a Smarter, Stronger &amp; More Connected Business</h2>
-          <p>Click any pillar below to explore its visual architecture and enterprise impact.</p>
+          <h2>{{ whySectionHeader.heading }}</h2>
+          <p>{{ whySectionHeader.description }}</p>
         </div>
 
         <div class="why-grid" #whyGrid>
@@ -403,9 +403,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   stats = HERO_STATS;
   services: ServiceItem[] = SERVICES_DATA;
-  about: any = ABOUT_CONTENT;
-  pillars = ABOUT_PILLARS;
-  whyItems = WHY_CHOOSE_ITEMS;
+  about: any = { ...ABOUT_CONTENT };
+  pillars = ABOUT_PILLARS.map((p) => ({ ...p }));
+  whySectionHeader = {
+    eyebrow: 'Why Choose Aircom?',
+    heading: 'Building a Smarter, Stronger & More Connected Business',
+    description: 'Click any pillar below to explore its visual architecture and enterprise impact.'
+  };
+  whyItems = WHY_CHOOSE_ITEMS.map((w) => ({ ...w }));
   products = PRODUCTS_DATA;
   industries = INDUSTRIES_DATA;
   hero = this.content.currentSettings.hero || {
@@ -444,20 +449,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.services = this.content.currentServices;
     this.products = this.content.currentProducts;
     this.industries = this.content.currentIndustries;
-    if (this.content.currentSettings.hero) {
-      this.hero = { ...this.hero, ...this.content.currentSettings.hero };
-    }
-    if (this.content.currentSettings.about) {
-      this.about = { ...this.about, ...this.content.currentSettings.about };
-    }
+    this.applySettings(this.content.currentSettings);
 
     this.content.services$.subscribe((s) => (this.services = s));
     this.content.products$.subscribe((p) => (this.products = p));
     this.content.industries$.subscribe((i) => (this.industries = i));
-    this.content.settings$.subscribe((st) => {
-      if (st.hero) this.hero = { ...this.hero, ...st.hero };
-      if (st.about) this.about = { ...this.about, ...st.about };
-    });
+    this.content.settings$.subscribe((st) => this.applySettings(st));
 
     this.seo.updateSeo({
       title: 'Aircom Technologies | ERPNext, Tally Integration & IT Solutions',
@@ -467,6 +464,35 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       keywords:
         'ERPNext Implementation, ERPNext Customization, TallyPrime Integration, HRMS Software, Biometric Attendance Integration, CRM Integration, IT Infrastructure Services, Cloud Hosting Solutions, Business Automation, Web Development Services'
     });
+  }
+
+  private applySettings(st: any): void {
+    if (!st) return;
+    if (st.hero) {
+      this.hero = { ...this.hero, ...st.hero };
+      if (Array.isArray(st.hero.stats) && st.hero.stats.length > 0) {
+        this.stats = st.hero.stats;
+        this.typedValues.set(this.stats.map((s) => s.value));
+      }
+    }
+    if (st.about) {
+      this.about = { ...this.about, ...st.about };
+      this.pillars = this.pillars.map((p) => {
+        if (p.key === 'vision' && st.about.vision) return { ...p, summary: st.about.vision };
+        if (p.key === 'mission' && st.about.mission) return { ...p, summary: st.about.mission };
+        return p;
+      });
+    }
+    if (st.whyChooseUs) {
+      this.whySectionHeader = {
+        eyebrow: st.whyChooseUs.eyebrow || this.whySectionHeader.eyebrow,
+        heading: st.whyChooseUs.heading || this.whySectionHeader.heading,
+        description: st.whyChooseUs.description || this.whySectionHeader.description
+      };
+      if (Array.isArray(st.whyChooseUs.items) && st.whyChooseUs.items.length > 0) {
+        this.whyItems = st.whyChooseUs.items;
+      }
+    }
   }
 
   ngAfterViewInit(): void {

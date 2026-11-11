@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ABOUT_CONTENT, ABOUT_PILLARS, HERO_STATS, WHY_CHOOSE_ITEMS } from '../../core/data/site.data';
+import { ContentService } from '../../core/services/content.service';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
 import { SeoService } from '../../core/services/seo.service';
 import { BreadcrumbComponent } from '../../shared/components/breadcrumb/breadcrumb.component';
@@ -34,7 +35,7 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
           <div appScrollReveal="right">
             <h2 style="font-size:1.85rem;margin-bottom:14px;">Bridging Enterprise Software &amp; Resilient Infrastructure</h2>
             <p style="color:#334155;margin-bottom:18px;">
-              Headquartered in Secunderabad, Telangana, Aircom Technologies has spent over 17 years helping growing enterprises across India and global markets modernize operations. Unlike single-discipline vendors, our engineers unite ERPNext, TallyPrime accounting sync, HRMS &amp; biometric hardware, CRM workflows, and cloud/on-premise IT infrastructure under one accountable roof.
+              Headquartered at Plot No.12, Simhadri Nagar Colony, Near PBDAV School, Hyderabad, Telangana, Aircom Technologies has spent over 17 years helping growing enterprises across India and global markets modernize operations. Unlike single-discipline vendors, our engineers unite ERPNext, TallyPrime accounting sync, HRMS &amp; biometric hardware, CRM workflows, and cloud/on-premise IT infrastructure under one accountable roof.
             </p>
             <div class="card-grid-2">
               @for (stat of stats; track stat.label; let idx = $index) {
@@ -134,19 +135,41 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
 })
 export class AboutComponent implements OnInit {
   private readonly seo = inject(SeoService);
+  private readonly content = inject(ContentService);
   readonly dialogs = inject(DialogLauncherService);
-  readonly about = ABOUT_CONTENT;
-  readonly pillars = ABOUT_PILLARS;
-  readonly stats = HERO_STATS;
-  readonly whyItems = WHY_CHOOSE_ITEMS;
+  about: any = { ...ABOUT_CONTENT };
+  pillars = ABOUT_PILLARS.map((p) => ({ ...p }));
+  stats = HERO_STATS;
+  whyItems = WHY_CHOOSE_ITEMS.map((w) => ({ ...w }));
 
   ngOnInit(): void {
+    this.applySettings(this.content.currentSettings);
+    this.content.settings$.subscribe((st) => this.applySettings(st));
+
     this.seo.updateSeo({
       title: 'About Aircom Technologies | Trusted IT & ERP Partner Since 2009',
       description:
         'Founded in 2009, Aircom Technologies delivers ERPNext, TallyPrime integration, HRMS, cloud hosting, and enterprise IT infrastructure solutions.',
       path: '/about'
     });
+  }
+
+  private applySettings(st: any): void {
+    if (!st) return;
+    if (st.about) {
+      this.about = { ...this.about, ...st.about };
+      this.pillars = this.pillars.map((p) => {
+        if (p.key === 'vision' && st.about.vision) return { ...p, summary: st.about.vision };
+        if (p.key === 'mission' && st.about.mission) return { ...p, summary: st.about.mission };
+        return p;
+      });
+    }
+    if (st.hero?.stats?.length) {
+      this.stats = st.hero.stats;
+    }
+    if (st.whyChooseUs?.items?.length) {
+      this.whyItems = st.whyChooseUs.items;
+    }
   }
 
   openPillar(pillar: (typeof ABOUT_PILLARS)[number]): void {

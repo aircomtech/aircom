@@ -738,7 +738,7 @@
             </div>
 
             <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
-              @for (item of why.items; track item.title; let idx = $index) {
+              @for (item of why.items; track $index; let idx = $index) {
                 <div class="panel-card">
                   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                     <h3 style="margin:0;">Pillar #{{ idx + 1 }}: {{ item.title }}</h3>
@@ -756,8 +756,16 @@
                     <textarea rows="3" [(ngModel)]="item.description"></textarea>
                   </div>
                   <div class="form-group">
-                    <label>Image Asset URL</label>
-                    <input type="text" [(ngModel)]="item.image" />
+                    <label>Pillar Picture</label>
+                    <div class="image-preview-box" style="margin-bottom: 8px;">
+                      <img [src]="item.image || 'assets/images/service-erpnext.png'" [alt]="item.title" />
+                    </div>
+                    <div class="media-controls">
+                      <input type="text" [(ngModel)]="item.image" placeholder="Image URL or upload picture..." />
+                      <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'why_item', property: idx.toString() })">
+                        Upload Picture
+                      </button>
+                    </div>
                   </div>
                 </div>
               }

@@ -104,7 +104,7 @@ import { DialogLauncherService } from '../../../core/services/dialog-launcher.se
 })
 export class CtaBannerComponent {
   @Input() title = 'Let’s Architect Your Next ERP or Infrastructure Upgrade';
-  @Input() subtitle = 'Speak directly with our solutions architects in Secunderabad for a tailored rollout roadmap.';
+  @Input() subtitle = 'Speak directly with our solutions architects in Hyderabad for a tailored rollout roadmap.';
   @Input() preselectedService?: string;
   readonly dialogs = inject(DialogLauncherService);
 }
