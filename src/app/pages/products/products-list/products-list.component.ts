@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PRODUCTS_DATA } from '../../../core/data/site.data';
+import { ProductItem } from '../../../core/models/site.models';
+import { ContentService } from '../../../core/services/content.service';
 import { DialogLauncherService } from '../../../core/services/dialog-launcher.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
@@ -60,10 +62,14 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
 })
 export class ProductsListComponent implements OnInit {
   private readonly seo = inject(SeoService);
+  private readonly content = inject(ContentService);
   readonly dialogs = inject(DialogLauncherService);
-  readonly products = PRODUCTS_DATA;
+  products: ProductItem[] = PRODUCTS_DATA;
 
   ngOnInit(): void {
+    this.products = this.content.currentProducts;
+    this.content.products$.subscribe((p) => (this.products = p));
+
     this.seo.updateSeo({
       title: 'Enterprise Product Solutions | Aircom Technologies',
       description:

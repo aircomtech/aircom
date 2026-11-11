@@ -24,6 +24,7 @@ import {
 } from '../../core/data/site.data';
 import { ProductItem, ServiceItem } from '../../core/models/site.models';
 import { AnimationService } from '../../core/services/animation.service';
+import { ContentService } from '../../core/services/content.service';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
 import { SeoService } from '../../core/services/seo.service';
 import { ContactSectionComponent } from '../../shared/components/contact-section/contact-section.component';
@@ -40,12 +41,12 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
     <section class="hero-section" #heroSection (mousemove)="onHeroMouseMove($event)">
       <!-- Desktop animated hero visual (image copy 2.png) -->
       <div class="hero-bg-desktop" #heroParallaxDesktop aria-hidden="true">
-        <img src="assets/images/hero-desktop.png" alt="Enterprise Digital Globe and Cloud Technology" class="hero-img-desktop" />
+        <img [src]="hero.desktopBgImage || 'assets/images/hero-desktop.png'" alt="Enterprise Digital Globe and Cloud Technology" class="hero-img-desktop" />
       </div>
 
       <!-- Mobile animated hero visual (image copy 3.png) -->
       <div class="hero-bg-mobile" #heroParallaxMobile aria-hidden="true">
-        <img src="assets/images/hero-mobile.png" alt="Enterprise Digital Globe Mobile Visual" class="hero-img-mobile" />
+        <img [src]="hero.mobileBgImage || 'assets/images/hero-mobile.png'" alt="Enterprise Digital Globe Mobile Visual" class="hero-img-mobile" />
       </div>
 
       <div class="hero-gradient-overlay" aria-hidden="true"></div>
@@ -53,29 +54,29 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       <div class="container hero-container">
         <div class="hero-content">
           <div class="hero-eyebrow">
-            <span>INNOVATIVE &bull; SCALABLE &bull; RELIABLE</span>
+            <span>{{ hero.eyebrow || 'INNOVATIVE • SCALABLE • RELIABLE' }}</span>
             <span class="eyebrow-bar"></span>
           </div>
 
           <h1 class="hero-title">
-            Enterprise Technology Solutions for a
-            <span class="highlight-orange">Smarter Tomorrow</span>
+            {{ hero.title || 'Enterprise Technology Solutions for a' }}
+            <span class="highlight-orange">{{ hero.titleHighlight || 'Smarter Tomorrow' }}</span>
           </h1>
 
           <p class="hero-desc">
-            At Aircom Technologies, we deliver cutting-edge ERP solutions, IT infrastructure, enterprise integrations, and digital services to help businesses grow with innovation and efficiency.
+            {{ hero.description || 'At Aircom Technologies, we deliver cutting-edge ERP solutions, IT infrastructure, enterprise integrations, and digital services to help businesses grow with innovation and efficiency.' }}
           </p>
 
           <div class="hero-cta-row">
-            <a href="#services-section" class="btn-orange hero-btn">
-              <span>Explore Our Services</span>
+            <a [href]="hero.primaryCtaHref || '#services-section'" class="btn-orange hero-btn">
+              <span>{{ hero.primaryCtaText || 'Explore Our Services' }}</span>
               <span aria-hidden="true">→</span>
             </a>
             <button type="button" class="btn-outline-navy hero-btn" (click)="dialogs.openContact()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
-              <span>Contact Us</span>
+              <span>{{ hero.secondaryCtaText || 'Contact Us' }}</span>
             </button>
           </div>
         </div>
@@ -398,13 +399,27 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly anim = inject(AnimationService);
   readonly dialogs = inject(DialogLauncherService);
 
-  readonly stats = HERO_STATS;
-  readonly services = SERVICES_DATA;
-  readonly about = ABOUT_CONTENT;
-  readonly pillars = ABOUT_PILLARS;
-  readonly whyItems = WHY_CHOOSE_ITEMS;
-  readonly products = PRODUCTS_DATA;
-  readonly industries = INDUSTRIES_DATA;
+  private readonly content = inject(ContentService);
+
+  stats = HERO_STATS;
+  services: ServiceItem[] = SERVICES_DATA;
+  about: any = ABOUT_CONTENT;
+  pillars = ABOUT_PILLARS;
+  whyItems = WHY_CHOOSE_ITEMS;
+  products = PRODUCTS_DATA;
+  industries = INDUSTRIES_DATA;
+  hero = this.content.currentSettings.hero || {
+    eyebrow: 'INNOVATIVE • SCALABLE • RELIABLE',
+    title: 'Enterprise Technology Solutions for a',
+    titleHighlight: 'Smarter Tomorrow',
+    description: 'At Aircom Technologies, we deliver cutting-edge ERP solutions, IT infrastructure, enterprise integrations, and digital services to help businesses grow with innovation and efficiency.',
+    primaryCtaText: 'Explore Our Services',
+    primaryCtaHref: '#services-section',
+    secondaryCtaText: 'Contact Us',
+    secondaryCtaHref: '/contact',
+    desktopBgImage: 'assets/images/hero-desktop.png',
+    mobileBgImage: 'assets/images/hero-mobile.png'
+  };
 
   readonly typedValues = signal<string[]>(HERO_STATS.map((s) => s.value));
   readonly typingActive = signal<boolean[]>(HERO_STATS.map(() => false));
@@ -425,6 +440,25 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private autoScrollPaused = false;
 
   ngOnInit(): void {
+    // Dynamic content subscription for live sync
+    this.services = this.content.currentServices;
+    this.products = this.content.currentProducts;
+    this.industries = this.content.currentIndustries;
+    if (this.content.currentSettings.hero) {
+      this.hero = { ...this.hero, ...this.content.currentSettings.hero };
+    }
+    if (this.content.currentSettings.about) {
+      this.about = { ...this.about, ...this.content.currentSettings.about };
+    }
+
+    this.content.services$.subscribe((s) => (this.services = s));
+    this.content.products$.subscribe((p) => (this.products = p));
+    this.content.industries$.subscribe((i) => (this.industries = i));
+    this.content.settings$.subscribe((st) => {
+      if (st.hero) this.hero = { ...this.hero, ...st.hero };
+      if (st.about) this.about = { ...this.about, ...st.about };
+    });
+
     this.seo.updateSeo({
       title: 'Aircom Technologies | ERPNext, Tally Integration & IT Solutions',
       description:

@@ -1,8 +1,9 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, HostListener, inject, PLATFORM_ID, signal } from '@angular/core';
+import { Component, HostListener, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CONTACT_INFO, MAIN_NAV_ITEMS } from '../../core/data/site.data';
+import { ContentService } from '../../core/services/content.service';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
 import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-logo.component';
 import { TechIconComponent } from '../../shared/components/tech-icon/tech-icon.component';
@@ -193,15 +194,30 @@ import { TechIconComponent } from '../../shared/components/tech-icon/tech-icon.c
     </header>
   `
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly content = inject(ContentService);
   readonly dialogs = inject(DialogLauncherService);
-  readonly contact = CONTACT_INFO;
-  readonly navItems = MAIN_NAV_ITEMS;
+
+  contact = CONTACT_INFO;
+  navItems = MAIN_NAV_ITEMS;
 
   readonly scrolled = signal(false);
   readonly mobileOpen = signal(false);
   readonly expandedGroup = signal<string | null>('Services');
+
+  ngOnInit(): void {
+    if (this.content.currentSettings.contactInfo) {
+      this.contact = { ...this.contact, ...this.content.currentSettings.contactInfo };
+    }
+    if (this.content.currentSettings.header?.navItems) {
+      this.navItems = this.content.currentSettings.header.navItems;
+    }
+    this.content.settings$.subscribe((st) => {
+      if (st.contactInfo) this.contact = { ...this.contact, ...st.contactInfo };
+      if (st.header?.navItems) this.navItems = st.header.navItems;
+    });
+  }
 
   @HostListener('window:scroll')
   onScroll(): void {

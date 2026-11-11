@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CONTACT_INFO, SERVICES_DATA } from '../../core/data/site.data';
+import { ContentService } from '../../core/services/content.service';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
 import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-logo.component';
 
@@ -103,9 +104,31 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
     </footer>
   `
 })
-export class FooterComponent {
-  readonly contact = CONTACT_INFO;
+export class FooterComponent implements OnInit {
+  private readonly content = inject(ContentService);
   readonly dialogs = inject(DialogLauncherService);
-  readonly featuredServices = SERVICES_DATA.slice(0, 6);
+
+  contact = CONTACT_INFO;
+  featuredServices = SERVICES_DATA.slice(0, 6);
+  copyrightText = `© ${new Date().getFullYear()} Aircom Technologies. All Rights Reserved.`;
+
+  ngOnInit(): void {
+    if (this.content.currentSettings.contactInfo) {
+      this.contact = { ...this.contact, ...this.content.currentSettings.contactInfo };
+    }
+    if (this.content.currentSettings.footer?.copyrightText) {
+      this.copyrightText = this.content.currentSettings.footer.copyrightText;
+    }
+    this.featuredServices = this.content.currentServices.slice(0, 6);
+
+    this.content.settings$.subscribe((st) => {
+      if (st.contactInfo) this.contact = { ...this.contact, ...st.contactInfo };
+      if (st.footer?.copyrightText) this.copyrightText = st.footer.copyrightText;
+    });
+
+    this.content.services$.subscribe((svcs) => {
+      this.featuredServices = svcs.slice(0, 6);
+    });
+  }
 }
 

@@ -1,0 +1,1122 @@
+<div class="admin-layout" [class.sidebar-collapsed]="sidebarCollapsed()">
+  <!-- Toast Notification -->
+  @if (toastMessage(); as toast) {
+    <div class="toast-notification" [class]="'toast-' + toast.type">
+      <div class="toast-dot"></div>
+      <span class="toast-text">{{ toast.text }}</span>
+      <button class="toast-close" (click)="toastMessage.set(null)">✕</button>
+    </div>
+  }
+
+  <!-- Mobile Sidebar Backdrop -->
+  @if (mobileSidebarOpen()) {
+    <div class="mobile-sidebar-backdrop" (click)="mobileSidebarOpen.set(false)"></div>
+  }
+
+  <!-- 1. SIDEBAR -->
+  <aside class="admin-sidebar" [class.mobile-open]="mobileSidebarOpen()">
+    <div class="sidebar-header">
+      <div class="brand-row">
+        <app-aircom-logo [height]="36"></app-aircom-logo>
+        <span class="admin-tag">CMS</span>
+      </div>
+      <button class="btn-toggle-sidebar" (click)="sidebarCollapsed.set(!sidebarCollapsed())" title="Toggle Sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+          <line x1="9" y1="3" x2="9" y2="21"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Live Sync Status Indicator -->
+    <div class="sync-indicator-card">
+      <div class="pulse-indicator" [class.active]="isLiveSyncActive()"></div>
+      <div class="sync-text">
+        <span class="sync-title">Realtime Engine</span>
+        <span class="sync-sub">{{ isLiveSyncActive() ? 'Live Sync Active' : 'Supabase Connected' }}</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <!-- CORE -->
+      <div class="nav-section-title">CORE</div>
+      <button class="nav-item" [class.active]="activeModule() === 'overview'" (click)="setModule('overview')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="7" height="9" x="3" y="3" rx="1"/>
+          <rect width="7" height="5" x="14" y="3" rx="1"/>
+          <rect width="7" height="9" x="14" y="12" rx="1"/>
+          <rect width="7" height="5" x="3" y="16" rx="1"/>
+        </svg>
+        <span>Dashboard Overview</span>
+      </button>
+
+      <!-- WEBSITE CONTENT -->
+      <div class="nav-section-title">WEBSITE CONTENT</div>
+      <button class="nav-item" [class.active]="activeModule() === 'hero'" (click)="setModule('hero')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+          <polyline points="2 17 12 22 22 17"/>
+          <polyline points="2 12 12 17 22 12"/>
+        </svg>
+        <span>Hero Section</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'header'" (click)="setModule('header')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        <span>Header & Navigation</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'about'" (click)="setModule('about')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span>About Company</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'why_us'" (click)="setModule('why_us')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        <span>Why Choose Us</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'statistics'" (click)="setModule('statistics')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        <span>Statistics & Counters</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'footer'" (click)="setModule('footer')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="20" height="14" x="2" y="5" rx="2"/>
+          <line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <span>Footer Management</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'seo'" (click)="setModule('seo')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <span>SEO Management</span>
+      </button>
+
+      <!-- SERVICES & ERP -->
+      <div class="nav-section-title">SERVICES & ERP</div>
+      <button class="nav-item" [class.active]="activeModule() === 'services'" (click)="setModule('services')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="20" height="14" x="2" y="3" rx="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        <span>All Services (CRUD)</span>
+        <span class="nav-badge">{{ servicesList().length }}</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'erpnext'" (click)="setModule('erpnext')">
+        <span class="sub-bullet"></span>
+        <span>ERPNext Implementation</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'hrms'" (click)="setModule('hrms')">
+        <span class="sub-bullet"></span>
+        <span>HRMS & Payroll</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'biometric'" (click)="setModule('biometric')">
+        <span class="sub-bullet"></span>
+        <span>Biometric Integration</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'crm'" (click)="setModule('crm')">
+        <span class="sub-bullet"></span>
+        <span>CRM & Salesforce</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'tally'" (click)="setModule('tally')">
+        <span class="sub-bullet"></span>
+        <span>TallyPrime Integration</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'infrastructure'" (click)="setModule('infrastructure')">
+        <span class="sub-bullet"></span>
+        <span>IT Infrastructure & AMC</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'digital'" (click)="setModule('digital')">
+        <span class="sub-bullet"></span>
+        <span>Digital & Web Solutions</span>
+      </button>
+
+      <!-- PRODUCTS & INDUSTRIES -->
+      <div class="nav-section-title">PRODUCTS & SECTORS</div>
+      <button class="nav-item" [class.active]="activeModule() === 'products'" (click)="setModule('products')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m7.5 4.27 9 5.15"/>
+          <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+          <path d="m3.3 7 8.7 5 8.7-5"/>
+          <path d="M12 22V12"/>
+        </svg>
+        <span>Products Management</span>
+        <span class="nav-badge">{{ productsList().length }}</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'industries'" (click)="setModule('industries')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="16" height="20" x="4" y="2" rx="2" ry="2"/>
+          <path d="M9 22v-4h6v4"/>
+          <path d="M8 6h.01"/>
+          <path d="M16 6h.01"/>
+          <path d="M8 10h.01"/>
+          <path d="M16 10h.01"/>
+          <path d="M8 14h.01"/>
+          <path d="M16 14h.01"/>
+        </svg>
+        <span>Industries Management</span>
+        <span class="nav-badge">{{ industriesList().length }}</span>
+      </button>
+
+      <!-- MEDIA & LEADS -->
+      <div class="nav-section-title">OPERATIONS</div>
+      <button class="nav-item" [class.active]="activeModule() === 'media'" (click)="setModule('media')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+          <circle cx="9" cy="9" r="2"/>
+          <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+        </svg>
+        <span>Cloudinary Media Library</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'inquiries'" (click)="setModule('inquiries')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="20" height="16" x="2" y="4" rx="2"/>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
+        <span>Contact Enquiries</span>
+        @if (dashboardStats().newInquiries > 0) {
+          <span class="nav-badge badge-alert">{{ dashboardStats().newInquiries }} New</span>
+        }
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'contact_info'" (click)="setModule('contact_info')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <span>Contact Information</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'activity'" (click)="setModule('activity')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        <span>Activity Logs</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'settings'" (click)="setModule('settings')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        <span>Database & Cloudinary</span>
+      </button>
+
+      <div class="nav-divider"></div>
+
+      <button class="nav-item btn-logout" (click)="logout()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>Log Out</span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- 2. MAIN CONTENT AREA -->
+  <main class="admin-main">
+    <!-- TOP NAVIGATION BAR -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" (click)="mobileSidebarOpen.set(true)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="breadcrumb-trail">
+          <span class="crumb-root">Admin</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-active">{{ formatSectionName(activeModule()) }}</span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="/" target="_blank" class="btn-view-site">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          <span>View Public Website</span>
+        </a>
+
+        <div class="admin-user-badge">
+          <div class="user-avatar">{{ adminEmail().charAt(0).toUpperCase() }}</div>
+          <span class="user-name">{{ adminEmail() }}</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT BODY BY MODULE -->
+    <div class="admin-body">
+
+      <!-- ==================================================== -->
+      <!-- MODULE: OVERVIEW -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'overview') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Dashboard Overview</h2>
+              <p class="subtitle">Live status, metrics, and instant content management shortcuts.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-action-primary" (click)="openMediaUploadModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>Upload Media</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Metric Cards -->
+          <div class="stats-grid">
+            <div class="kpi-card" (click)="setModule('services')">
+              <div class="kpi-icon icon-blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect width="20" height="14" x="2" y="3" rx="2"/>
+                  <line x1="8" y1="21" x2="16" y2="21"/>
+                  <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-val">{{ dashboardStats().totalServices }}</span>
+                <span class="kpi-label">Active Services</span>
+              </div>
+            </div>
+
+            <div class="kpi-card" (click)="setModule('products')">
+              <div class="kpi-icon icon-indigo">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+                </svg>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-val">{{ dashboardStats().totalProducts }}</span>
+                <span class="kpi-label">Product Categories</span>
+              </div>
+            </div>
+
+            <div class="kpi-card" (click)="setModule('industries')">
+              <div class="kpi-icon icon-cyan">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect width="16" height="20" x="4" y="2" rx="2"/>
+                </svg>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-val">{{ dashboardStats().totalIndustries }}</span>
+                <span class="kpi-label">Industry Sectors</span>
+              </div>
+            </div>
+
+            <div class="kpi-card" (click)="setModule('inquiries')">
+              <div class="kpi-icon icon-amber">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect width="20" height="16" x="2" y="4" rx="2"/>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-val">{{ dashboardStats().totalInquiries }}</span>
+                <span class="kpi-label">Total Inquiries</span>
+                @if (dashboardStats().newInquiries > 0) {
+                  <span class="kpi-sub-alert">{{ dashboardStats().newInquiries }} pending action</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Shortcuts Row -->
+          <div class="dashboard-panels-grid">
+            <!-- Recent Inquiries Panel -->
+            <div class="panel-card">
+              <div class="panel-card-header">
+                <h3>Latest Inquiries</h3>
+                <button class="btn-text" (click)="setModule('inquiries')">View All →</button>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Name / Company</th>
+                      <th>Service Interest</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (inq of inquiriesList().slice(0, 5); track inq.id) {
+                      <tr>
+                        <td>
+                          <strong>{{ inq.name }}</strong>
+                          <div class="text-muted small">{{ inq.company || inq.email }}</div>
+                        </td>
+                        <td>{{ inq.service || 'General' }}</td>
+                        <td>
+                          <span class="status-pill status-{{ inq.status }}">{{ inq.status }}</span>
+                        </td>
+                        <td class="text-muted small">{{ inq.created_at | date:'short' }}</td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="4" class="empty-state">No inquiries recorded yet.</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Activity Logs Panel -->
+            <div class="panel-card">
+              <div class="panel-card-header">
+                <h3>Recent CMS Changes</h3>
+                <button class="btn-text" (click)="setModule('activity')">View Logs →</button>
+              </div>
+              <div class="activity-feed">
+                @for (log of activityLogs().slice(0, 6); track log.created_at) {
+                  <div class="activity-feed-item">
+                    <div class="feed-bullet"></div>
+                    <div class="feed-content">
+                      <div class="feed-title">
+                        <span class="action-tag">{{ log.action }}</span>
+                        <strong>{{ log.module }}</strong>
+                      </div>
+                      <div class="feed-time">{{ log.created_at | date:'mediumTime' }} by {{ log.user_email }}</div>
+                    </div>
+                  </div>
+                } @empty {
+                  <div class="empty-state">No recent activity logged.</div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: HERO SECTION -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'hero') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Hero Section Management</h2>
+              <p class="subtitle">Customize the main home page headline, CTA buttons, background graphics, and key badges.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-save-publish" (click)="saveSettingsSection('hero')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                  <polyline points="17 21 17 13 7 13 7 21"/>
+                  <polyline points="7 3 7 8 15 8"/>
+                </svg>
+                <span>Publish Hero Changes</span>
+              </button>
+            </div>
+          </div>
+
+          @if (siteSettings().hero; as hero) {
+            <div class="edit-grid">
+              <div class="panel-card form-column">
+                <h3>Content & Messaging</h3>
+                <div class="form-group">
+                  <label>Eyebrow Badge Text</label>
+                  <input type="text" [(ngModel)]="hero.eyebrow" placeholder="INNOVATIVE • SCALABLE • RELIABLE" />
+                </div>
+
+                <div class="form-group">
+                  <label>Main Headline</label>
+                  <input type="text" [(ngModel)]="hero.title" placeholder="Enterprise Technology Solutions for a" />
+                </div>
+
+                <div class="form-group">
+                  <label>Headline Highlighted Word (Orange)</label>
+                  <input type="text" [(ngModel)]="hero.titleHighlight" placeholder="Smarter Tomorrow" />
+                </div>
+
+                <div class="form-group">
+                  <label>Description Paragraph</label>
+                  <textarea rows="4" [(ngModel)]="hero.description"></textarea>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group flex-1">
+                    <label>Primary CTA Label</label>
+                    <input type="text" [(ngModel)]="hero.primaryCtaText" />
+                  </div>
+                  <div class="form-group flex-1">
+                    <label>Primary CTA Destination URL</label>
+                    <input type="text" [(ngModel)]="hero.primaryCtaHref" />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group flex-1">
+                    <label>Secondary CTA Label</label>
+                    <input type="text" [(ngModel)]="hero.secondaryCtaText" />
+                  </div>
+                  <div class="form-group flex-1">
+                    <label>Secondary CTA Destination URL</label>
+                    <input type="text" [(ngModel)]="hero.secondaryCtaHref" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Visual Media Column -->
+              <div class="panel-card media-column">
+                <h3>Visual Backgrounds</h3>
+                
+                <div class="media-upload-block">
+                  <label>Desktop Background Image</label>
+                  <div class="image-preview-box">
+                    <img [src]="hero.desktopBgImage || 'assets/images/hero-desktop.png'" alt="Desktop Hero" />
+                  </div>
+                  <div class="media-controls">
+                    <input type="text" [(ngModel)]="hero.desktopBgImage" placeholder="Image URL" />
+                    <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'hero', property: 'desktopBgImage' })">
+                      Change via Cloudinary
+                    </button>
+                  </div>
+                </div>
+
+                <div class="media-upload-block">
+                  <label>Mobile Background Image</label>
+                  <div class="image-preview-box preview-mobile">
+                    <img [src]="hero.mobileBgImage || 'assets/images/hero-mobile.png'" alt="Mobile Hero" />
+                  </div>
+                  <div class="media-controls">
+                    <input type="text" [(ngModel)]="hero.mobileBgImage" placeholder="Image URL" />
+                    <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'hero', property: 'mobileBgImage' })">
+                      Change via Cloudinary
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: SERVICES CRUD -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'services') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Services Management (All 10 Services)</h2>
+              <p class="subtitle">Edit service offerings, overview descriptions, bullet highlights, and hero graphics.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-action-primary" (click)="addNewService()">
+                + Add New Service
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Title & Category</th>
+                    <th>Slug</th>
+                    <th>Key Highlights</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (svc of servicesList(); track svc.slug) {
+                    <tr>
+                      <td>
+                        <strong>{{ svc.title }}</strong>
+                        <div class="text-muted small">{{ svc.category }}</div>
+                      </td>
+                      <td><code>/services/{{ svc.slug }}</code></td>
+                      <td>
+                        <span class="badge-item">{{ (svc.highlights || []).join(', ') || 'Standard' }}</span>
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn-icon" (click)="selectedService.set(svc)" title="Edit Service">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                          </button>
+                          <button class="btn-icon btn-danger" (click)="deleteService(svc)" title="Delete Service">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <polyline points="3 6 5 6 21 6"/>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Edit Service Modal / Slide-over -->
+          @if (selectedService(); as editSvc) {
+            <div class="modal-backdrop" (click)="selectedService.set(null)">
+              <div class="modal-card modal-lg" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Edit Service: {{ editSvc.title }}</h3>
+                  <button class="btn-close" (click)="selectedService.set(null)">✕</button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Service Title</label>
+                      <input type="text" [(ngModel)]="editSvc.title" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>URL Slug</label>
+                      <input type="text" [(ngModel)]="editSvc.slug" />
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Category</label>
+                      <input type="text" [(ngModel)]="editSvc.category" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Tagline</label>
+                      <input type="text" [(ngModel)]="editSvc.tagline" />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Short Description (Card Summary)</label>
+                    <textarea rows="2" [(ngModel)]="editSvc.shortDesc"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Full Overview Description</label>
+                    <textarea rows="4" [(ngModel)]="editSvc.overview"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Hero Image</label>
+                    <div class="media-controls">
+                      <input type="text" [(ngModel)]="editSvc.heroImage" placeholder="Image URL" />
+                      <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'service', property: 'heroImage' })">
+                        Cloudinary Upload
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn-cancel" (click)="selectedService.set(null)">Cancel</button>
+                  <button class="btn-save-publish" (click)="saveService(editSvc)">Save & Publish</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- SPECIALIZED ERP & SERVICE MODULES -->
+      <!-- ==================================================== -->
+      @if (['erpnext', 'hrms', 'biometric', 'crm', 'tally', 'infrastructure', 'digital'].includes(activeModule())) {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>{{ formatSectionName(activeModule()) }} Management</h2>
+              <p class="subtitle">Dedicated configuration panel for {{ formatSectionName(activeModule()) }}.</p>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <p>You can edit and manage this service directly from the <strong>All Services</strong> catalog or modify its custom content parameters below:</p>
+            <div class="quick-link-box">
+              <button class="btn-action-primary" (click)="setModule('services')">
+                Open in Services CRUD Catalog →
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: PRODUCTS -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'products') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Products Management</h2>
+              <p class="subtitle">Cloud ERP, Business Analytics, Inventory & Warehouse, POS, and HRMS Portal products.</p>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Slug</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (prod of productsList(); track prod.slug) {
+                    <tr>
+                      <td><strong>{{ prod.title }}</strong></td>
+                      <td>{{ prod.categoryLabel }}</td>
+                      <td><code>/products/{{ prod.slug }}</code></td>
+                      <td>
+                        <button class="btn-action-outline btn-sm" (click)="selectedProduct.set(prod)">Edit Details</button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Edit Product Modal -->
+          @if (selectedProduct(); as p) {
+            <div class="modal-backdrop" (click)="selectedProduct.set(null)">
+              <div class="modal-card modal-lg" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Edit Product: {{ p.title }}</h3>
+                  <button class="btn-close" (click)="selectedProduct.set(null)">✕</button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label>Product Title</label>
+                    <input type="text" [(ngModel)]="p.title" />
+                  </div>
+                  <div class="form-group">
+                    <label>Category Label</label>
+                    <input type="text" [(ngModel)]="p.categoryLabel" />
+                  </div>
+                  <div class="form-group">
+                    <label>Short Description</label>
+                    <textarea rows="3" [(ngModel)]="p.shortDesc"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Product Image</label>
+                    <div class="media-controls">
+                      <input type="text" [(ngModel)]="p.image" />
+                      <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'product', property: 'image' })">
+                        Upload via Cloudinary
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn-cancel" (click)="selectedProduct.set(null)">Cancel</button>
+                  <button class="btn-save-publish" (click)="saveProduct(p)">Save Product</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: CONTACT INQUIRIES -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'inquiries') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Website Inquiries & Leads</h2>
+              <p class="subtitle">Stored securely in Supabase. Real-time leads received from the website contact forms.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-action-outline" (click)="exportInquiriesCsv()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Export CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters Row -->
+          <div class="filter-bar">
+            <div class="search-input-box">
+              <input
+                type="text"
+                placeholder="Search by name, company, email..."
+                [ngModel]="inquirySearch()"
+                (ngModelChange)="inquirySearch.set($event)"
+              />
+            </div>
+            <div class="status-filter-pills">
+              <button [class.active]="inquiryFilter() === 'all'" (click)="inquiryFilter.set('all')">All</button>
+              <button [class.active]="inquiryFilter() === 'new'" (click)="inquiryFilter.set('new')">New</button>
+              <button [class.active]="inquiryFilter() === 'in_progress'" (click)="inquiryFilter.set('in_progress')">In Progress</button>
+              <button [class.active]="inquiryFilter() === 'contacted'" (click)="inquiryFilter.set('contacted')">Contacted</button>
+              <button [class.active]="inquiryFilter() === 'closed'" (click)="inquiryFilter.set('closed')">Closed</button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Prospect</th>
+                    <th>Contact</th>
+                    <th>Interest</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (inq of filteredInquiries(); track inq.id) {
+                    <tr>
+                      <td>
+                        <strong>{{ inq.name }}</strong>
+                        <div class="text-muted small">{{ inq.company || 'Individual' }}</div>
+                      </td>
+                      <td>
+                        <div><a [href]="'mailto:' + inq.email">{{ inq.email }}</a></div>
+                        @if (inq.phone) {
+                          <div class="small"><a [href]="'tel:' + inq.phone">{{ inq.phone }}</a></div>
+                        }
+                      </td>
+                      <td>{{ inq.service || inq.subject }}</td>
+                      <td class="text-muted small">{{ inq.created_at | date:'short' }}</td>
+                      <td>
+                        <select
+                          [ngModel]="inq.status"
+                          (ngModelChange)="updateInquiryStatus(inq.id, $event)"
+                          class="select-status status-{{ inq.status }}"
+                        >
+                          <option value="new">New</option>
+                          <option value="in_progress">In Progress</option>
+                          <option value="contacted">Contacted</option>
+                          <option value="closed">Closed</option>
+                        </select>
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn-icon" (click)="selectedInquiry.set(inq)" title="View Message">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                              <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                          </button>
+                          <button class="btn-icon btn-danger" (click)="deleteInquiry(inq.id)" title="Delete Inquiry">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <polyline points="3 6 5 6 21 6"/>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="6" class="empty-state">No inquiries found matching your filter criteria.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Inquiry View Modal -->
+          @if (selectedInquiry(); as inq) {
+            <div class="modal-backdrop" (click)="selectedInquiry.set(null)">
+              <div class="modal-card" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Inquiry from {{ inq.name }}</h3>
+                  <button class="btn-close" (click)="selectedInquiry.set(null)">✕</button>
+                </div>
+                <div class="modal-body">
+                  <div class="detail-row"><strong>Email:</strong> {{ inq.email }}</div>
+                  <div class="detail-row"><strong>Phone:</strong> {{ inq.phone || 'N/A' }}</div>
+                  <div class="detail-row"><strong>Company:</strong> {{ inq.company || 'N/A' }}</div>
+                  <div class="detail-row"><strong>Service:</strong> {{ inq.service || inq.subject }}</div>
+                  <div class="detail-row"><strong>Date:</strong> {{ inq.created_at | date:'medium' }}</div>
+                  <div class="detail-message-box">
+                    <strong>Message:</strong>
+                    <p>{{ inq.message }}</p>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <a [href]="'mailto:' + inq.email" class="btn-action-primary">Reply by Email</a>
+                  <button class="btn-cancel" (click)="selectedInquiry.set(null)">Close</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: MEDIA LIBRARY (CLOUDINARY) -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'media') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Cloudinary Media Library</h2>
+              <p class="subtitle">Cloud Name: <code>flppuodw</code> | Upload Preset: <code>ml_default</code></p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-action-primary" (click)="openMediaUploadModal()">
+                + Upload New Image
+              </button>
+            </div>
+          </div>
+
+          <div class="media-library-grid">
+            @for (asset of mediaAssets(); track asset.secure_url) {
+              <div class="media-card">
+                <div class="media-thumb">
+                  <img [src]="asset.secure_url" [alt]="asset.name" />
+                </div>
+                <div class="media-info">
+                  <span class="media-name" [title]="asset.name">{{ asset.name }}</span>
+                  <div class="media-actions">
+                    <button class="btn-text small" (click)="applyUploadedImage(asset.secure_url)">Use</button>
+                    <button class="btn-text text-danger small" (click)="deleteMedia(asset)">Delete</button>
+                  </div>
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-state panel-card" style="grid-column: 1 / -1;">
+                <p>No media files uploaded yet. Click <strong>Upload New Image</strong> to upload to Cloudinary.</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: CONTACT INFO -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'contact_info') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Contact Information Management</h2>
+              <p class="subtitle">Update company phone, WhatsApp number, support email, and headquarters address.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-save-publish" (click)="saveSettingsSection('contactInfo')">
+                Save & Synchronize
+              </button>
+            </div>
+          </div>
+
+          @if (siteSettings().contactInfo; as info) {
+            <div class="panel-card form-column">
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label>Company Display Phone</label>
+                  <input type="text" [(ngModel)]="info.phone" />
+                </div>
+                <div class="form-group flex-1">
+                  <label>WhatsApp Number (With country code, no +)</label>
+                  <input type="text" [(ngModel)]="info.whatsappNumber" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label>Sales Email</label>
+                  <input type="email" [(ngModel)]="info.salesEmail" />
+                </div>
+                <div class="form-group flex-1">
+                  <label>Info Email</label>
+                  <input type="email" [(ngModel)]="info.infoEmail" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Office Address</label>
+                <textarea rows="3" [(ngModel)]="info.address"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>Working Hours</label>
+                <input type="text" [(ngModel)]="info.workingHours" />
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: DATABASE & SETTINGS -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'settings') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Database & Cloudinary Settings</h2>
+              <p class="subtitle">Live backend integration configuration status.</p>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3>Supabase Cloud Integration</h3>
+            <p><strong>Project URL:</strong> <code>https://kzrwkagjsgmufupepghp.supabase.co</code></p>
+            <p><strong>Database Status:</strong> <span class="status-pill status-in_progress">Connected (Schema migration ready)</span></p>
+            <p>To run the initial schema migration in your Supabase project, execute the SQL script located at <code>supabase-schema.sql</code> in your <strong>Supabase SQL Editor</strong>.</p>
+          </div>
+
+          <div class="panel-card" style="margin-top: 20px;">
+            <h3>Cloudinary Cloud Settings</h3>
+            <p><strong>Cloud Name:</strong> <code>flppuodw</code></p>
+            <p><strong>Upload Preset:</strong> <code>ml_default</code></p>
+            <div class="info-note">
+              <strong>Tip:</strong> In your Cloudinary console, verify that <code>ml_default</code> upload preset has <strong>Signing Mode</strong> set to <em>Unsigned</em> (Settings > Upload > Upload presets > Edit 'ml_default' > Unsigned).
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: ACTIVITY LOGS -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'activity') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Audit & Activity Logs</h2>
+              <p class="subtitle">Chronological record of CMS modifications, publishes, and uploads.</p>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Action</th>
+                    <th>Module</th>
+                    <th>Admin User</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (log of activityLogs(); track log.created_at) {
+                    <tr>
+                      <td><span class="action-tag">{{ log.action }}</span></td>
+                      <td><strong>{{ log.module }}</strong></td>
+                      <td>{{ log.user_email }}</td>
+                      <td class="text-muted small">{{ log.created_at | date:'medium' }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="4" class="empty-state">No activity logs recorded yet.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </main>
+
+  <!-- ==================================================== -->
+  <!-- MODAL: CLOUDINARY MEDIA UPLOADER -->
+  <!-- ==================================================== -->
+  @if (uploadModalOpen()) {
+    <div class="modal-backdrop" (click)="closeMediaUploadModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Cloudinary Media Uploader</h3>
+          <button class="btn-close" (click)="closeMediaUploadModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="upload-dropzone">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0BA8EA" stroke-width="1.8">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <h4>Select an image to upload</h4>
+            <p class="text-muted small">Target Cloud: <code>flppuodw</code> | Preset: <code>ml_default</code></p>
+            <input type="file" accept="image/*" (change)="handleFileUpload($event)" [disabled]="uploadingFile()" />
+          </div>
+
+          @if (uploadingFile()) {
+            <div class="upload-progress-state">
+              <div class="spinner"></div>
+              <span>Uploading to Cloudinary...</span>
+            </div>
+          }
+
+          @if (uploadError()) {
+            <div class="alert alert-error" style="margin-top: 14px;">
+              <span>{{ uploadError() }}</span>
+            </div>
+          }
+
+          @if (uploadedImageUrl()) {
+            <div class="upload-success-preview">
+              <img [src]="uploadedImageUrl()" alt="Uploaded preview" />
+              <div class="url-display">
+                <code>{{ uploadedImageUrl() }}</code>
+              </div>
+            </div>
+          }
+
+          <div class="divider-text"><span>OR ENTER DIRECT IMAGE URL</span></div>
+
+          <div class="form-group">
+            <input
+              type="text"
+              placeholder="https://... or assets/images/..."
+              [ngModel]="directUrlInput()"
+              (ngModelChange)="directUrlInput.set($event)"
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-cancel" (click)="closeMediaUploadModal()">Cancel</button>
+          <button
+            class="btn-action-primary"
+            [disabled]="!uploadedImageUrl() && !directUrlInput()"
+            (click)="applyUploadedImage()"
+          >
+            Apply Image
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { SERVICES_DATA } from '../../../core/data/site.data';
+import { ContentService } from '../../../core/services/content.service';
 import { DialogLauncherService } from '../../../core/services/dialog-launcher.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
@@ -159,16 +160,18 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
 export class ServiceDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly seo = inject(SeoService);
+  private readonly content = inject(ContentService);
   readonly dialogs = inject(DialogLauncherService);
 
   private readonly slug = toSignal(this.route.paramMap.pipe(map((p) => p.get('slug') || '')));
-  readonly service = computed(() => SERVICES_DATA.find((item) => item.slug === this.slug()));
+  private readonly servicesList = toSignal(this.content.services$, { initialValue: SERVICES_DATA });
+  readonly service = computed(() => this.servicesList().find((item) => item.slug === this.slug()));
   readonly relatedServices = computed(() => {
     const curr = this.service();
     if (!curr) {
       return [];
     }
-    return SERVICES_DATA.filter((item) => curr.relatedSlugs.includes(item.slug));
+    return this.servicesList().filter((item) => curr.relatedSlugs?.includes(item.slug));
   });
 
   openFeaturePopup(s: (typeof SERVICES_DATA)[number], f: (typeof SERVICES_DATA)[number]['features'][number]): void {

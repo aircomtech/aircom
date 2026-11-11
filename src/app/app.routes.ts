@@ -1,7 +1,26 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layout/main-layout.component';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
+  // Admin Portal Routes
+  {
+    path: 'admin/login',
+    loadComponent: () => import('./admin/login/admin-login.component').then((m) => m.AdminLoginComponent)
+  },
+  {
+    path: 'admin/dashboard',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./admin/dashboard/admin-dashboard.component').then((m) => m.AdminDashboardComponent)
+  },
+  {
+    path: 'admin',
+    redirectTo: 'admin/dashboard',
+    pathMatch: 'full'
+  },
+
+  // Public Website Routes
   {
     path: '',
     component: MainLayoutComponent,

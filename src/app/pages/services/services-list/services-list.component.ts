@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SERVICES_DATA } from '../../../core/data/site.data';
 import { ServiceItem } from '../../../core/models/site.models';
+import { ContentService } from '../../../core/services/content.service';
 import { DialogLauncherService } from '../../../core/services/dialog-launcher.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
@@ -63,10 +64,14 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
 })
 export class ServicesListComponent implements OnInit {
   private readonly seo = inject(SeoService);
+  private readonly content = inject(ContentService);
   readonly dialogs = inject(DialogLauncherService);
-  readonly services = SERVICES_DATA;
+  services: ServiceItem[] = SERVICES_DATA;
 
   ngOnInit(): void {
+    this.services = this.content.currentServices;
+    this.content.services$.subscribe((s) => (this.services = s));
+
     this.seo.updateSeo({
       title: 'IT & ERP Services | Aircom Technologies',
       description:

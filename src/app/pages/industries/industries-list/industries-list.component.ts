@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { INDUSTRIES_DATA } from '../../../core/data/site.data';
+import { IndustryItem } from '../../../core/models/site.models';
+import { ContentService } from '../../../core/services/content.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb.component';
 import { CtaBannerComponent } from '../../../shared/components/cta-banner/cta-banner.component';
@@ -47,9 +49,13 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
 })
 export class IndustriesListComponent implements OnInit {
   private readonly seo = inject(SeoService);
-  readonly industries = INDUSTRIES_DATA;
+  private readonly content = inject(ContentService);
+  industries: IndustryItem[] = INDUSTRIES_DATA;
 
   ngOnInit(): void {
+    this.industries = this.content.currentIndustries;
+    this.content.industries$.subscribe((i) => (this.industries = i));
+
     this.seo.updateSeo({
       title: 'Industries We Serve | Aircom Technologies',
       description:
