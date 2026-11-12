@@ -280,7 +280,7 @@ INSERT INTO public.site_settings (key, data) VALUES (
     "ctaHref": "/contact",
     "logoUrl": "assets/logo/aircom-logo-light.png",
     "logoDarkUrl": "assets/logo/aircom-logo-dark.png",
-    "faviconUrl": "assets/logo/aircom-mark.svg",
+    "faviconUrl": "assets/logo/favicon.png",
     "navItems": [
       {"label": "Home", "route": "/"},
       {"label": "About Us", "route": "/about"},

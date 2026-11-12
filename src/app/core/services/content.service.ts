@@ -107,7 +107,7 @@ export class ContentService {
     header: {
       logoUrl: 'assets/logo/aircom-logo-light.png',
       logoDarkUrl: 'assets/logo/aircom-logo-dark.png',
-      faviconUrl: 'assets/logo/aircom-mark.svg',
+      faviconUrl: 'assets/logo/favicon.png',
       tagline: CONTACT_INFO.tagline,
       ctaText: 'Get a Quote',
       ctaHref: '/contact',
@@ -221,6 +221,7 @@ export class ContentService {
       const links = Array.from(this.doc.querySelectorAll('link[rel*="icon"]')) as HTMLLinkElement[];
       if (links.length > 0) {
         links.forEach((l) => {
+          l.removeAttribute('type');
           l.href = faviconUrl;
         });
       } else {
