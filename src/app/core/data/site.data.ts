@@ -74,8 +74,8 @@ export const HERO_SLIDER_DEFAULT: HeroSliderConfig = {
       primaryCtaHref: '/services',
       secondaryCtaText: 'Contact Us',
       secondaryCtaHref: '/contact',
-      image: 'assets/images/hero-slide-1.jpg',
-      mobileImage: 'assets/images/hero-slide-1.jpg',
+      image: 'assets/images/hero-slide-1-cloud.png',
+      mobileImage: 'assets/images/hero-slide-1-cloud.png',
       enabled: true,
       order: 1
     },
@@ -138,8 +138,8 @@ export const HERO_SLIDER_DEFAULT: HeroSliderConfig = {
       primaryCtaHref: '/services/biometric',
       secondaryCtaText: 'View HRMS Suite',
       secondaryCtaHref: '/services/hrms',
-      image: 'assets/images/solutions-hero-bg.png',
-      mobileImage: 'assets/images/solutions-hero-bg.png',
+      image: 'assets/images/hero-slide-5-biometric.png',
+      mobileImage: 'assets/images/hero-slide-5-biometric.png',
       enabled: true,
       order: 5
     },
