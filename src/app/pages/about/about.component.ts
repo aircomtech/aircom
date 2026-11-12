@@ -156,6 +156,9 @@ export class AboutComponent implements OnInit {
 
   private applySettings(st: any): void {
     if (!st) return;
+    if (Array.isArray(st.aboutPillars) && st.aboutPillars.length > 0) {
+      this.pillars = st.aboutPillars.map((p: any) => ({ ...p }));
+    }
     if (st.about) {
       this.about = { ...this.about, ...st.about };
       this.pillars = this.pillars.map((p) => {

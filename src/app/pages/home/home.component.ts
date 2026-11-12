@@ -475,6 +475,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.typedValues.set(this.stats.map((s) => s.value));
       }
     }
+    if (Array.isArray(st.aboutPillars) && st.aboutPillars.length > 0) {
+      this.pillars = st.aboutPillars.map((p: any) => ({ ...p }));
+    }
     if (st.about) {
       this.about = { ...this.about, ...st.about };
       this.pillars = this.pillars.map((p) => {

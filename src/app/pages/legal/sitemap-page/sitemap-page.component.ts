@@ -29,6 +29,7 @@ import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/bread
               <li><a routerLink="/services">All Services</a></li>
               <li><a routerLink="/products">All Products</a></li>
               <li><a routerLink="/industries">Industries We Serve</a></li>
+              <li><a routerLink="/partners">Business Partners &amp; Resellers</a></li>
               <li><a routerLink="/blog">Blog &amp; Insights</a></li>
               <li><a routerLink="/contact">Contact Us</a></li>
               <li><a routerLink="/privacy-policy">Privacy Policy</a></li>

@@ -68,6 +68,10 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'partners',
+        loadComponent: () => import('./pages/partners/partners.component').then((m) => m.PartnersComponent)
+      },
+      {
         path: 'blog',
         loadComponent: () => import('./pages/blog/blog-list/blog-list.component').then((m) => m.BlogListComponent)
       },

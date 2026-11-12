@@ -68,6 +68,25 @@ CREATE TABLE IF NOT EXISTS public.industries (
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- 5B. PARTNERS & RESELLERS TABLE
+CREATE TABLE IF NOT EXISTS public.partners (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    slug TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    tier TEXT DEFAULT 'Authorized Partner',
+    category TEXT DEFAULT 'ERP & Accounting',
+    tagline TEXT,
+    short_desc TEXT,
+    overview TEXT,
+    image TEXT,
+    highlights JSONB DEFAULT '[]'::jsonb,
+    accent TEXT DEFAULT '#2457A7',
+    order_index INT DEFAULT 0,
+    is_published BOOLEAN DEFAULT true,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
 -- 6. PROJECTS / CASE STUDIES TABLE
 CREATE TABLE IF NOT EXISTS public.projects (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -147,6 +166,7 @@ ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.industries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.partners ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.blogs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.contact_submissions ENABLE ROW LEVEL SECURITY;
@@ -158,6 +178,7 @@ CREATE POLICY "Public Read Settings" ON public.site_settings FOR SELECT USING (t
 CREATE POLICY "Public Read Services" ON public.services FOR SELECT USING (is_published = true);
 CREATE POLICY "Public Read Products" ON public.products FOR SELECT USING (is_published = true);
 CREATE POLICY "Public Read Industries" ON public.industries FOR SELECT USING (is_published = true);
+CREATE POLICY "Public Read Partners" ON public.partners FOR SELECT USING (is_published = true);
 CREATE POLICY "Public Read Blogs" ON public.blogs FOR SELECT USING (is_published = true);
 CREATE POLICY "Public Read Projects" ON public.projects FOR SELECT USING (is_published = true);
 CREATE POLICY "Public Read Media" ON public.media_assets FOR SELECT USING (true);
@@ -170,6 +191,7 @@ CREATE POLICY "Admin Full Access Settings" ON public.site_settings FOR ALL TO au
 CREATE POLICY "Admin Full Access Services" ON public.services FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin Full Access Products" ON public.products FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin Full Access Industries" ON public.industries FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin Full Access Partners" ON public.partners FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin Full Access Blogs" ON public.blogs FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin Full Access Projects" ON public.projects FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin Full Access Inquiries" ON public.contact_submissions FOR ALL TO authenticated USING (true) WITH CHECK (true);
@@ -181,6 +203,7 @@ CREATE POLICY "Anon Dev Upsert Settings" ON public.site_settings FOR ALL TO anon
 CREATE POLICY "Anon Dev Upsert Services" ON public.services FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Anon Dev Upsert Products" ON public.products FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Anon Dev Upsert Industries" ON public.industries FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "Anon Dev Upsert Partners" ON public.partners FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Anon Dev Upsert Blogs" ON public.blogs FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Anon Dev Upsert Media" ON public.media_assets FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "Anon Dev Upsert Activity" ON public.activity_logs FOR ALL TO anon USING (true) WITH CHECK (true);
@@ -192,6 +215,7 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.site_settings;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.services;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.products;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.industries;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.partners;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.blogs;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.contact_submissions;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.activity_logs;
@@ -256,12 +280,14 @@ INSERT INTO public.site_settings (key, data) VALUES (
     "ctaHref": "/contact",
     "logoUrl": "assets/logo/aircom-logo-light.png",
     "logoDarkUrl": "assets/logo/aircom-logo-dark.png",
+    "faviconUrl": "assets/logo/aircom-mark.svg",
     "navItems": [
       {"label": "Home", "route": "/"},
       {"label": "About Us", "route": "/about"},
       {"label": "Services", "route": "/services"},
       {"label": "Products", "route": "/products"},
       {"label": "Industries", "route": "/industries"},
+      {"label": "Partners", "route": "/partners"},
       {"label": "Blog", "route": "/blog"},
       {"label": "Contact", "route": "/contact"}
     ]

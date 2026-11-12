@@ -37,6 +37,7 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
               <li><a routerLink="/services">Services</a></li>
               <li><a routerLink="/products">Products</a></li>
               <li><a routerLink="/industries">Industries</a></li>
+              <li><a routerLink="/partners">Partners</a></li>
               <li><a routerLink="/blog">Blog</a></li>
               <li><a routerLink="/contact">Contact Us</a></li>
             </ul>
@@ -70,7 +71,7 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
               </li>
               <li>
                 <span class="c-icon">📍</span>
-                <span>{{ contact.address }}</span>
+                <span>{{ contact.address.startsWith('Aircom Technologies') ? contact.address : 'Aircom Technologies — ' + contact.address }}</span>
               </li>
             </ul>
           </div>
@@ -91,17 +92,8 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
           </div>
         </div>
 
-        <!-- Interactive Location Map Section -->
+        <!-- Clean Embedded Location Map -->
         <div class="footer-map-section">
-          <div class="footer-map-header">
-            <div class="map-address-info">
-              <span class="map-badge">📍 HEADQUARTERS LOCATION</span>
-              <h4>Aircom Technologies — {{ contact.address }}</h4>
-            </div>
-            <a [href]="googleMapsDirectUrl" target="_blank" rel="noopener noreferrer" class="map-directions-btn">
-              Open in Google Maps →
-            </a>
-          </div>
           <div class="footer-map-frame">
             <iframe
               [src]="safeMapUrl"

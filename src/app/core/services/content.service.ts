@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, from, of } from 'rxjs';
 import { SupabaseService } from './supabase.service';
@@ -9,16 +10,18 @@ import {
   HERO_STATS,
   INDUSTRIES_DATA,
   MAIN_NAV_ITEMS,
+  PARTNERS_DATA,
   PRODUCTS_DATA,
   SERVICES_DATA,
   WHY_CHOOSE_ITEMS
 } from '../data/site.data';
-import { BlogPost, IndustryItem, NavItem, ProductItem, ServiceItem } from '../models/site.models';
+import { BlogPost, IndustryItem, NavItem, PartnerItem, ProductItem, ServiceItem } from '../models/site.models';
 
 export interface SiteSettingsMap {
   header?: {
     logoUrl?: string;
     logoDarkUrl?: string;
+    faviconUrl?: string;
     tagline?: string;
     ctaText?: string;
     ctaHref?: string;
@@ -97,10 +100,14 @@ export interface MediaAssetRecord {
 @Injectable({ providedIn: 'root' })
 export class ContentService {
   private readonly sb = inject(SupabaseService);
+  private readonly doc = inject(DOCUMENT);
 
   // Reactive state subjects preloaded with static defaults
   private settingsSubject = new BehaviorSubject<SiteSettingsMap>({
     header: {
+      logoUrl: 'assets/logo/aircom-logo-light.png',
+      logoDarkUrl: 'assets/logo/aircom-logo-dark.png',
+      faviconUrl: 'assets/logo/aircom-mark.svg',
       tagline: CONTACT_INFO.tagline,
       ctaText: 'Get a Quote',
       ctaHref: '/contact',
@@ -146,6 +153,7 @@ export class ContentService {
   private servicesSubject = new BehaviorSubject<ServiceItem[]>(SERVICES_DATA);
   private productsSubject = new BehaviorSubject<ProductItem[]>(PRODUCTS_DATA);
   private industriesSubject = new BehaviorSubject<IndustryItem[]>(INDUSTRIES_DATA);
+  private partnersSubject = new BehaviorSubject<PartnerItem[]>(PARTNERS_DATA);
   private blogsSubject = new BehaviorSubject<BlogPost[]>(BLOG_POSTS);
   private liveSyncActiveSubject = new BehaviorSubject<boolean>(false);
   private activityLogsSubject = new BehaviorSubject<ActivityLogRecord[]>([
@@ -198,12 +206,32 @@ export class ContentService {
   public readonly services$ = this.servicesSubject.asObservable();
   public readonly products$ = this.productsSubject.asObservable();
   public readonly industries$ = this.industriesSubject.asObservable();
+  public readonly partners$ = this.partnersSubject.asObservable();
   public readonly blogs$ = this.blogsSubject.asObservable();
   public readonly activityLogs$ = this.activityLogsSubject.asObservable();
   public readonly liveSyncActive$ = this.liveSyncActiveSubject.asObservable();
 
   constructor() {
     this.initDynamicData();
+  }
+
+  public applyFavicon(faviconUrl?: string): void {
+    if (!faviconUrl || !this.doc) return;
+    try {
+      const links = Array.from(this.doc.querySelectorAll('link[rel*="icon"]')) as HTMLLinkElement[];
+      if (links.length > 0) {
+        links.forEach((l) => {
+          l.href = faviconUrl;
+        });
+      } else {
+        const link = this.doc.createElement('link');
+        link.rel = 'icon';
+        link.href = faviconUrl;
+        this.doc.head.appendChild(link);
+      }
+    } catch {
+      // Ignore SSR or DOM error
+    }
   }
 
   // Current synchronous snapshots
@@ -221,6 +249,10 @@ export class ContentService {
 
   get currentIndustries(): IndustryItem[] {
     return this.industriesSubject.value;
+  }
+
+  get currentPartners(): PartnerItem[] {
+    return this.partnersSubject.value;
   }
 
   get currentBlogs(): BlogPost[] {
@@ -308,7 +340,24 @@ export class ContentService {
     } as BlogPost;
   }
 
-  private getDeletedSlugs(collection: 'services' | 'products' | 'industries' | 'blogs'): string[] {
+  private mapDbPartnerToItem(row: any): PartnerItem {
+    const def = PARTNERS_DATA.find((p) => p.slug === row.slug) || ({} as Partial<PartnerItem>);
+    return {
+      ...def,
+      ...row,
+      name: row.name || row.title || def.name || '',
+      tier: row.tier || def.tier || 'Authorized Partner',
+      category: row.category || def.category || 'Technology Partner',
+      tagline: row.tagline || def.tagline || '',
+      shortDesc: row.shortDesc || row.short_desc || def.shortDesc || '',
+      overview: row.overview || row.description || def.overview || '',
+      image: row.image || row.hero_image || def.image || 'assets/images/service-erpnext.png',
+      highlights: Array.isArray(row.highlights) ? row.highlights : (def.highlights || []),
+      accent: row.accent || def.accent || '#2457A7'
+    } as PartnerItem;
+  }
+
+  private getDeletedSlugs(collection: 'services' | 'products' | 'industries' | 'blogs' | 'partners'): string[] {
     try {
       const fromSettings = (this.settingsSubject.value as any)?.deletedItems?.[collection];
       const fromStorage = JSON.parse(localStorage.getItem(`aircom_deleted_${collection}`) || '[]');
@@ -322,7 +371,7 @@ export class ContentService {
     }
   }
 
-  private async markDeletedSlug(collection: 'services' | 'products' | 'industries' | 'blogs', slug: string): Promise<void> {
+  private async markDeletedSlug(collection: 'services' | 'products' | 'industries' | 'blogs' | 'partners', slug: string): Promise<void> {
     try {
       const existing = this.getDeletedSlugs(collection);
       if (!existing.includes(slug)) {
@@ -337,7 +386,7 @@ export class ContentService {
     }
   }
 
-  private async unmarkDeletedSlug(collection: 'services' | 'products' | 'industries' | 'blogs', slug: string): Promise<void> {
+  private async unmarkDeletedSlug(collection: 'services' | 'products' | 'industries' | 'blogs' | 'partners', slug: string): Promise<void> {
     try {
       const existing = this.getDeletedSlugs(collection);
       if (existing.includes(slug)) {
@@ -404,6 +453,19 @@ export class ContentService {
           (merged as any)[normalizedKey] = row.data;
         }
         this.settingsSubject.next(merged);
+        if (merged.header?.faviconUrl) {
+          this.applyFavicon(merged.header.faviconUrl);
+        }
+        if (Array.isArray((merged as any).partners) && (merged as any).partners.length > 0) {
+          this.partnersSubject.next(
+            this.mergeWithDefaults(
+              PARTNERS_DATA,
+              (merged as any).partners,
+              (r) => this.mapDbPartnerToItem(r),
+              this.getDeletedSlugs('partners')
+            )
+          );
+        }
         this.liveSyncActiveSubject.next(true);
       }
 
@@ -470,7 +532,30 @@ export class ContentService {
         this.liveSyncActiveSubject.next(true);
       }
 
-      // 6. Fetch live activity logs
+      // 6. Fetch partners & merge with built-in defaults
+      try {
+        const { data: partnersRows, error: partnersError } = await client
+          .from('partners')
+          .select('*')
+          .eq('is_published', true)
+          .order('order_index', { ascending: true });
+
+        if (!partnersError && partnersRows && partnersRows.length > 0) {
+          this.partnersSubject.next(
+            this.mergeWithDefaults(
+              PARTNERS_DATA,
+              partnersRows,
+              (r) => this.mapDbPartnerToItem(r),
+              this.getDeletedSlugs('partners')
+            )
+          );
+          this.liveSyncActiveSubject.next(true);
+        }
+      } catch {
+        // Fallback already handled via site_settings.partners and PARTNERS_DATA
+      }
+
+      // 7. Fetch live activity logs
       const liveLogs = await this.fetchActivityLogs();
       if (liveLogs && liveLogs.length > 0) {
         this.activityLogsSubject.next(liveLogs);
@@ -501,6 +586,19 @@ export class ContentService {
                     : payload.new.key;
               (current as any)[normalizedKey] = payload.new.data;
               this.settingsSubject.next(current);
+              if (normalizedKey === 'header' && payload.new.data?.faviconUrl) {
+                this.applyFavicon(payload.new.data.faviconUrl);
+              }
+              if (normalizedKey === 'partners' && Array.isArray(payload.new.data)) {
+                this.partnersSubject.next(
+                  this.mergeWithDefaults(
+                    PARTNERS_DATA,
+                    payload.new.data,
+                    (r) => this.mapDbPartnerToItem(r),
+                    this.getDeletedSlugs('partners')
+                  )
+                );
+              }
             }
           }
         )
@@ -575,6 +673,22 @@ export class ContentService {
         )
         .on(
           'postgres_changes',
+          { event: '*', schema: 'public', table: 'partners' },
+          async () => {
+            const { data } = await client
+              .from('partners')
+              .select('*')
+              .eq('is_published', true)
+              .order('order_index', { ascending: true });
+            if (data) {
+              this.partnersSubject.next(
+                this.mergeWithDefaults(PARTNERS_DATA, data, (r) => this.mapDbPartnerToItem(r), this.getDeletedSlugs('partners'))
+              );
+            }
+          }
+        )
+        .on(
+          'postgres_changes',
           { event: '*', schema: 'public', table: 'activity_logs' },
           async (payload: any) => {
             if (payload.new) {
@@ -602,6 +716,9 @@ export class ContentService {
     // 1. Update local reactive state immediately
     const updated = { ...this.settingsSubject.value, [key]: data };
     this.settingsSubject.next(updated);
+    if (key === 'header' && data?.faviconUrl) {
+      this.applyFavicon(data.faviconUrl);
+    }
 
     // 2. Persist to Supabase
     const client = this.sb.getClient();
@@ -873,19 +990,79 @@ export class ContentService {
     return true;
   }
 
+  async savePartner(partner: PartnerItem): Promise<boolean> {
+    await this.unmarkDeletedSlug('partners', partner.slug);
+    const list = [...this.partnersSubject.value];
+    const index = list.findIndex((p) => p.slug === partner.slug);
+    if (index >= 0) {
+      list[index] = { ...partner };
+    } else {
+      list.push({ ...partner });
+    }
+    this.partnersSubject.next(list);
+
+    // Sync via site_settings 'partners' so it works even before creating dedicated partners table
+    await this.saveSetting('partners' as any, list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        const { error } = await client.from('partners').upsert({
+          slug: partner.slug,
+          name: partner.name,
+          tier: partner.tier,
+          category: partner.category,
+          tagline: partner.tagline,
+          short_desc: partner.shortDesc,
+          overview: partner.overview,
+          image: partner.image,
+          highlights: partner.highlights,
+          accent: partner.accent || '#2457A7',
+          is_published: true,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'slug' });
+        if (!error) {
+          await this.logActivity('Save', `Partner: ${partner.name}`);
+        }
+      } catch {
+        // Already synced via site_settings fallback
+      }
+    }
+    return true;
+  }
+
+  async deletePartner(slug: string): Promise<boolean> {
+    const list = this.partnersSubject.value.filter((p) => p.slug !== slug);
+    this.partnersSubject.next(list);
+    await this.markDeletedSlug('partners', slug);
+    await this.saveSetting('partners' as any, list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('partners').delete().eq('slug', slug);
+        await this.logActivity('Delete', `Partner: ${slug}`);
+      } catch {
+        // Ignore if table not yet created
+      }
+    }
+    return true;
+  }
+
   /**
-   * Restores all default backup data (services, products, industries, and blogs)
+   * Restores all default backup data (services, products, industries, partners, and blogs)
    * into live reactive state and persists every record to Supabase.
    */
   async restoreAllDefaultData(): Promise<void> {
-    ['services', 'products', 'industries', 'blogs'].forEach((k) => {
+    ['services', 'products', 'industries', 'blogs', 'partners'].forEach((k) => {
       localStorage.removeItem(`aircom_deleted_${k}`);
     });
-    await this.saveSetting('deletedItems' as any, { services: [], products: [], industries: [], blogs: [] });
+    await this.saveSetting('deletedItems' as any, { services: [], products: [], industries: [], blogs: [], partners: [] });
 
     this.servicesSubject.next([...SERVICES_DATA]);
     this.productsSubject.next([...PRODUCTS_DATA]);
     this.industriesSubject.next([...INDUSTRIES_DATA]);
+    this.partnersSubject.next([...PARTNERS_DATA]);
     this.blogsSubject.next([...BLOG_POSTS]);
 
     for (const s of SERVICES_DATA) {
@@ -897,10 +1074,13 @@ export class ContentService {
     for (const ind of INDUSTRIES_DATA) {
       await this.saveIndustry(ind);
     }
+    for (const ptr of PARTNERS_DATA) {
+      await this.savePartner(ptr);
+    }
     for (const blg of BLOG_POSTS) {
       await this.saveBlog(blg);
     }
-    await this.logActivity('Restore Backup', 'Restored all default Services, Products, Industries & Blog articles');
+    await this.logActivity('Restore Backup', 'Restored all default Services, Products, Industries, Partners & Blog articles');
   }
 
   // --- INQUIRIES MANAGEMENT ---

@@ -3,6 +3,7 @@ import { Component, HostListener, inject, OnInit, PLATFORM_ID, signal } from '@a
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CONTACT_INFO, MAIN_NAV_ITEMS } from '../../core/data/site.data';
+import { NavItem } from '../../core/models/site.models';
 import { ContentService } from '../../core/services/content.service';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
 import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-logo.component';
@@ -200,7 +201,8 @@ export class HeaderComponent implements OnInit {
   readonly dialogs = inject(DialogLauncherService);
 
   contact = CONTACT_INFO;
-  navItems = MAIN_NAV_ITEMS;
+  private rawNavItems: NavItem[] = MAIN_NAV_ITEMS;
+  navItems: NavItem[] = MAIN_NAV_ITEMS;
   ctaText = 'Get a Quote';
 
   readonly scrolled = signal(false);
@@ -211,16 +213,76 @@ export class HeaderComponent implements OnInit {
     if (this.content.currentSettings.contactInfo) {
       this.contact = { ...this.contact, ...this.content.currentSettings.contactInfo };
     }
-    if (this.content.currentSettings.header?.navItems) {
-      this.navItems = this.content.currentSettings.header.navItems;
+    if (this.content.currentSettings.header?.navItems?.length) {
+      this.rawNavItems = this.content.currentSettings.header.navItems;
     }
     if (this.content.currentSettings.header?.ctaText) {
       this.ctaText = this.content.currentSettings.header.ctaText;
     }
+    this.rebuildNavItems();
+
     this.content.settings$.subscribe((st) => {
       if (st.contactInfo) this.contact = { ...this.contact, ...st.contactInfo };
-      if (st.header?.navItems) this.navItems = st.header.navItems;
+      if (st.header?.navItems?.length) {
+        this.rawNavItems = st.header.navItems;
+      }
       if (st.header?.ctaText) this.ctaText = st.header.ctaText;
+      this.rebuildNavItems();
+    });
+
+    this.content.services$.subscribe(() => this.rebuildNavItems());
+    this.content.products$.subscribe(() => this.rebuildNavItems());
+    this.content.industries$.subscribe(() => this.rebuildNavItems());
+  }
+
+  private rebuildNavItems(): void {
+    const items = [...this.rawNavItems];
+    // Ensure Partners page is visible in navigation even if older DB header JSON lacked it
+    if (!items.some((i) => i.route === '/partners')) {
+      const blogIdx = items.findIndex((i) => i.route === '/blog');
+      const partnerNav: NavItem = { label: 'Partners', route: '/partners' };
+      if (blogIdx >= 0) {
+        items.splice(blogIdx, 0, partnerNav);
+      } else {
+        items.push(partnerNav);
+      }
+    }
+
+    this.navItems = items.map((item) => {
+      if (item.route === '/services') {
+        return {
+          ...item,
+          children: this.content.currentServices.map((s) => ({
+            label: s.title,
+            route: `/services/${s.slug}`,
+            description: s.shortDesc,
+            icon: s.icon
+          }))
+        };
+      }
+      if (item.route === '/products') {
+        return {
+          ...item,
+          children: this.content.currentProducts.map((p) => ({
+            label: p.title,
+            route: `/products/${p.slug}`,
+            description: p.shortDesc,
+            icon: p.icon
+          }))
+        };
+      }
+      if (item.route === '/industries') {
+        return {
+          ...item,
+          children: this.content.currentIndustries.map((i) => ({
+            label: i.name,
+            route: `/industries/${i.slug}`,
+            description: i.shortDesc,
+            icon: i.icon
+          }))
+        };
+      }
+      return item;
     });
   }
 

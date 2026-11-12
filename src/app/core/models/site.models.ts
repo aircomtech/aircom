@@ -76,6 +76,20 @@ export interface BlogPost {
   tags: string[];
 }
 
+export interface PartnerItem {
+  slug: string;
+  name: string;
+  tier: string;
+  category: string;
+  tagline: string;
+  shortDesc: string;
+  overview: string;
+  image: string;
+  website?: string;
+  highlights: string[];
+  accent?: string;
+}
+
 export interface ContactInfo {
   companyName: string;
   tagline: string;

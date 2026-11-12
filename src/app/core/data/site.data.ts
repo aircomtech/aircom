@@ -3,6 +3,7 @@ import {
   ContactInfo,
   IndustryItem,
   NavItem,
+  PartnerItem,
   ProductItem,
   ServiceItem
 } from '../models/site.models';
@@ -992,6 +993,165 @@ export const BLOG_POSTS: BlogPost[] = [
   }
 ];
 
+export const PARTNERS_DATA: PartnerItem[] = [
+  {
+    slug: 'frappe-erpnext',
+    name: 'Frappe / ERPNext',
+    tier: 'Official Implementation Partner',
+    category: 'ERP & Accounting',
+    tagline: 'Open-Source Enterprise ERP & Custom App Engineering',
+    shortDesc: 'End-to-end ERPNext rollouts, custom Frappe DocTypes, multi-branch accounting, manufacturing BOMs, and HRMS deployment.',
+    overview:
+      'Aircom Technologies partners with the Frappe/ERPNext ecosystem to build zero-seat-tax, scalable ERP architectures tailored to Indian GST laws and global multi-company workflows.',
+    image: 'assets/images/service-erpnext.png',
+    highlights: ['Custom Frappe Development', 'Multi-Branch Rollout', 'Zero Per-User License Tax'],
+    accent: '#0BA8EA'
+  },
+  {
+    slug: 'tally-solutions',
+    name: 'Tally Solutions (TallyPrime)',
+    tier: 'Authorized Integration & TDL Partner',
+    category: 'ERP & Accounting',
+    tagline: 'Automated TallyPrime Voucher Sync & Custom TDL Add-ons',
+    shortDesc: 'Seamless two-way XML/API connectors bridging TallyPrime accounting with ERPNext, web portals, and retail POS systems.',
+    overview:
+      'We empower finance teams and Chartered Accountants with automated sales/purchase voucher posting, HSN/GST validation, and bespoke Tally Definition Language extensions.',
+    image: 'assets/images/service-tally.png',
+    highlights: ['Two-Way Tally Sync', 'Custom TDL Reports', 'GST & E-Invoice Compliance'],
+    accent: '#2457A7'
+  },
+  {
+    slug: 'zoho-corporation',
+    name: 'Zoho (CRM, Books & Desk)',
+    tier: 'Authorized Solution Partner',
+    category: 'CRM & Cloud',
+    tagline: 'Zoho Suite Configuration & ERP API Connectors',
+    shortDesc: 'Full implementation and bi-directional API synchronization across Zoho CRM, Zoho Books, Zoho Desk, and ERPNext.',
+    overview:
+      'Unify sales lead pipelines, customer support tickets, and backend warehouse/billing operations through fault-tolerant Zoho integration workflows.',
+    image: 'assets/images/service-crm.png',
+    highlights: ['Zoho CRM Automation', 'Zoho Books Sync', 'Omnichannel Lead Capture'],
+    accent: '#F59E0B'
+  },
+  {
+    slug: 'salesforce',
+    name: 'Salesforce Enterprise CRM',
+    tier: 'Technology Integration Partner',
+    category: 'CRM & Cloud',
+    tagline: 'Enterprise Sales Pipeline & Order Synchronization',
+    shortDesc: 'Connect Salesforce opportunity pipelines directly to ERP inventory, credit limits, and automated invoicing.',
+    overview:
+      'Bridge front-office enterprise CRM forecasting with back-office fulfillment so every closed deal converts cleanly into a verified Sales Order.',
+    image: 'assets/images/product-automation.png',
+    highlights: ['Salesforce REST APIs', 'Lead-to-Cash Sync', 'Live Stock Visibility'],
+    accent: '#0BA8EA'
+  },
+  {
+    slug: 'amazon-web-services',
+    name: 'Amazon Web Services (AWS)',
+    tier: 'Cloud Infrastructure Partner',
+    category: 'CRM & Cloud',
+    tagline: 'High-Availability Cloud Hosting & Encrypted Backups',
+    shortDesc: 'Managed EC2, RDS, S3 immutable backup vaults, and auto-scaling cloud architecture for ERPNext & enterprise portals.',
+    overview:
+      'Run mission-critical ERP and web workloads on hardened AWS clusters monitored 24/7 with automated off-site snapshot verification.',
+    image: 'assets/images/service-cloud.png',
+    highlights: ['99.9% Uptime SLA', 'Automated S3 Snapshots', 'Hardened VPC Security'],
+    accent: '#F59E0B'
+  },
+  {
+    slug: 'microsoft-azure-365',
+    name: 'Microsoft Azure & Microsoft 365',
+    tier: 'Authorized Cloud & Licensing Reseller',
+    category: 'CRM & Cloud',
+    tagline: 'Enterprise Cloud Workloads, Entra ID & M365 Suites',
+    shortDesc: 'Authorized licensing, cloud server deployment, Azure AD SSO integration, and enterprise email security across branches.',
+    overview:
+      'Simplify Microsoft 365 procurement, SharePoint collaboration, and Azure hybrid server hosting backed by Aircom L1–L3 engineering support.',
+    image: 'assets/images/product-cloud-erp.png',
+    highlights: ['Authorized M365 Reseller', 'Azure Hybrid Cloud', 'Single Sign-On & Security'],
+    accent: '#2457A7'
+  },
+  {
+    slug: 'zkteco-biometrics',
+    name: 'ZKTeco India',
+    tier: 'Authorized Hardware Reseller',
+    category: 'Biometrics & Security',
+    tagline: 'Fingerprint, RFID & AI Facial Attendance Terminals',
+    shortDesc: 'Supply, installation, and real-time cloud push-protocol integration of ZKTeco biometric devices directly into HRMS.',
+    overview:
+      'Eliminate manual USB exports and proxy attendance with multi-branch ZKTeco devices synchronized instantaneously to shift & payroll rules.',
+    image: 'assets/images/service-biometric.png',
+    highlights: ['Authorized ZKTeco Stock', 'Cloud Push Sync', 'Multi-Branch Payroll Sync'],
+    accent: '#102A63'
+  },
+  {
+    slug: 'essl-security',
+    name: 'eSSL Security',
+    tier: 'Authorized Reseller & Integrator',
+    category: 'Biometrics & Security',
+    tagline: 'Time Attendance, Access Control & Turnstile Systems',
+    shortDesc: 'Enterprise biometric hardware, door access controllers, and automated ADMS server attendance integration.',
+    overview:
+      'Equip factories, warehouses, and offices with dependable eSSL biometric hardware backed by on-site installation and AMC maintenance.',
+    image: 'assets/images/service-hrms.png',
+    highlights: ['ADMS Real-Time Push', 'Door Access Control', 'Factory & Site Rollouts'],
+    accent: '#2457A7'
+  },
+  {
+    slug: 'hikvision-surveillance',
+    name: 'Hikvision Enterprise Security',
+    tier: 'Authorized Reseller & Systems Integrator',
+    category: 'Biometrics & Security',
+    tagline: 'AI Facial Terminals, IP CCTV & Command Monitoring',
+    shortDesc: 'High-definition IP surveillance, NVR storage architecture, and facial recognition attendance & gate security.',
+    overview:
+      'Protect showrooms, warehouses, and manufacturing floors with structured CCTV networking, remote mobile viewing, and AI access terminals.',
+    image: 'assets/images/product-security.png',
+    highlights: ['AI Facial Recognition', 'IP CCTV & NVR Setup', 'VLAN Isolated Security'],
+    accent: '#0BA8EA'
+  },
+  {
+    slug: 'fortinet-sophos',
+    name: 'Fortinet & Sophos Cybersecurity',
+    tier: 'Authorized Firewall & Security Reseller',
+    category: 'IT Infrastructure',
+    tagline: 'Next-Gen UTM Firewalls, Dual-WAN Failover & Branch VPNs',
+    shortDesc: 'Authorized firewall hardware licensing, IPS/IDS threat protection, and encrypted site-to-site VPNs across offices.',
+    overview:
+      'Keep multi-branch ERP billing and internal servers resilient against ransomware and ISP outages with dual-WAN enterprise firewall policies.',
+    image: 'assets/images/service-infrastructure.png',
+    highlights: ['UTM Firewall Appliances', 'Site-to-Site Branch VPN', 'Dual-ISP Auto Failover'],
+    accent: '#102A63'
+  },
+  {
+    slug: 'dell-hpe-infrastructure',
+    name: 'Dell Technologies & HPE',
+    tier: 'Authorized Hardware Reseller',
+    category: 'IT Infrastructure',
+    tagline: 'Enterprise Rack Servers, Switches & Workstations',
+    shortDesc: 'On-premise servers, RAID storage arrays, structured Cat6A/Fiber switching, and corporate desktop fleets.',
+    overview:
+      'Full lifecycle hardware procurement, rack assembly, virtualization setup, and proactive annual maintenance contracts (AMC).',
+    image: 'assets/images/product-it-support.png',
+    highlights: ['Authorized Server Reseller', 'Virtualization & RAID', 'Comprehensive IT AMC'],
+    accent: '#2457A7'
+  },
+  {
+    slug: 'shopify-woocommerce',
+    name: 'Shopify & WooCommerce',
+    tier: 'Omnichannel Sync Partner',
+    category: 'ERP & Accounting',
+    tagline: 'Live E-Commerce Stock, Orders & GST Invoice Sync',
+    shortDesc: 'Connect D2C storefronts directly with ERPNext warehouses and TallyPrime accounting for real-time order fulfillment.',
+    overview:
+      'Eliminate overselling and manual order entry by syncing web orders, customer ledgers, and dispatch statuses automatically.',
+    image: 'assets/images/industry-retail.png',
+    highlights: ['Real-Time Stock Sync', 'Automated Order Pull', 'D2C & B2B Storefronts'],
+    accent: '#F59E0B'
+  }
+];
+
 export const MAIN_NAV_ITEMS: NavItem[] = [
   { label: 'Home', route: '/' },
   { label: 'About Us', route: '/about' },
@@ -1006,16 +1166,6 @@ export const MAIN_NAV_ITEMS: NavItem[] = [
     }))
   },
   {
-    label: 'Industries',
-    route: '/industries',
-    children: INDUSTRIES_DATA.map((i) => ({
-      label: i.name,
-      route: `/industries/${i.slug}`,
-      description: i.shortDesc,
-      icon: i.icon
-    }))
-  },
-  {
     label: 'Products',
     route: '/products',
     children: PRODUCTS_DATA.map((p) => ({
@@ -1025,6 +1175,17 @@ export const MAIN_NAV_ITEMS: NavItem[] = [
       icon: p.icon
     }))
   },
+  {
+    label: 'Industries',
+    route: '/industries',
+    children: INDUSTRIES_DATA.map((i) => ({
+      label: i.name,
+      route: `/industries/${i.slug}`,
+      description: i.shortDesc,
+      icon: i.icon
+    }))
+  },
+  { label: 'Partners', route: '/partners' },
   { label: 'Blog', route: '/blog' },
   { label: 'Contact Us', route: '/contact' }
 ];

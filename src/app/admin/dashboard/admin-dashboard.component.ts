@@ -12,7 +12,7 @@ import {
 } from '../../core/services/content.service';
 import { CloudinaryService } from '../../core/services/cloudinary.service';
 import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-logo.component';
-import { ServiceItem, ProductItem, IndustryItem, BlogPost } from '../../core/models/site.models';
+import { ServiceItem, ProductItem, IndustryItem, BlogPost, PartnerItem } from '../../core/models/site.models';
 
 type AdminModule =
   | 'overview'
@@ -74,6 +74,7 @@ export class AdminDashboardComponent implements OnInit {
   servicesList = signal<ServiceItem[]>([]);
   productsList = signal<ProductItem[]>([]);
   industriesList = signal<IndustryItem[]>([]);
+  partnersList = signal<PartnerItem[]>([]);
   blogsList = signal<BlogPost[]>([]);
   inquiriesList = signal<InquiryRecord[]>([]);
   activityLogs = signal<ActivityLogRecord[]>([]);
@@ -87,6 +88,7 @@ export class AdminDashboardComponent implements OnInit {
   selectedService = signal<ServiceItem | null>(null);
   selectedProduct = signal<ProductItem | null>(null);
   selectedIndustry = signal<IndustryItem | null>(null);
+  selectedPartner = signal<PartnerItem | null>(null);
   selectedBlog = signal<BlogPost | null>(null);
   selectedInquiry = signal<InquiryRecord | null>(null);
 
@@ -120,6 +122,7 @@ export class AdminDashboardComponent implements OnInit {
     const totalServices = this.servicesList().length;
     const totalProducts = this.productsList().length;
     const totalIndustries = this.industriesList().length;
+    const totalPartners = this.partnersList().length;
     const totalBlogs = this.blogsList().length;
     const inquiries = this.inquiriesList();
     const newInquiries = inquiries.filter((i) => i.status === 'new').length;
@@ -128,6 +131,7 @@ export class AdminDashboardComponent implements OnInit {
       totalServices,
       totalProducts,
       totalIndustries,
+      totalPartners,
       totalBlogs,
       totalInquiries: inquiries.length,
       newInquiries,
@@ -143,6 +147,7 @@ export class AdminDashboardComponent implements OnInit {
     this.servicesList.set(JSON.parse(JSON.stringify(this.content.currentServices)));
     this.productsList.set(JSON.parse(JSON.stringify(this.content.currentProducts)));
     this.industriesList.set(JSON.parse(JSON.stringify(this.content.currentIndustries)));
+    this.partnersList.set(JSON.parse(JSON.stringify(this.content.currentPartners)));
     this.blogsList.set(JSON.parse(JSON.stringify(this.content.currentBlogs)));
     this.activityLogs.set(this.content.currentActivityLogs);
 
@@ -165,6 +170,10 @@ export class AdminDashboardComponent implements OnInit {
 
     this.content.industries$.subscribe((industries) => {
       this.industriesList.set(JSON.parse(JSON.stringify(industries)));
+    });
+
+    this.content.partners$.subscribe((partners) => {
+      this.partnersList.set(JSON.parse(JSON.stringify(partners)));
     });
 
     this.content.blogs$.subscribe((blogs) => {
@@ -287,6 +296,49 @@ export class AdminDashboardComponent implements OnInit {
         await this.content.deleteIndustry(industry.slug);
         this.showToast('info', `Industry deleted.`);
       } catch (e: any) {
+        this.showToast('error', `Delete failed.`);
+      }
+    }
+  }
+
+  addNewPartner(): void {
+    this.selectedPartner.set({
+      slug: 'partner-' + Date.now(),
+      name: 'New Partner / Reseller Company',
+      tier: 'Authorized Partner',
+      category: 'ERP & Accounting',
+      tagline: 'Enterprise Technology Alliance & Certified Integration',
+      shortDesc: 'Authorized software licensing, deployment, and managed technical support.',
+      overview: 'Detailed overview of our strategic technology alliance and reseller deliverables.',
+      image: 'assets/images/service-erpnext.png',
+      highlights: ['Authorized Reseller', 'Certified Engineering', 'SLA Support'],
+      accent: '#2457A7'
+    });
+  }
+
+  async savePartner(partner: PartnerItem): Promise<void> {
+    try {
+      await this.content.savePartner(partner);
+      this.selectedPartner.set(null);
+      this.showToast('success', `Partner "${partner.name}" published and synchronized live!`);
+    } catch (e: any) {
+      this.showToast('error', `Error saving partner: ${e.message}`);
+    }
+  }
+
+  updatePartnerHighlights(partner: PartnerItem, rawValue: string): void {
+    partner.highlights = rawValue
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
+  async deletePartner(partner: PartnerItem): Promise<void> {
+    if (confirm(`Delete partner "${partner.name}"?`)) {
+      try {
+        await this.content.deletePartner(partner.slug);
+        this.showToast('info', `Partner "${partner.name}" deleted.`);
+      } catch {
         this.showToast('error', `Delete failed.`);
       }
     }
@@ -563,6 +615,57 @@ export class AdminDashboardComponent implements OnInit {
     }));
   }
 
+  addWhyPillar(): void {
+    const why = this.siteSettings().whyChooseUs || {};
+    const items = [...(why.items || [])];
+    items.push({
+      title: 'New Value Pillar',
+      icon: 'award',
+      accent: '#2457A7',
+      image: 'assets/images/why-innovative.png',
+      subtitle: 'Enterprise Advantage',
+      description: 'Key operational strength delivered by Aircom Technologies.',
+      highlights: ['Proven Reliability', 'Fast Rollout', '24/7 Support'],
+      details: []
+    });
+    this.siteSettings.update((s) => ({
+      ...s,
+      whyChooseUs: { ...why, items }
+    }));
+  }
+
+  deleteWhyPillar(index: number): void {
+    const why = this.siteSettings().whyChooseUs || {};
+    const items = [...(why.items || [])];
+    items.splice(index, 1);
+    this.siteSettings.update((s) => ({
+      ...s,
+      whyChooseUs: { ...why, items }
+    }));
+  }
+
+  addAboutPillar(): void {
+    const pillars = [...(this.siteSettings().aboutPillars || [])];
+    pillars.push({
+      key: 'pillar-' + Date.now(),
+      title: 'New Foundation Pillar',
+      icon: 'award',
+      accent: '#2457A7',
+      image: 'assets/images/pillar-vision.png',
+      subtitle: 'Core Enterprise Commitment',
+      summary: 'Description of our enterprise standard and commitment.',
+      highlights: ['Trusted Excellence'],
+      details: []
+    });
+    this.siteSettings.update((s) => ({ ...s, aboutPillars: pillars }));
+  }
+
+  deleteAboutPillar(index: number): void {
+    const pillars = [...(this.siteSettings().aboutPillars || [])];
+    pillars.splice(index, 1);
+    this.siteSettings.update((s) => ({ ...s, aboutPillars: pillars }));
+  }
+
   async applyUploadedImage(urlToApply?: string, notify = true): Promise<void> {
     const url = urlToApply || this.uploadedImageUrl() || this.directUrlInput();
     if (!url) return;
@@ -584,6 +687,14 @@ export class AdminDashboardComponent implements OnInit {
         (about as any)[target.property] = url;
         this.siteSettings.update((s) => ({ ...s, about }));
         await this.content.saveSetting('about', about);
+      } else if (target.target === 'about_pillar') {
+        const pillars = [...(this.siteSettings().aboutPillars || [])];
+        const idx = parseInt(target.property, 10);
+        if (!isNaN(idx) && pillars[idx]) {
+          pillars[idx] = { ...pillars[idx], image: url };
+          this.siteSettings.update((s) => ({ ...s, aboutPillars: pillars }));
+          await this.content.saveSetting('aboutPillars', pillars);
+        }
       } else if (target.target === 'seo') {
         const seo = { ...this.siteSettings().seo };
         (seo as any)[target.property] = url;
@@ -628,6 +739,14 @@ export class AdminDashboardComponent implements OnInit {
           this.selectedIndustry.set(ind);
           await this.content.saveIndustry(ind);
         }
+      } else if (target.target === 'partner') {
+        if (this.selectedPartner()) {
+          const ptr = { ...this.selectedPartner()! };
+          (ptr as any)[target.property] = url;
+          ptr.image = url;
+          this.selectedPartner.set(ptr);
+          await this.content.savePartner(ptr);
+        }
       } else if (target.target === 'blog') {
         if (this.selectedBlog()) {
           const blg = { ...this.selectedBlog()! };
@@ -661,11 +780,23 @@ export class AdminDashboardComponent implements OnInit {
     this.activityLogs.set(logs);
   }
 
+  async saveAboutSection(): Promise<void> {
+    try {
+      await this.content.saveSetting('about', this.siteSettings().about);
+      if (this.siteSettings().aboutPillars) {
+        await this.content.saveSetting('aboutPillars', this.siteSettings().aboutPillars);
+      }
+      this.showToast('success', 'About Company & Foundation Pillars published and synchronized!');
+    } catch (e: any) {
+      this.showToast('error', `Failed to publish: ${e.message}`);
+    }
+  }
+
   async restoreAllBackup(): Promise<void> {
     try {
-      this.showToast('info', 'Restoring all default Industries, Blogs, Services & Products...');
+      this.showToast('info', 'Restoring all default Industries, Partners, Blogs, Services & Products...');
       await this.content.restoreAllDefaultData();
-      this.showToast('success', 'All backup data (10 Services, 5 Products, 8 Industries, 6 Blogs) restored live!');
+      this.showToast('success', 'All backup data (10 Services, 5 Products, 8 Industries, 12 Partners, 6 Blogs) restored live!');
     } catch (e: any) {
       this.showToast('error', `Restore failed: ${e.message}`);
     }

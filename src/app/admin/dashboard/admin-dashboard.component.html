@@ -157,6 +157,16 @@
         <span>Industries Management</span>
         <span class="nav-badge">{{ industriesList().length }}</span>
       </button>
+      <button class="nav-item" [class.active]="activeModule() === 'partners'" (click)="setModule('partners')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Partners &amp; Resellers</span>
+        <span class="nav-badge">{{ partnersList().length }}</span>
+      </button>
       <button class="nav-item" [class.active]="activeModule() === 'blogs'" (click)="setModule('blogs')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M4 19.5 A2.5 2.5 0 0 1 6.5 17 H20"/>
@@ -311,6 +321,19 @@
               <div class="kpi-content">
                 <span class="kpi-val">{{ dashboardStats().totalIndustries }}</span>
                 <span class="kpi-label">Industry Sectors</span>
+              </div>
+            </div>
+
+            <div class="kpi-card" (click)="setModule('partners')">
+              <div class="kpi-icon" style="background:#EFF6FF;color:#2457A7;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                </svg>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-val">{{ dashboardStats().totalPartners }}</span>
+                <span class="kpi-label">Partners &amp; Resellers</span>
               </div>
             </div>
 
@@ -518,6 +541,19 @@
                     </button>
                   </div>
                 </div>
+
+                <div class="media-upload-block">
+                  <label>Website Favicon (Browser Tab Icon)</label>
+                  <div class="image-preview-box" style="background:#FFFFFF;border:1px solid #CBD5E1;height:82px;display:flex;align-items:center;justify-content:center;">
+                    <img [src]="h.faviconUrl || 'assets/logo/aircom-mark.svg'" alt="Website Favicon" style="width:48px;height:48px;object-fit:contain;" />
+                  </div>
+                  <div class="media-controls">
+                    <input type="text" [(ngModel)]="h.faviconUrl" placeholder="Favicon URL (.ico, .png, .svg)" />
+                    <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'header', property: 'faviconUrl' })">
+                      Upload Picture
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           }
@@ -624,6 +660,36 @@
                 </div>
               </div>
             </div>
+
+            <!-- Hero Highlight Badges / Stats Row -->
+            <div class="panel-card" style="margin-top:20px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <h3 style="margin:0;">Hero Highlight Badges ({{ hero.stats?.length || 0 }})</h3>
+                <button class="btn-action-outline btn-sm" (click)="addStatCounter()">+ Add Badge</button>
+              </div>
+              <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                @for (st of (hero.stats || []); track $index; let idx = $index) {
+                  <div class="panel-card" style="border:1px solid #E2E8F0;padding:14px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                      <strong>Badge #{{ idx + 1 }}</strong>
+                      <button class="btn-icon btn-danger" (click)="deleteStatCounter(idx)" title="Delete Badge">✕</button>
+                    </div>
+                    <div class="form-group">
+                      <label>Value (e.g. 17+)</label>
+                      <input type="text" [(ngModel)]="st.value" />
+                    </div>
+                    <div class="form-group">
+                      <label>Title Label</label>
+                      <input type="text" [(ngModel)]="st.label" />
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                      <label>Sublabel</label>
+                      <input type="text" [(ngModel)]="st.sublabel" />
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
           }
         </div>
       }
@@ -636,10 +702,10 @@
           <div class="view-header">
             <div>
               <h2>About Company Management</h2>
-              <p class="subtitle">Edit company background, Mission, Vision, 8 Core Values, and headquarters imagery.</p>
+              <p class="subtitle">Edit company background, Mission, Vision, 8 Core Values, Foundation Pillars, and headquarters imagery.</p>
             </div>
             <div class="header-actions">
-              <button class="btn-save-publish" (click)="saveSettingsSection('about')">
+              <button class="btn-save-publish" (click)="saveAboutSection()">
                 Save &amp; Publish About
               </button>
             </div>
@@ -701,6 +767,48 @@
                 </div>
               </div>
             </div>
+
+            <!-- Foundation Pillars (Vision, Mission, Values Cards) -->
+            <div class="panel-card" style="margin-top:20px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <h3 style="margin:0;">Foundation Showcase Cards ({{ siteSettings().aboutPillars?.length || 0 }})</h3>
+                <button class="btn-action-outline btn-sm" (click)="addAboutPillar()">+ Add Foundation Card</button>
+              </div>
+              <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+                @for (pillar of (siteSettings().aboutPillars || []); track $index; let idx = $index) {
+                  <div class="panel-card" style="border:1px solid #E2E8F0;padding:16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                      <strong>{{ pillar.title }}</strong>
+                      <button class="btn-icon btn-danger" (click)="deleteAboutPillar(idx)" title="Delete Card">✕</button>
+                    </div>
+                    <div class="form-group">
+                      <label>Card Title</label>
+                      <input type="text" [(ngModel)]="pillar.title" />
+                    </div>
+                    <div class="form-group">
+                      <label>Subtitle</label>
+                      <input type="text" [(ngModel)]="pillar.subtitle" />
+                    </div>
+                    <div class="form-group">
+                      <label>Summary</label>
+                      <textarea rows="2" [(ngModel)]="pillar.summary"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                      <label>Card Picture</label>
+                      <div class="image-preview-box" style="margin-bottom:8px;height:120px;">
+                        <img [src]="pillar.image || 'assets/images/pillar-vision.png'" [alt]="pillar.title" />
+                      </div>
+                      <div class="media-controls">
+                        <input type="text" [(ngModel)]="pillar.image" placeholder="Image URL" />
+                        <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'about_pillar', property: idx.toString() })">
+                          Upload Picture
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
           }
         </div>
       }
@@ -713,9 +821,10 @@
           <div class="view-header">
             <div>
               <h2>Why Choose Aircom Section</h2>
-              <p class="subtitle">Manage the 4 core value proposition pillars and operational strengths.</p>
+              <p class="subtitle">Manage the core value proposition pillars, pictures, and operational strengths.</p>
             </div>
-            <div class="header-actions">
+            <div class="header-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-action-outline" (click)="addWhyPillar()">+ Add Pillar</button>
               <button class="btn-save-publish" (click)="saveSettingsSection('whyChooseUs')">
                 Save &amp; Publish Pillars
               </button>
@@ -745,6 +854,7 @@
                 <div class="panel-card">
                   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                     <h3 style="margin:0;">Pillar #{{ idx + 1 }}: {{ item.title }}</h3>
+                    <button class="btn-icon btn-danger" (click)="deleteWhyPillar(idx)" title="Delete Pillar">✕</button>
                   </div>
                   <div class="form-group">
                     <label>Title</label>
@@ -1376,6 +1486,138 @@
       }
 
       <!-- ==================================================== -->
+      <!-- MODULE: PARTNERS & RESELLERS -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'partners') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Business Partners &amp; Authorized Resellers</h2>
+              <p class="subtitle">Manage technology partners, authorized resellers, pictures, and partnership badges displayed on the /partners page.</p>
+            </div>
+            <div class="header-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-action-outline" (click)="restoreAllBackup()">↻ Restore All Partners</button>
+              <button class="btn-action-primary" (click)="addNewPartner()">+ Add Partner / Reseller</button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 80px;">Picture</th>
+                    <th>Company Name</th>
+                    <th>Tier / Standing</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (ptr of partnersList(); track ptr.slug) {
+                    <tr>
+                      <td>
+                        <div class="table-img-cell">
+                          <img [src]="ptr.image || 'assets/images/service-erpnext.png'" [alt]="ptr.name" class="table-thumb" />
+                        </div>
+                      </td>
+                      <td>
+                        <strong>{{ ptr.name }}</strong>
+                        <div class="text-muted small">{{ ptr.tagline }}</div>
+                      </td>
+                      <td><span class="badge-item">{{ ptr.tier }}</span></td>
+                      <td>{{ ptr.category }}</td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn-action-outline btn-sm" (click)="selectedPartner.set(ptr)">Edit Partner</button>
+                          <button class="btn-icon btn-danger" (click)="deletePartner(ptr)" title="Delete Partner">✕</button>
+                        </div>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="5" class="empty-state">No partners found. Click "+ Add Partner / Reseller" to add one.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Edit Partner Modal -->
+          @if (selectedPartner(); as ptr) {
+            <div class="modal-backdrop" (click)="selectedPartner.set(null)">
+              <div class="modal-card modal-lg" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Edit Partner: {{ ptr.name }}</h3>
+                  <button class="btn-close" (click)="selectedPartner.set(null)">✕</button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-row">
+                    <div class="form-group flex-2">
+                      <label>Partner / Reseller Company Name</label>
+                      <input type="text" [(ngModel)]="ptr.name" placeholder="e.g. Frappe / ERPNext" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>URL Slug</label>
+                      <input type="text" [(ngModel)]="ptr.slug" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Partnership Tier / Badge</label>
+                      <input type="text" [(ngModel)]="ptr.tier" placeholder="Authorized Reseller" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Category</label>
+                      <input type="text" [(ngModel)]="ptr.category" placeholder="ERP & Accounting, CRM & Cloud..." />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Tagline</label>
+                    <input type="text" [(ngModel)]="ptr.tagline" />
+                  </div>
+                  <div class="form-group">
+                    <label>Short Card Description</label>
+                    <textarea rows="2" [(ngModel)]="ptr.shortDesc"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Full Partnership Overview</label>
+                    <textarea rows="3" [(ngModel)]="ptr.overview"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Certified Highlights (Comma separated)</label>
+                    <input
+                      type="text"
+                      [ngModel]="(ptr.highlights || []).join(', ')"
+                      (ngModelChange)="updatePartnerHighlights(ptr, $event)"
+                      placeholder="Authorized Reseller, Cloud Sync, SLA Support"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Partner Picture / Brand Visual</label>
+                    <div class="image-preview-box" style="margin-bottom: 8px;">
+                      <img [src]="ptr.image || 'assets/images/service-erpnext.png'" [alt]="ptr.name" />
+                    </div>
+                    <div class="media-controls">
+                      <input type="text" [(ngModel)]="ptr.image" placeholder="Image URL or upload picture..." />
+                      <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'partner', property: 'image' })">
+                        Upload Picture
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn-cancel" (click)="selectedPartner.set(null)">Cancel</button>
+                  <button class="btn-save-publish" (click)="savePartner(ptr)">Save &amp; Publish Partner</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
       <!-- MODULE: CONTACT INQUIRIES -->
       <!-- ==================================================== -->
       @if (activeModule() === 'inquiries') {
@@ -1562,6 +1804,20 @@
                 <label>Working Hours</label>
                 <input type="text" [(ngModel)]="info.workingHours" />
               </div>
+
+              @if (info.socials.length) {
+                <div style="margin-top: 20px; border-top: 1px solid #E2E8F0; padding-top: 16px;">
+                  <h4 style="margin: 0 0 12px;">Social Media Links</h4>
+                  <div class="form-row" style="flex-wrap: wrap;">
+                    @for (soc of info.socials; track $index; let idx = $index) {
+                      <div class="form-group" style="flex: 1 1 240px;">
+                        <label>{{ soc.name }} URL</label>
+                        <input type="text" [(ngModel)]="soc.url" placeholder="https://..." />
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
             </div>
           }
         </div>
