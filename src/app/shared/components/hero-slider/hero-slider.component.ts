@@ -319,3 +319,4 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
     }
   }
 }
+

@@ -453,7 +453,13 @@ export class ContentService {
         const merged: SiteSettingsMap = { ...this.settingsSubject.value };
         for (const row of settingsRows) {
           const normalizedKey =
-            row.key === 'contact_info' ? 'contactInfo' : row.key === 'why_choose_us' ? 'whyChooseUs' : row.key;
+            row.key === 'contact_info'
+              ? 'contactInfo'
+              : row.key === 'why_choose_us'
+                ? 'whyChooseUs'
+                : row.key === 'hero_slider'
+                  ? 'heroSlider'
+                  : row.key;
           (merged as any)[normalizedKey] = row.data;
         }
         this.settingsSubject.next(merged);
@@ -587,7 +593,9 @@ export class ContentService {
                   ? 'contactInfo'
                   : payload.new.key === 'why_choose_us'
                     ? 'whyChooseUs'
-                    : payload.new.key;
+                    : payload.new.key === 'hero_slider'
+                      ? 'heroSlider'
+                      : payload.new.key;
               (current as any)[normalizedKey] = payload.new.data;
               this.settingsSubject.next(current);
               if (normalizedKey === 'header' && payload.new.data?.faviconUrl) {
