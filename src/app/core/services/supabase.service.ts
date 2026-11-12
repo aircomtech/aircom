@@ -88,6 +88,14 @@ export class SupabaseService {
     });
   }
 
+  async updateUserPassword(newPassword: string): Promise<{ data: any; error: any }> {
+    if (!this.client) {
+      return { data: null, error: new Error('Supabase client is not configured') };
+    }
+    const res = await this.client.auth.updateUser({ password: newPassword });
+    return res;
+  }
+
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }

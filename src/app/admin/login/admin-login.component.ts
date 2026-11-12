@@ -200,7 +200,16 @@ export class AdminLoginComponent {
     const { email, password } = this.loginForm.value;
 
     try {
-      // 1. Try Supabase Auth sign in
+      // 1. Check custom saved password in localStorage
+      const savedCustomPw = localStorage.getItem('aircom_admin_pw');
+      if (savedCustomPw && password === savedCustomPw) {
+        this.sb.setDemoSession(true, email!);
+        this.successMessage.set('Authentication successful. Redirecting...');
+        setTimeout(() => this.router.navigate(['/admin/dashboard']), 400);
+        return;
+      }
+
+      // 2. Try Supabase Auth sign in
       const res = await this.sb.signIn(email!, password!);
 
       if (res.data?.session) {
@@ -214,16 +223,16 @@ export class AdminLoginComponent {
       // Allow initial admin login if credentials match standard setup or fallback
       if (res.error?.message?.includes('Invalid login credentials') || res.error?.message?.includes('Email not confirmed')) {
         // Check if admin is using the default initial password or credentials
-        if (password === 'AircomAdmin2026!' || password === 'admin123' || password === 'Admin@2026') {
+        if (password === 'AircomAdmin2026!' || password === 'admin123' || password === 'Admin@2026' || (savedCustomPw && password === savedCustomPw)) {
           this.sb.setDemoSession(true, email!);
-          this.successMessage.set('Initial admin authenticated. Redirecting to CMS...');
+          this.successMessage.set('Administrator authenticated. Redirecting to CMS...');
           setTimeout(() => this.router.navigate(['/admin/dashboard']), 500);
           return;
         }
         this.errorMessage.set(res.error?.message || 'Invalid administrator email or password.');
       } else {
         // Fallback for demo setup if database auth table has no users yet
-        if (password === 'AircomAdmin2026!' || password === 'admin123' || password === 'Admin@2026') {
+        if (password === 'AircomAdmin2026!' || password === 'admin123' || password === 'Admin@2026' || (savedCustomPw && password === savedCustomPw)) {
           this.sb.setDemoSession(true, email!);
           this.successMessage.set('Admin access authorized. Redirecting...');
           setTimeout(() => this.router.navigate(['/admin/dashboard']), 500);
@@ -232,7 +241,8 @@ export class AdminLoginComponent {
         this.errorMessage.set(res.error?.message || 'Authentication error. Please check your credentials or Supabase Auth setup.');
       }
     } catch (err: any) {
-      if (password === 'AircomAdmin2026!' || password === 'admin123') {
+      const savedCustomPw = localStorage.getItem('aircom_admin_pw');
+      if (password === 'AircomAdmin2026!' || password === 'admin123' || (savedCustomPw && password === savedCustomPw)) {
         this.sb.setDemoSession(true, email!);
         this.router.navigate(['/admin/dashboard']);
         return;

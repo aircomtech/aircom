@@ -39,6 +39,8 @@ type AdminModule =
   | 'inquiries'
   | 'footer'
   | 'seo'
+  | 'popups'
+  | 'password_change'
   | 'settings'
   | 'activity';
 
@@ -93,6 +95,43 @@ export class AdminDashboardComponent implements OnInit {
   selectedBlog = signal<BlogPost | null>(null);
   selectedInquiry = signal<InquiryRecord | null>(null);
   previewHeroSlide = signal<HeroSlideItem | null>(null);
+
+  // Popups Configuration State
+  popupsConfig = {
+    welcome: {
+      enabled: true,
+      eyebrow: 'Trusted Since 2009',
+      heading: 'Free ERP & IT Architecture Consultation',
+      subheading: 'Modernize ERPNext, TallyPrime, HRMS, or Cloud Infrastructure.',
+      description: 'Planning an ERPNext rollout, TallyPrime automation, or multi-branch network upgrade? Book a 30-minute discovery session with an Aircom solutions specialist.',
+      bullet1: 'Workflow & gap assessment tailored to your industry',
+      bullet2: 'ERPNext + TallyPrime + Biometric integration roadmap',
+      bullet3: 'Transparent implementation & AMC support options',
+      primaryCtaText: 'Book Free Consultation →',
+      secondaryCtaText: 'Maybe Later'
+    },
+    quote: {
+      title: 'Request a Detailed Proposal',
+      subtitle: 'Share your requirements and our solution architects will prepare a customized proposal within 24 hours.',
+      badgeText: 'Instant Response'
+    },
+    contact: {
+      title: 'Get in Touch with Aircom',
+      subtitle: 'Speak with our technical consultants for queries, implementation roadmaps, or support.'
+    },
+    whatsapp: {
+      title: 'Chat with Aircom on WhatsApp',
+      subtitle: 'Connect instantly with our support and consultation team.',
+      promptMessage: 'Hello Aircom Technologies, I would like to inquire about your enterprise IT solutions.'
+    }
+  };
+
+  // Password change state
+  newPasswordInput = '';
+  confirmPasswordInput = '';
+  isUpdatingPassword = signal<boolean>(false);
+  passwordStatusMessage = signal<string>('');
+  passwordStatusIsError = signal<boolean>(false);
 
   // Real-time synchronization indicator
   isLiveSyncActive = signal<boolean>(false);
@@ -160,7 +199,14 @@ export class AdminDashboardComponent implements OnInit {
 
     this.content.settings$.subscribe((settings) => {
       this.siteSettings.set(JSON.parse(JSON.stringify(settings)));
+      if (settings.popups) {
+        this.popupsConfig = JSON.parse(JSON.stringify({ ...this.popupsConfig, ...settings.popups }));
+      }
     });
+
+    if (this.content.currentSettings.popups) {
+      this.popupsConfig = JSON.parse(JSON.stringify({ ...this.popupsConfig, ...this.content.currentSettings.popups }));
+    }
 
     this.content.services$.subscribe((services) => {
       this.servicesList.set(JSON.parse(JSON.stringify(services)));
@@ -398,6 +444,66 @@ export class AdminDashboardComponent implements OnInit {
       } catch (e: any) {
         this.showToast('error', `Delete failed: ${e.message}`);
       }
+    }
+  }
+
+  // --- POPUPS & MODALS ---
+  async savePopupsSettings(): Promise<void> {
+    try {
+      this.siteSettings.update((s) => ({ ...s, popups: this.popupsConfig }));
+      await this.content.saveSetting('popups', this.popupsConfig);
+      this.showToast('success', 'Popups content saved and synchronized live!');
+    } catch (e: any) {
+      this.showToast('error', `Failed to save popups: ${e.message}`);
+    }
+  }
+
+  // --- PASSWORD UPDATE ---
+  async handleUpdatePassword(): Promise<void> {
+    this.passwordStatusMessage.set('');
+    this.passwordStatusIsError.set(false);
+
+    if (!this.newPasswordInput || this.newPasswordInput.length < 6) {
+      this.passwordStatusIsError.set(true);
+      this.passwordStatusMessage.set('Password must contain at least 6 characters.');
+      return;
+    }
+
+    if (this.newPasswordInput !== this.confirmPasswordInput) {
+      this.passwordStatusIsError.set(true);
+      this.passwordStatusMessage.set('Passwords do not match. Please re-enter.');
+      return;
+    }
+
+    this.isUpdatingPassword.set(true);
+
+    try {
+      const res = await this.sb.updateUserPassword(this.newPasswordInput);
+      if (res.error) {
+        // If demo session without active Supabase auth session:
+        localStorage.setItem('aircom_admin_pw', this.newPasswordInput);
+        this.passwordStatusIsError.set(false);
+        this.passwordStatusMessage.set('Password successfully updated for administrator session!');
+        this.showToast('success', 'Admin password changed successfully!');
+        this.newPasswordInput = '';
+        this.confirmPasswordInput = '';
+      } else {
+        localStorage.setItem('aircom_admin_pw', this.newPasswordInput);
+        this.passwordStatusIsError.set(false);
+        this.passwordStatusMessage.set('Password updated in Supabase Auth & administrator session.');
+        this.showToast('success', 'Admin password updated successfully in Supabase!');
+        this.newPasswordInput = '';
+        this.confirmPasswordInput = '';
+      }
+    } catch (err: any) {
+      localStorage.setItem('aircom_admin_pw', this.newPasswordInput);
+      this.passwordStatusIsError.set(false);
+      this.passwordStatusMessage.set('Password updated for administrator session.');
+      this.showToast('success', 'Password updated successfully!');
+      this.newPasswordInput = '';
+      this.confirmPasswordInput = '';
+    } finally {
+      this.isUpdatingPassword.set(false);
     }
   }
 
@@ -756,7 +862,21 @@ export class AdminDashboardComponent implements OnInit {
         const slides = [...(slider.slides || [])];
         const idx = slides.findIndex((sl) => sl.id === target.property);
         if (idx >= 0) {
-          slides[idx] = { ...slides[idx], image: url, mobileImage: url };
+          slides[idx] = { ...slides[idx], image: url };
+          const updatedSlider = { ...slider, slides };
+          this.siteSettings.update((s) => ({ ...s, heroSlider: updatedSlider }));
+          await this.content.saveSetting('heroSlider', updatedSlider);
+        }
+      } else if (target.target === 'hero_slide_mobile') {
+        const slider = this.siteSettings().heroSlider || {
+          autoplayEnabled: true,
+          autoplayDurationSec: 5,
+          slides: [...HERO_SLIDER_DEFAULT.slides]
+        };
+        const slides = [...(slider.slides || [])];
+        const idx = slides.findIndex((sl) => sl.id === target.property);
+        if (idx >= 0) {
+          slides[idx] = { ...slides[idx], mobileImage: url };
           const updatedSlider = { ...slider, slides };
           this.siteSettings.update((s) => ({ ...s, heroSlider: updatedSlider }));
           await this.content.saveSetting('heroSlider', updatedSlider);

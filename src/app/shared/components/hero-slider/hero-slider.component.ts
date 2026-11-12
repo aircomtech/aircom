@@ -32,13 +32,18 @@ import { DialogLauncherService } from '../../../core/services/dialog-launcher.se
       <div class="slides-stage" aria-hidden="true">
         @for (slide of activeSlides(); track slide.id; let i = $index) {
           <div class="slide-layer" [class.is-active]="i === currentIndex()">
-            <img
-              [src]="slide.image || 'assets/images/hero-slide-1.jpg'"
-              [alt]="slide.title + ' ' + slide.titleHighlight"
-              class="slide-bg-img"
-              [attr.loading]="i === 0 ? 'eager' : 'lazy'"
-              (error)="onImgError($event)"
-            />
+            <picture class="slide-picture">
+              @if (slide.mobileImage) {
+                <source media="(max-width: 767px)" [srcset]="slide.mobileImage" />
+              }
+              <img
+                [src]="slide.image || 'assets/images/hero-slide-1.jpg'"
+                [alt]="slide.title + ' ' + slide.titleHighlight"
+                class="slide-bg-img"
+                [attr.loading]="i === 0 ? 'eager' : 'lazy'"
+                (error)="onImgError($event)"
+              />
+            </picture>
           </div>
         }
         <div class="slide-overlay"></div>

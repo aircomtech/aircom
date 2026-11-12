@@ -62,6 +62,34 @@ export interface SiteSettingsMap {
     defaultKeywords?: string;
     ogImage?: string;
   };
+  popups?: {
+    welcome?: {
+      enabled?: boolean;
+      eyebrow?: string;
+      heading?: string;
+      subheading?: string;
+      description?: string;
+      bullet1?: string;
+      bullet2?: string;
+      bullet3?: string;
+      primaryCtaText?: string;
+      secondaryCtaText?: string;
+    };
+    quote?: {
+      title?: string;
+      subtitle?: string;
+      badgeText?: string;
+    };
+    contact?: {
+      title?: string;
+      subtitle?: string;
+    };
+    whatsapp?: {
+      title?: string;
+      subtitle?: string;
+      promptMessage?: string;
+    };
+  };
 }
 
 export interface InquiryRecord {
@@ -150,6 +178,34 @@ export class ContentService {
         'Aircom Technologies is a premier IT consulting and ERP integration company delivering ERPNext, TallyPrime, HRMS, and enterprise infrastructure.',
       defaultKeywords: 'Aircom Technologies, ERPNext, TallyPrime, HRMS, IT Infrastructure, Cloud Hosting',
       ogImage: 'assets/images/hero-desktop.png'
+    },
+    popups: {
+      welcome: {
+        enabled: true,
+        eyebrow: 'Trusted Since 2009',
+        heading: 'Free ERP & IT Architecture Consultation',
+        subheading: 'Modernize ERPNext, TallyPrime, HRMS, or Cloud Infrastructure.',
+        description: 'Planning an ERPNext rollout, TallyPrime automation, or multi-branch network upgrade? Book a 30-minute discovery session with an Aircom solutions specialist.',
+        bullet1: 'Workflow & gap assessment tailored to your industry',
+        bullet2: 'ERPNext + TallyPrime + Biometric integration roadmap',
+        bullet3: 'Transparent implementation & AMC support options',
+        primaryCtaText: 'Book Free Consultation →',
+        secondaryCtaText: 'Maybe Later'
+      },
+      quote: {
+        title: 'Request a Detailed Proposal',
+        subtitle: 'Share your requirements and our solution architects will prepare a customized proposal within 24 hours.',
+        badgeText: 'Instant Response'
+      },
+      contact: {
+        title: 'Get in Touch with Aircom',
+        subtitle: 'Speak with our technical consultants for queries, implementation roadmaps, or support.'
+      },
+      whatsapp: {
+        title: 'Chat with Aircom on WhatsApp',
+        subtitle: 'Connect instantly with our support and consultation team.',
+        promptMessage: 'Hello Aircom Technologies, I would like to inquire about your enterprise IT solutions.'
+      }
     }
   });
 
