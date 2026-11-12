@@ -76,36 +76,45 @@ import { TechIconComponent } from '../../shared/components/tech-icon/tech-icon.c
                   {{ item.label }}
                 </a>
               } @else {
-                <button
-                  type="button"
-                  class="nav-link nav-dropdown-trigger"
-                  [matMenuTriggerFor]="dropdownMenu"
-                  routerLinkActive="active"
+                <div
+                  class="nav-dropdown-group"
+                  [class.is-open]="openDropdownRoute() === (item.route || item.label)"
+                  (mouseenter)="openDropdown(item.route || item.label)"
+                  (mouseleave)="closeDropdown()"
                 >
-                  <span>{{ item.label }}</span>
-                  <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="m6 9 6 6 6-6"/>
-                  </svg>
-                </button>
-                <mat-menu #dropdownMenu="matMenu" class="aircom-nav-menu">
-                  <div class="dropdown-panel">
-                    <a [routerLink]="item.route" class="dropdown-all-link" mat-menu-item>
-                      View All {{ item.label }} →
-                    </a>
-                    <div class="dropdown-list">
-                      @for (child of item.children; track child.route) {
-                        <a [routerLink]="child.route" class="dropdown-item" mat-menu-item>
-                          <span class="dd-icon">
-                            <app-tech-icon [name]="child.icon || 'check'" [size]="18" color="#2457A7" />
-                          </span>
-                          <span class="dd-text">
-                            <strong>{{ child.label }}</strong>
-                          </span>
-                        </a>
-                      }
+                  <button
+                    type="button"
+                    class="nav-link nav-dropdown-trigger"
+                    [attr.aria-expanded]="openDropdownRoute() === (item.route || item.label)"
+                    aria-haspopup="menu"
+                    (click)="toggleDropdown(item.route || item.label)"
+                  >
+                    <span>{{ item.label }}</span>
+                    <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                  </button>
+
+                  <div class="nav-dropdown-bridge" role="menu">
+                    <div class="dropdown-panel">
+                      <a [routerLink]="item.route" class="dropdown-all-link" (click)="closeDropdown()">
+                        View All {{ item.label }} →
+                      </a>
+                      <div class="dropdown-list">
+                        @for (child of item.children; track child.route) {
+                          <a [routerLink]="child.route" class="dropdown-item" (click)="closeDropdown()">
+                            <span class="dd-icon">
+                              <app-tech-icon [name]="child.icon || 'check'" [size]="18" color="#2457A7" />
+                            </span>
+                            <span class="dd-text">
+                              <strong>{{ child.label }}</strong>
+                            </span>
+                          </a>
+                        }
+                      </div>
                     </div>
                   </div>
-                </mat-menu>
+                </div>
               }
             }
           </nav>
@@ -208,6 +217,19 @@ export class HeaderComponent implements OnInit {
   readonly scrolled = signal(false);
   readonly mobileOpen = signal(false);
   readonly expandedGroup = signal<string | null>('Services');
+  readonly openDropdownRoute = signal<string | null>(null);
+
+  openDropdown(route: string): void {
+    this.openDropdownRoute.set(route);
+  }
+
+  closeDropdown(): void {
+    this.openDropdownRoute.set(null);
+  }
+
+  toggleDropdown(route: string): void {
+    this.openDropdownRoute.update((curr) => (curr === route ? null : route));
+  }
 
   ngOnInit(): void {
     if (this.content.currentSettings.contactInfo) {
