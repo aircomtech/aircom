@@ -4,8 +4,8 @@ export const environment = {
   inquiryApiUrl: '',
   newsletterApiUrl: '',
   supabase: {
-    url: 'https://kzrwkagjsgmufupepghp.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6cndrYWdqc2dtdWZ1cGVwZ2hwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQzNjUwMDMsImV4cCI6MjEwOTk0MTAwM30.Mn9HoN4s7UbOUIavHMwuyT3EFiNN3Oq5-9322kNdOqQ'
+    url: 'https://vwnvwiehqgrtijmjnnjg.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3bnZ3aWVocWdydGlqbWpubmpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyNDQ0NzYsImV4cCI6MjEwOTgyMDQ3Nn0.45o9DzwFQ3CticIlb-ZHUX08OlwunwDC7faG_fEUFPk'
   },
   cloudinary: {
     cloudName: 'flppuodw',

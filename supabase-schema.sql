@@ -1,6 +1,6 @@
 -- ====================================================================
 -- AIRCOM TECHNOLOGIES - SUPABASE DATABASE SCHEMA & MIGRATION SCRIPT
--- Project: https://kzrwkagjsgmufupepghp.supabase.co
+-- Project: https://vwnvwiehqgrtijmjnnjg.supabase.co
 -- Generated for full dynamic live sync between Admin Panel and Website
 -- ====================================================================
 
