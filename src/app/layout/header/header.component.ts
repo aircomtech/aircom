@@ -235,19 +235,14 @@ export class HeaderComponent implements OnInit {
     if (this.content.currentSettings.contactInfo) {
       this.contact = { ...this.contact, ...this.content.currentSettings.contactInfo };
     }
-    if (this.content.currentSettings.header?.navItems?.length) {
-      this.rawNavItems = this.content.currentSettings.header.navItems;
-    }
     if (this.content.currentSettings.header?.ctaText) {
       this.ctaText = this.content.currentSettings.header.ctaText;
     }
+    this.rawNavItems = MAIN_NAV_ITEMS;
     this.rebuildNavItems();
 
     this.content.settings$.subscribe((st) => {
       if (st.contactInfo) this.contact = { ...this.contact, ...st.contactInfo };
-      if (st.header?.navItems?.length) {
-        this.rawNavItems = st.header.navItems;
-      }
       if (st.header?.ctaText) this.ctaText = st.header.ctaText;
       this.rebuildNavItems();
     });
@@ -258,7 +253,7 @@ export class HeaderComponent implements OnInit {
   }
 
   private rebuildNavItems(): void {
-    const items = [...this.rawNavItems];
+    const items = [...MAIN_NAV_ITEMS];
     // Ensure Partners page is visible in navigation even if older DB header JSON lacked it
     if (!items.some((i) => (i.route || '').trim().toLowerCase().startsWith('/partners'))) {
       const blogIdx = items.findIndex((i) => (i.route || '').trim().toLowerCase().startsWith('/blog'));

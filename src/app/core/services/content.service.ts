@@ -516,7 +516,18 @@ export class ContentService {
                 : row.key === 'hero_slider'
                   ? 'heroSlider'
                   : row.key;
-          (merged as any)[normalizedKey] = row.data;
+          
+          if (normalizedKey === 'header' && row.data) {
+            // Keep canonical navigation items so refreshing never flips header to outdated DB navigation links
+            const currentHeader = merged.header || {};
+            merged.header = {
+              ...currentHeader,
+              ...row.data,
+              navItems: row.data.navItems?.length ? row.data.navItems : MAIN_NAV_ITEMS
+            };
+          } else {
+            (merged as any)[normalizedKey] = row.data;
+          }
         }
         this.settingsSubject.next(merged);
         if (merged.header?.faviconUrl) {
