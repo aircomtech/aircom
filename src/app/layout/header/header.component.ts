@@ -65,8 +65,8 @@ import { TechIconComponent } from '../../shared/components/tech-icon/tech-icon.c
           </a>
 
           <nav class="desktop-nav" aria-label="Primary Navigation">
-            @for (item of navItems; track item.label) {
-              @if (!item.children) {
+            @for (item of navItems(); track item.route + item.label) {
+              @if (!item.children || item.children.length === 0) {
                 <a
                   [routerLink]="item.route"
                   routerLinkActive="active"
@@ -83,13 +83,13 @@ import { TechIconComponent } from '../../shared/components/tech-icon/tech-icon.c
                   routerLinkActive="active"
                 >
                   <span>{{ item.label }}</span>
-                  <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                  <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="m6 9 6 6 6-6"/>
                   </svg>
                 </button>
                 <mat-menu #dropdownMenu="matMenu" class="aircom-nav-menu">
                   <div class="dropdown-panel">
-                    <a [routerLink]="item.route" class="dropdown-all-link">
+                    <a [routerLink]="item.route" class="dropdown-all-link" mat-menu-item>
                       View All {{ item.label }} →
                     </a>
                     <div class="dropdown-list">
@@ -142,8 +142,8 @@ import { TechIconComponent } from '../../shared/components/tech-icon/tech-icon.c
           </div>
 
           <nav class="mobile-nav-list">
-            @for (item of navItems; track item.label) {
-              @if (!item.children) {
+            @for (item of navItems(); track item.route + item.label) {
+              @if (!item.children || item.children.length === 0) {
                 <a
                   [routerLink]="item.route"
                   routerLinkActive="active"
@@ -202,7 +202,7 @@ export class HeaderComponent implements OnInit {
 
   contact = CONTACT_INFO;
   private rawNavItems: NavItem[] = MAIN_NAV_ITEMS;
-  navItems: NavItem[] = MAIN_NAV_ITEMS;
+  readonly navItems = signal<NavItem[]>(MAIN_NAV_ITEMS);
   ctaText = 'Get a Quote';
 
   readonly scrolled = signal(false);
@@ -238,8 +238,8 @@ export class HeaderComponent implements OnInit {
   private rebuildNavItems(): void {
     const items = [...this.rawNavItems];
     // Ensure Partners page is visible in navigation even if older DB header JSON lacked it
-    if (!items.some((i) => i.route === '/partners')) {
-      const blogIdx = items.findIndex((i) => i.route === '/blog');
+    if (!items.some((i) => (i.route || '').trim().toLowerCase().startsWith('/partners'))) {
+      const blogIdx = items.findIndex((i) => (i.route || '').trim().toLowerCase().startsWith('/blog'));
       const partnerNav: NavItem = { label: 'Partners', route: '/partners' };
       if (blogIdx >= 0) {
         items.splice(blogIdx, 0, partnerNav);
@@ -248,10 +248,14 @@ export class HeaderComponent implements OnInit {
       }
     }
 
-    this.navItems = items.map((item) => {
-      if (item.route === '/services') {
+    const enriched = items.map((item) => {
+      const route = (item.route || '').trim().toLowerCase();
+      const label = (item.label || '').trim().toLowerCase();
+
+      if (route === '/services' || route === '/services/' || route === 'services' || label === 'services') {
         return {
           ...item,
+          route: '/services',
           children: this.content.currentServices.map((s) => ({
             label: s.title,
             route: `/services/${s.slug}`,
@@ -260,9 +264,10 @@ export class HeaderComponent implements OnInit {
           }))
         };
       }
-      if (item.route === '/products') {
+      if (route === '/products' || route === '/products/' || route === 'products' || label === 'products') {
         return {
           ...item,
+          route: '/products',
           children: this.content.currentProducts.map((p) => ({
             label: p.title,
             route: `/products/${p.slug}`,
@@ -271,9 +276,10 @@ export class HeaderComponent implements OnInit {
           }))
         };
       }
-      if (item.route === '/industries') {
+      if (route === '/industries' || route === '/industries/' || route === 'industries' || label === 'industries') {
         return {
           ...item,
+          route: '/industries',
           children: this.content.currentIndustries.map((i) => ({
             label: i.name,
             route: `/industries/${i.slug}`,
@@ -284,6 +290,8 @@ export class HeaderComponent implements OnInit {
       }
       return item;
     });
+
+    this.navItems.set(enriched);
   }
 
   @HostListener('window:scroll')
