@@ -90,6 +90,28 @@ export interface PartnerItem {
   accent?: string;
 }
 
+export interface HeroSlideItem {
+  id: string;
+  eyebrow: string;
+  title: string;
+  titleHighlight: string;
+  description: string;
+  primaryCtaText: string;
+  primaryCtaHref: string;
+  secondaryCtaText?: string;
+  secondaryCtaHref?: string;
+  image: string;
+  mobileImage?: string;
+  enabled: boolean;
+  order: number;
+}
+
+export interface HeroSliderConfig {
+  autoplayEnabled: boolean;
+  autoplayDurationSec: number;
+  slides: HeroSlideItem[];
+}
+
 export interface ContactInfo {
   companyName: string;
   tagline: string;

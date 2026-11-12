@@ -12,7 +12,8 @@ import {
 } from '../../core/services/content.service';
 import { CloudinaryService } from '../../core/services/cloudinary.service';
 import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-logo.component';
-import { ServiceItem, ProductItem, IndustryItem, BlogPost, PartnerItem } from '../../core/models/site.models';
+import { HERO_SLIDER_DEFAULT } from '../../core/data/site.data';
+import { ServiceItem, ProductItem, IndustryItem, BlogPost, PartnerItem, HeroSlideItem } from '../../core/models/site.models';
 
 type AdminModule =
   | 'overview'
@@ -91,6 +92,7 @@ export class AdminDashboardComponent implements OnInit {
   selectedPartner = signal<PartnerItem | null>(null);
   selectedBlog = signal<BlogPost | null>(null);
   selectedInquiry = signal<InquiryRecord | null>(null);
+  previewHeroSlide = signal<HeroSlideItem | null>(null);
 
   // Real-time synchronization indicator
   isLiveSyncActive = signal<boolean>(false);
@@ -666,13 +668,100 @@ export class AdminDashboardComponent implements OnInit {
     this.siteSettings.update((s) => ({ ...s, aboutPillars: pillars }));
   }
 
+  addHeroSlide(): void {
+    const slider = this.siteSettings().heroSlider || {
+      autoplayEnabled: true,
+      autoplayDurationSec: 5,
+      slides: [...HERO_SLIDER_DEFAULT.slides]
+    };
+    const slides = [...(slider.slides || [])];
+    slides.push({
+      id: 'slide-' + Date.now(),
+      eyebrow: 'ENTERPRISE INNOVATION',
+      title: 'Scalable Technology for',
+      titleHighlight: 'Your Business',
+      description: 'Empowering growing enterprises with ERPNext, TallyPrime automation, and managed IT infrastructure.',
+      primaryCtaText: 'Explore Solutions',
+      primaryCtaHref: '/services',
+      secondaryCtaText: 'Contact Us',
+      secondaryCtaHref: '/contact',
+      image: 'assets/images/hero-slide-1.jpg',
+      mobileImage: 'assets/images/hero-slide-1.jpg',
+      enabled: true,
+      order: slides.length + 1
+    });
+    this.siteSettings.update((s) => ({
+      ...s,
+      heroSlider: { ...slider, slides }
+    }));
+  }
+
+  deleteHeroSlide(index: number): void {
+    const slider = this.siteSettings().heroSlider;
+    if (!slider || !slider.slides) return;
+    if (slider.slides.length <= 1) {
+      this.showToast('error', 'At least 1 active hero slide must remain.');
+      return;
+    }
+    const slides = [...slider.slides];
+    slides.splice(index, 1);
+    slides.forEach((sl, i) => (sl.order = i + 1));
+    this.siteSettings.update((s) => ({
+      ...s,
+      heroSlider: { ...slider, slides }
+    }));
+  }
+
+  moveHeroSlide(index: number, direction: -1 | 1): void {
+    const slider = this.siteSettings().heroSlider;
+    if (!slider || !slider.slides) return;
+    const targetIdx = index + direction;
+    if (targetIdx < 0 || targetIdx >= slider.slides.length) return;
+    const slides = [...slider.slides];
+    const [moved] = slides.splice(index, 1);
+    slides.splice(targetIdx, 0, moved);
+    slides.forEach((sl, i) => (sl.order = i + 1));
+    this.siteSettings.update((s) => ({
+      ...s,
+      heroSlider: { ...slider, slides }
+    }));
+  }
+
+  async saveHeroAll(): Promise<void> {
+    try {
+      if (this.siteSettings().heroSlider) {
+        await this.content.saveSetting('heroSlider', this.siteSettings().heroSlider);
+      }
+      if (this.siteSettings().hero) {
+        await this.content.saveSetting('hero', this.siteSettings().hero);
+      }
+      this.showToast('success', 'Hero Slider & Highlight Badges published live to website!');
+    } catch (e: any) {
+      this.showToast('error', `Failed to publish Hero Slider: ${e.message}`);
+    }
+  }
+
   async applyUploadedImage(urlToApply?: string, notify = true): Promise<void> {
     const url = urlToApply || this.uploadedImageUrl() || this.directUrlInput();
     if (!url) return;
 
     const target = this.uploadTargetField();
     if (target) {
-      if (target.target === 'hero') {
+      if (target.target === 'hero_slide') {
+        const slider = this.siteSettings().heroSlider || {
+          autoplayEnabled: true,
+          autoplayDurationSec: 5,
+          slides: [...HERO_SLIDER_DEFAULT.slides]
+        };
+        const slides = [...(slider.slides || [])];
+        const idx = slides.findIndex((sl) => sl.id === target.property);
+        if (idx >= 0) {
+          slides[idx] = { ...slides[idx], image: url, mobileImage: url };
+          const updatedSlider = { ...slider, slides };
+          this.siteSettings.update((s) => ({ ...s, heroSlider: updatedSlider }));
+          await this.content.saveSetting('heroSlider', updatedSlider);
+        }
+      } else if (target.target === 'hero') {
         const hero = { ...this.siteSettings().hero };
         (hero as any)[target.property] = url;
         this.siteSettings.update((s) => ({ ...s, hero }));

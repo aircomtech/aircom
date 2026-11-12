@@ -1,0 +1,330 @@
+.hero-slider {
+  position: relative;
+  width: 100%;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #0D1B3E;
+  color: #FFFFFF;
+  user-select: none;
+
+  @media (max-width: 991px) {
+    min-height: 520px;
+  }
+
+  @media (max-width: 767px) {
+    min-height: 540px;
+    align-items: center;
+  }
+}
+
+.slides-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.slide-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.85s;
+  z-index: 1;
+
+  &.is-active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+
+    .slide-bg-img {
+      animation: slideZoomPan 12s ease-out forwards;
+    }
+  }
+}
+
+.slide-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+  display: block;
+  transform: scale(1);
+
+  @media (max-width: 767px) {
+    object-position: center center;
+  }
+}
+
+@keyframes slideZoomPan {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.07);
+  }
+}
+
+.slide-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(
+    95deg,
+    rgba(8, 18, 43, 0.94) 0%,
+    rgba(13, 27, 62, 0.86) 44%,
+    rgba(16, 42, 99, 0.52) 72%,
+    rgba(13, 27, 62, 0.25) 100%
+  );
+
+  @media (max-width: 767px) {
+    background: linear-gradient(
+      180deg,
+      rgba(8, 18, 43, 0.86) 0%,
+      rgba(13, 27, 62, 0.82) 55%,
+      rgba(8, 18, 43, 0.92) 100%
+    );
+  }
+}
+
+.slider-content-wrap {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  padding: 64px 0 88px;
+
+  @media (max-width: 767px) {
+    padding: 46px 0 76px;
+  }
+}
+
+.slide-copy {
+  max-width: 660px;
+  animation: slideTextIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes slideTextIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #38BDF8;
+  margin-bottom: 14px;
+
+  .eyebrow-bar {
+    width: 42px;
+    height: 2.5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #0BA8EA, #F59E0B);
+  }
+}
+
+.hero-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(2rem, 4.2vw, 3.35rem);
+  font-weight: 800;
+  line-height: 1.14;
+  color: #FFFFFF;
+  margin: 0 0 18px;
+  letter-spacing: -0.02em;
+
+  .highlight-orange {
+    color: #F59E0B;
+    display: inline-block;
+  }
+}
+
+.hero-desc {
+  font-size: clamp(0.96rem, 1.35vw, 1.1rem);
+  line-height: 1.65;
+  color: rgba(226, 232, 240, 0.92);
+  margin: 0 0 28px;
+  max-width: 590px;
+}
+
+.hero-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 24px;
+  border-radius: 999px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.94rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.btn-primary-orange {
+  background: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 10px 26px rgba(245, 158, 11, 0.34);
+
+  &:hover {
+    box-shadow: 0 14px 30px rgba(245, 158, 11, 0.48);
+  }
+}
+
+.btn-secondary-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #FFFFFF;
+  }
+}
+
+/* Navigation Arrows */
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(13, 27, 62, 0.56);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #0BA8EA;
+    border-color: #0BA8EA;
+    color: #08122B;
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  &.prev {
+    left: 20px;
+  }
+
+  &.next {
+    right: 20px;
+  }
+
+  @media (max-width: 991px) {
+    width: 38px;
+    height: 38px;
+    &.prev { left: 10px; }
+    &.next { right: 10px; }
+  }
+
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+/* Pagination Dots & Slide Counter */
+.slider-controls-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 26px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dot-btn {
+  width: 11px;
+  height: 11px;
+  padding: 0;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.38);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  &.is-active {
+    width: 34px;
+    background: linear-gradient(90deg, #0BA8EA, #F59E0B);
+  }
+}
+
+/* Slide Progress Bar */
+.slider-progress-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.14);
+  z-index: 7;
+  overflow: hidden;
+}
+
+.slider-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0BA8EA, #F59E0B);
+  width: 0%;
+  animation-name: slideProgressBar;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+
+  &.is-paused {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes slideProgressBar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-layer,
+  .slide-bg-img,
+  .slide-copy,
+  .slider-progress-fill {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -7,6 +7,7 @@ import {
   ABOUT_PILLARS,
   BLOG_POSTS,
   CONTACT_INFO,
+  HERO_SLIDER_DEFAULT,
   HERO_STATS,
   INDUSTRIES_DATA,
   MAIN_NAV_ITEMS,
@@ -15,7 +16,7 @@ import {
   SERVICES_DATA,
   WHY_CHOOSE_ITEMS
 } from '../data/site.data';
-import { BlogPost, IndustryItem, NavItem, PartnerItem, ProductItem, ServiceItem } from '../models/site.models';
+import { BlogPost, HeroSliderConfig, IndustryItem, NavItem, PartnerItem, ProductItem, ServiceItem } from '../models/site.models';
 
 export interface SiteSettingsMap {
   header?: {
@@ -40,6 +41,7 @@ export interface SiteSettingsMap {
     mobileBgImage?: string;
     stats?: any[];
   };
+  heroSlider?: HeroSliderConfig;
   about?: any;
   aboutPillars?: typeof ABOUT_PILLARS;
   whyChooseUs?: {
@@ -127,6 +129,7 @@ export class ContentService {
       mobileBgImage: 'assets/images/hero-mobile.png',
       stats: HERO_STATS
     },
+    heroSlider: HERO_SLIDER_DEFAULT,
     about: ABOUT_CONTENT,
     aboutPillars: ABOUT_PILLARS,
     whyChooseUs: {

@@ -1,6 +1,7 @@
 import {
   BlogPost,
   ContactInfo,
+  HeroSliderConfig,
   IndustryItem,
   NavItem,
   PartnerItem,
@@ -57,6 +58,77 @@ export const HERO_STATS = [
     icon: 'headphones'
   }
 ];
+
+export const HERO_SLIDER_DEFAULT: HeroSliderConfig = {
+  autoplayEnabled: true,
+  autoplayDurationSec: 5,
+  slides: [
+    {
+      id: 'slide-1',
+      eyebrow: 'INNOVATIVE • SCALABLE • RELIABLE',
+      title: 'Enterprise Technology Solutions for a',
+      titleHighlight: 'Smarter Tomorrow',
+      description:
+        'At Aircom Technologies, we deliver cutting-edge ERPNext solutions, IT infrastructure, enterprise integrations, and digital services trusted by growing businesses since 2009.',
+      primaryCtaText: 'Explore Our Solutions',
+      primaryCtaHref: '/services',
+      secondaryCtaText: 'Contact Us',
+      secondaryCtaHref: '/contact',
+      image: 'assets/images/hero-slide-1.jpg',
+      mobileImage: 'assets/images/hero-slide-1.jpg',
+      enabled: true,
+      order: 1
+    },
+    {
+      id: 'slide-2',
+      eyebrow: 'ERPNEXT & BUSINESS MANAGEMENT',
+      title: 'Unified ERPNext &',
+      titleHighlight: 'Enterprise Operations',
+      description:
+        'Streamline multi-branch accounting, batch-tracked inventory, procurement, manufacturing BOMs, and HRMS on an extensible open-source ERP platform with zero per-seat bottlenecks.',
+      primaryCtaText: 'Discover ERP Solutions',
+      primaryCtaHref: '/services/erpnext',
+      secondaryCtaText: 'Request ERP Demo',
+      secondaryCtaHref: '/contact',
+      image: 'assets/images/hero-slide-2.png',
+      mobileImage: 'assets/images/hero-slide-2.png',
+      enabled: true,
+      order: 2
+    },
+    {
+      id: 'slide-3',
+      eyebrow: 'TALLYPRIME & WORKFLOW AUTOMATION',
+      title: 'Automated TallyPrime &',
+      titleHighlight: 'Business Integration',
+      description:
+        'Eliminate manual voucher re-entry with real-time two-way XML/API connectors, custom TDL extensions, Zoho/Salesforce CRM sync, and push-protocol biometric attendance.',
+      primaryCtaText: 'Learn More',
+      primaryCtaHref: '/services/tally',
+      secondaryCtaText: 'View Integrations',
+      secondaryCtaHref: '/services/crm',
+      image: 'assets/images/hero-slide-3.png',
+      mobileImage: 'assets/images/hero-slide-3.png',
+      enabled: true,
+      order: 3
+    },
+    {
+      id: 'slide-4',
+      eyebrow: 'IT INFRASTRUCTURE & DIGITAL TRANSFORMATION',
+      title: 'Resilient Cloud, Security &',
+      titleHighlight: 'Digital Portals',
+      description:
+        'Hardened enterprise firewalls, encrypted branch VPNs, managed cloud ERP hosting with automated backups, B2B self-service web portals, and proactive L1–L3 IT AMC support.',
+      primaryCtaText: 'Contact Our Team',
+      primaryCtaHref: '/contact',
+      secondaryCtaText: 'Explore Cloud & IT',
+      secondaryCtaHref: '/services/infrastructure',
+      image: 'assets/images/hero-slide-4.jpg',
+      mobileImage: 'assets/images/hero-slide-4.jpg',
+      enabled: true,
+      order: 4
+    }
+  ]
+};
 
 export const ABOUT_CONTENT = {
   eyebrow: 'About Aircom Technologies',

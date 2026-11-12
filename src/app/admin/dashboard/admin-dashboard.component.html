@@ -561,106 +561,172 @@
       }
 
       <!-- ==================================================== -->
-      <!-- MODULE: HERO SECTION -->
+      <!-- MODULE: HERO SLIDER & SECTION -->
       <!-- ==================================================== -->
       @if (activeModule() === 'hero') {
         <div class="module-view">
           <div class="view-header">
             <div>
-              <h2>Hero Section Management</h2>
-              <p class="subtitle">Customize the main home page headline, CTA buttons, background graphics, and key badges.</p>
+              <h2>Dynamic Hero Slider &amp; Banner Management</h2>
+              <p class="subtitle">Add, edit, reorder, enable/disable slides, upload background pictures, and configure autoplay timing.</p>
             </div>
-            <div class="header-actions">
-              <button class="btn-save-publish" (click)="saveSettingsSection('hero')">
+            <div class="header-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-action-outline" (click)="addHeroSlide()">+ Add New Slide</button>
+              <button class="btn-save-publish" (click)="saveHeroAll()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
                   <polyline points="17 21 17 13 7 13 7 21"/>
                   <polyline points="7 3 7 8 15 8"/>
                 </svg>
-                <span>Publish Hero Changes</span>
+                <span>Publish Hero Slider</span>
               </button>
             </div>
           </div>
 
-          @if (siteSettings().hero; as hero) {
-            <div class="edit-grid">
-              <div class="panel-card form-column">
-                <h3>Content &amp; Messaging</h3>
-                <div class="form-group">
-                  <label>Eyebrow Badge Text</label>
-                  <input type="text" [(ngModel)]="hero.eyebrow" placeholder="INNOVATIVE • SCALABLE • RELIABLE" />
+          @if (siteSettings().heroSlider; as slider) {
+            <!-- Slider Global Settings Card -->
+            <div class="panel-card" style="margin-bottom:20px;">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
+                <div>
+                  <h3 style="margin:0 0 4px;">Slider Playback Controls</h3>
+                  <p class="text-muted small" style="margin:0;">Configure automatic slide rotation timing and pause-on-hover behavior.</p>
                 </div>
-
-                <div class="form-group">
-                  <label>Main Headline</label>
-                  <input type="text" [(ngModel)]="hero.title" placeholder="Enterprise Technology Solutions for a" />
-                </div>
-
-                <div class="form-group">
-                  <label>Headline Highlighted Word (Orange)</label>
-                  <input type="text" [(ngModel)]="hero.titleHighlight" placeholder="Smarter Tomorrow" />
-                </div>
-
-                <div class="form-group">
-                  <label>Description Paragraph</label>
-                  <textarea rows="4" [(ngModel)]="hero.description"></textarea>
-                </div>
-
-                <div class="form-row">
-                  <div class="form-group flex-1">
-                    <label>Primary CTA Label</label>
-                    <input type="text" [(ngModel)]="hero.primaryCtaText" />
-                  </div>
-                  <div class="form-group flex-1">
-                    <label>Primary CTA Destination URL</label>
-                    <input type="text" [(ngModel)]="hero.primaryCtaHref" />
-                  </div>
-                </div>
-
-                <div class="form-row">
-                  <div class="form-group flex-1">
-                    <label>Secondary CTA Label</label>
-                    <input type="text" [(ngModel)]="hero.secondaryCtaText" />
-                  </div>
-                  <div class="form-group flex-1">
-                    <label>Secondary CTA Destination URL</label>
-                    <input type="text" [(ngModel)]="hero.secondaryCtaHref" />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Visual Media Column -->
-              <div class="panel-card media-column">
-                <h3>Visual Backgrounds</h3>
-                
-                <div class="media-upload-block">
-                  <label>Desktop Background Image</label>
-                  <div class="image-preview-box">
-                    <img [src]="hero.desktopBgImage || 'assets/images/hero-desktop.png'" alt="Desktop Hero" />
-                  </div>
-                  <div class="media-controls">
-                    <input type="text" [(ngModel)]="hero.desktopBgImage" placeholder="Image URL" />
-                    <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'hero', property: 'desktopBgImage' })">
-                      Change Picture
-                    </button>
-                  </div>
-                </div>
-
-                <div class="media-upload-block">
-                  <label>Mobile Background Image</label>
-                  <div class="image-preview-box preview-mobile">
-                    <img [src]="hero.mobileBgImage || 'assets/images/hero-mobile.png'" alt="Mobile Hero" />
-                  </div>
-                  <div class="media-controls">
-                    <input type="text" [(ngModel)]="hero.mobileBgImage" placeholder="Image URL" />
-                    <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'hero', property: 'mobileBgImage' })">
-                      Change Picture
-                    </button>
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:20px;">
+                  <label style="display:flex;align-items:center;gap:8px;font-weight:600;cursor:pointer;">
+                    <input type="checkbox" [(ngModel)]="slider.autoplayEnabled" style="width:18px;height:18px;accent-color:#0BA8EA;" />
+                    <span>Enable Autoplay</span>
+                  </label>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <label style="font-weight:600;font-size:0.86rem;">Duration (sec):</label>
+                    <input type="number" min="2" max="20" [(ngModel)]="slider.autoplayDurationSec" style="width:74px;padding:6px 10px;" />
                   </div>
                 </div>
               </div>
             </div>
 
+            <!-- Slides Stack -->
+            <div style="display:grid;gap:20px;">
+              @for (slide of slider.slides; track slide.id; let idx = $index) {
+                <div class="panel-card" [style.opacity]="slide.enabled === false ? '0.68' : '1'" style="border-left:4px solid #0BA8EA;">
+                  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #E2E8F0;">
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                      <span class="badge-item" style="background:#102A63;color:#FFFFFF;">Slide #{{ idx + 1 }}</span>
+                      <strong>{{ slide.title }} {{ slide.titleHighlight }}</strong>
+                      <label style="display:inline-flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:600;cursor:pointer;margin-left:8px;">
+                        <input type="checkbox" [(ngModel)]="slide.enabled" style="width:16px;height:16px;accent-color:#10B981;" />
+                        <span>{{ slide.enabled !== false ? 'Active' : 'Disabled' }}</span>
+                      </label>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <button class="btn-action-outline btn-sm" (click)="previewHeroSlide.set(slide)">👁 Preview Slide</button>
+                      <button class="btn-action-outline btn-sm" [disabled]="idx === 0" (click)="moveHeroSlide(idx, -1)" title="Move Up">↑</button>
+                      <button class="btn-action-outline btn-sm" [disabled]="idx === slider.slides.length - 1" (click)="moveHeroSlide(idx, 1)" title="Move Down">↓</button>
+                      <button class="btn-icon btn-danger" (click)="deleteHeroSlide(idx)" title="Delete Slide">✕</button>
+                    </div>
+                  </div>
+
+                  <div class="edit-grid">
+                    <div class="form-column">
+                      <div class="form-row">
+                        <div class="form-group flex-2">
+                          <label>Eyebrow Tagline</label>
+                          <input type="text" [(ngModel)]="slide.eyebrow" />
+                        </div>
+                        <div class="form-group flex-1">
+                          <label>Display Order</label>
+                          <input type="number" [(ngModel)]="slide.order" />
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group flex-1">
+                          <label>Main Heading</label>
+                          <input type="text" [(ngModel)]="slide.title" />
+                        </div>
+                        <div class="form-group flex-1">
+                          <label>Highlighted Heading (Amber)</label>
+                          <input type="text" [(ngModel)]="slide.titleHighlight" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Slide Description</label>
+                        <textarea rows="2" [(ngModel)]="slide.description"></textarea>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group flex-1">
+                          <label>Primary CTA Text</label>
+                          <input type="text" [(ngModel)]="slide.primaryCtaText" />
+                        </div>
+                        <div class="form-group flex-1">
+                          <label>Primary CTA Link</label>
+                          <input type="text" [(ngModel)]="slide.primaryCtaHref" />
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group flex-1">
+                          <label>Secondary CTA Text</label>
+                          <input type="text" [(ngModel)]="slide.secondaryCtaText" />
+                        </div>
+                        <div class="form-group flex-1">
+                          <label>Secondary CTA Link</label>
+                          <input type="text" [(ngModel)]="slide.secondaryCtaHref" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="media-column">
+                      <label style="font-weight:600;display:block;margin-bottom:8px;">Slide Background Picture</label>
+                      <div class="image-preview-box" style="margin-bottom:10px;">
+                        <img [src]="slide.image || 'assets/images/hero-slide-1.jpg'" [alt]="slide.title" />
+                      </div>
+                      <div class="media-controls">
+                        <input type="text" [(ngModel)]="slide.image" placeholder="Image URL or upload picture..." />
+                        <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'hero_slide', property: slide.id })">
+                          Upload Picture
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Live Slide Preview Modal -->
+            @if (previewHeroSlide(); as pv) {
+              <div class="modal-backdrop" (click)="previewHeroSlide.set(null)">
+                <div class="modal-card modal-lg" (click)="$event.stopPropagation()" style="max-width:860px;">
+                  <div class="modal-header">
+                    <h3>Live Slide Preview</h3>
+                    <button class="btn-close" (click)="previewHeroSlide.set(null)">✕</button>
+                  </div>
+                  <div class="modal-body" style="padding:0;">
+                    <div style="position:relative;min-height:360px;display:flex;align-items:center;overflow:hidden;background:#0D1B3E;color:#FFFFFF;padding:36px;">
+                      <img [src]="pv.image || 'assets/images/hero-slide-1.jpg'" [alt]="pv.title" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" />
+                      <div style="position:absolute;inset:0;background:linear-gradient(95deg,rgba(8,18,43,0.95) 0%,rgba(13,27,62,0.85) 45%,rgba(13,27,62,0.28) 100%);z-index:2;"></div>
+                      <div style="position:relative;z-index:3;max-width:520px;">
+                        <div style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;color:#38BDF8;text-transform:uppercase;margin-bottom:10px;">{{ pv.eyebrow }}</div>
+                        <h2 style="font-size:2rem;line-height:1.15;margin:0 0 12px;color:#FFFFFF;">
+                          {{ pv.title }} <span style="color:#F59E0B;">{{ pv.titleHighlight }}</span>
+                        </h2>
+                        <p style="color:#E2E8F0;font-size:0.95rem;line-height:1.6;margin:0 0 20px;">{{ pv.description }}</p>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                          <span style="background:linear-gradient(135deg,#F59E0B,#EA580C);color:#FFFFFF;padding:10px 20px;border-radius:999px;font-weight:600;font-size:0.88rem;">{{ pv.primaryCtaText }} →</span>
+                          @if (pv.secondaryCtaText) {
+                            <span style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.35);color:#FFFFFF;padding:10px 20px;border-radius:999px;font-weight:600;font-size:0.88rem;">{{ pv.secondaryCtaText }}</span>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn-cancel" (click)="previewHeroSlide.set(null)">Close Preview</button>
+                    <button class="btn-save-publish" (click)="previewHeroSlide.set(null); saveHeroAll()">Publish Changes</button>
+                  </div>
+                </div>
+              </div>
+            }
+          }
+
+          @if (siteSettings().hero; as hero) {
             <!-- Hero Highlight Badges / Stats Row -->
             <div class="panel-card" style="margin-top:20px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">

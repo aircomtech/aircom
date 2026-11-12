@@ -28,60 +28,18 @@ import { ContentService } from '../../core/services/content.service';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
 import { SeoService } from '../../core/services/seo.service';
 import { ContactSectionComponent } from '../../shared/components/contact-section/contact-section.component';
+import { HeroSliderComponent } from '../../shared/components/hero-slider/hero-slider.component';
 import { TechIconComponent } from '../../shared/components/tech-icon/tech-icon.component';
 import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, TechIconComponent, ScrollRevealDirective, ContactSectionComponent],
+  imports: [RouterLink, HeroSliderComponent, TechIconComponent, ScrollRevealDirective, ContactSectionComponent],
   styleUrl: './home.component.scss',
   template: `
-    <!-- 1. HERO SECTION -->
-    <section class="hero-section" #heroSection (mousemove)="onHeroMouseMove($event)">
-      <!-- Desktop animated hero visual (image copy 2.png) -->
-      <div class="hero-bg-desktop" #heroParallaxDesktop aria-hidden="true">
-        <img [src]="hero.desktopBgImage || 'assets/images/hero-desktop.png'" alt="Enterprise Digital Globe and Cloud Technology" class="hero-img-desktop" />
-      </div>
-
-      <!-- Mobile animated hero visual (image copy 3.png) -->
-      <div class="hero-bg-mobile" #heroParallaxMobile aria-hidden="true">
-        <img [src]="hero.mobileBgImage || 'assets/images/hero-mobile.png'" alt="Enterprise Digital Globe Mobile Visual" class="hero-img-mobile" />
-      </div>
-
-      <div class="hero-gradient-overlay" aria-hidden="true"></div>
-
-      <div class="container hero-container">
-        <div class="hero-content">
-          <div class="hero-eyebrow">
-            <span>{{ hero.eyebrow || 'INNOVATIVE • SCALABLE • RELIABLE' }}</span>
-            <span class="eyebrow-bar"></span>
-          </div>
-
-          <h1 class="hero-title">
-            {{ hero.title || 'Enterprise Technology Solutions for a' }}
-            <span class="highlight-orange">{{ hero.titleHighlight || 'Smarter Tomorrow' }}</span>
-          </h1>
-
-          <p class="hero-desc">
-            {{ hero.description || 'At Aircom Technologies, we deliver cutting-edge ERP solutions, IT infrastructure, enterprise integrations, and digital services to help businesses grow with innovation and efficiency.' }}
-          </p>
-
-          <div class="hero-cta-row">
-            <a [href]="hero.primaryCtaHref || '#services-section'" class="btn-orange hero-btn">
-              <span>{{ hero.primaryCtaText || 'Explore Our Services' }}</span>
-              <span aria-hidden="true">→</span>
-            </a>
-            <button type="button" class="btn-outline-navy hero-btn" (click)="dialogs.openContact()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-              </svg>
-              <span>{{ hero.secondaryCtaText || 'Contact Us' }}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- 1. DYNAMIC HERO SLIDER -->
+    <app-hero-slider />
 
     <!-- STATS STRIP BELOW HERO (GRAND SIZE + TYPING MODE) -->
     <section class="stats-strip-section" aria-label="Verified Company Highlights" #statsSection>
@@ -506,15 +464,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (!this.anim.prefersReducedMotion()) {
       this.ctx = gsap.context(() => {
-        gsap.from('.hero-eyebrow, .hero-title, .hero-desc, .hero-cta-row', {
-          y: 26,
-          opacity: 0,
-          duration: 0.72,
-          stagger: 0.1,
-          ease: 'power3.out',
-          clearProps: 'transform,opacity'
-        });
-
         if (this.heroSection && this.heroParallaxDesktop) {
           gsap.to(this.heroParallaxDesktop.nativeElement, {
             y: 40,
