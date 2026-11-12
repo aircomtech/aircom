@@ -126,6 +126,38 @@ export const HERO_SLIDER_DEFAULT: HeroSliderConfig = {
       mobileImage: 'assets/images/hero-slide-4.jpg',
       enabled: true,
       order: 4
+    },
+    {
+      id: 'slide-5',
+      eyebrow: 'BIOMETRIC ATTENDANCE & HRMS',
+      title: 'Smart Workforce, Payroll &',
+      titleHighlight: 'Access Control',
+      description:
+        'Real-time push-protocol biometric & facial attendance devices synced directly with shift rosters, leave policies, compliance, and automated monthly payroll processing.',
+      primaryCtaText: 'Explore Biometric & HRMS',
+      primaryCtaHref: '/services/biometric',
+      secondaryCtaText: 'View HRMS Suite',
+      secondaryCtaHref: '/services/hrms',
+      image: 'assets/images/solutions-hero-bg.png',
+      mobileImage: 'assets/images/solutions-hero-bg.png',
+      enabled: true,
+      order: 5
+    },
+    {
+      id: 'slide-6',
+      eyebrow: 'INDUSTRY-TAILORED DIGITAL GROWTH',
+      title: 'Connected Cloud, Retail &',
+      titleHighlight: 'Industry Solutions',
+      description:
+        'Purpose-built software stacks for retail POS, manufacturing, jewellery, healthcare, hospitality, and multi-location enterprises with dedicated onboarding and 24/7 support.',
+      primaryCtaText: 'Explore Industries',
+      primaryCtaHref: '/industries',
+      secondaryCtaText: 'Get a Quote',
+      secondaryCtaHref: '/contact',
+      image: 'assets/images/hero-desktop.png',
+      mobileImage: 'assets/images/hero-mobile.png',
+      enabled: true,
+      order: 6
     }
   ]
 };
