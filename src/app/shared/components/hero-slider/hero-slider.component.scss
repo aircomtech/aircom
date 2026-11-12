@@ -14,8 +14,8 @@
   }
 
   @media (max-width: 767px) {
-    min-height: 540px;
-    align-items: center;
+    min-height: 480px;
+    align-items: flex-start;
   }
 }
 
@@ -53,7 +53,7 @@
   transform: scale(1);
 
   @media (max-width: 767px) {
-    object-position: center center;
+    object-position: 72% center;
   }
 }
 
@@ -61,6 +61,7 @@
   0% {
     transform: scale(1);
   }
+
   100% {
     transform: scale(1.07);
   }
@@ -70,21 +71,17 @@
   position: absolute;
   inset: 0;
   z-index: 3;
-  background: linear-gradient(
-    95deg,
-    rgba(8, 18, 43, 0.94) 0%,
-    rgba(13, 27, 62, 0.86) 44%,
-    rgba(16, 42, 99, 0.52) 72%,
-    rgba(13, 27, 62, 0.25) 100%
-  );
+  background: linear-gradient(95deg,
+      rgba(8, 18, 43, 0.94) 0%,
+      rgba(13, 27, 62, 0.86) 44%,
+      rgba(16, 42, 99, 0.52) 72%,
+      rgba(13, 27, 62, 0.25) 100%);
 
   @media (max-width: 767px) {
-    background: linear-gradient(
-      180deg,
-      rgba(8, 18, 43, 0.86) 0%,
-      rgba(13, 27, 62, 0.82) 55%,
-      rgba(8, 18, 43, 0.92) 100%
-    );
+    background: linear-gradient(180deg,
+        rgba(8, 18, 43, 0.92) 0%,
+        rgba(13, 27, 62, 0.88) 55%,
+        rgba(8, 18, 43, 0.96) 100%);
   }
 }
 
@@ -95,13 +92,17 @@
   padding: 64px 0 88px;
 
   @media (max-width: 767px) {
-    padding: 46px 0 76px;
+    padding: 38px 16px 82px;
   }
 }
 
 .slide-copy {
   max-width: 660px;
   animation: slideTextIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @media (max-width: 767px) {
+    max-width: 100%;
+  }
 }
 
 @keyframes slideTextIn {
@@ -109,6 +110,7 @@
     opacity: 0;
     transform: translateY(18px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -127,22 +129,38 @@
   color: #38BDF8;
   margin-bottom: 14px;
 
+  @media (max-width: 767px) {
+    font-size: 0.72rem;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
   .eyebrow-bar {
     width: 42px;
     height: 2.5px;
     border-radius: 999px;
     background: linear-gradient(90deg, #0BA8EA, #F59E0B);
+
+    @media (max-width: 767px) {
+      width: 28px;
+    }
   }
 }
 
 .hero-title {
   font-family: 'Poppins', sans-serif;
-  font-size: clamp(2rem, 4.2vw, 3.35rem);
+  font-size: clamp(1.75rem, 4.2vw, 3.35rem);
   font-weight: 800;
-  line-height: 1.14;
+  line-height: 1.16;
   color: #FFFFFF;
   margin: 0 0 18px;
   letter-spacing: -0.02em;
+
+  @media (max-width: 767px) {
+    font-size: 1.75rem;
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
 
   .highlight-orange {
     color: #F59E0B;
@@ -151,11 +169,17 @@
 }
 
 .hero-desc {
-  font-size: clamp(0.96rem, 1.35vw, 1.1rem);
-  line-height: 1.65;
+  font-size: clamp(0.92rem, 1.35vw, 1.1rem);
+  line-height: 1.62;
   color: rgba(226, 232, 240, 0.92);
   margin: 0 0 28px;
   max-width: 590px;
+
+  @media (max-width: 767px) {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-bottom: 22px;
+  }
 }
 
 .hero-cta-row {
@@ -163,11 +187,18 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 14px;
+
+  @media (max-width: 767px) {
+    gap: 10px;
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .hero-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 9px;
   padding: 13px 24px;
   border-radius: 999px;
@@ -177,6 +208,12 @@
   cursor: pointer;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+  @media (max-width: 767px) {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 0.88rem;
+  }
 
   &:hover {
     transform: translateY(-2px);
@@ -243,8 +280,14 @@
   @media (max-width: 991px) {
     width: 38px;
     height: 38px;
-    &.prev { left: 10px; }
-    &.next { right: 10px; }
+
+    &.prev {
+      left: 10px;
+    }
+
+    &.next {
+      right: 10px;
+    }
   }
 
   @media (max-width: 767px) {
@@ -257,12 +300,17 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 26px;
+  bottom: 22px;
   z-index: 6;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+
+  @media (max-width: 767px) {
+    bottom: 14px;
+    gap: 7px;
+  }
 }
 
 .dot-btn {
@@ -275,6 +323,11 @@
   cursor: pointer;
   transition: all 0.3s ease;
 
+  @media (max-width: 767px) {
+    width: 8px;
+    height: 8px;
+  }
+
   &:hover {
     background: rgba(255, 255, 255, 0.72);
   }
@@ -282,44 +335,15 @@
   &.is-active {
     width: 34px;
     background: linear-gradient(90deg, #0BA8EA, #F59E0B);
-  }
-}
 
-/* Slide Progress Bar */
-.slider-progress-track {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.14);
-  z-index: 7;
-  overflow: hidden;
-}
-
-.slider-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #0BA8EA, #F59E0B);
-  width: 0%;
-  animation-name: slideProgressBar;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-
-  &.is-paused {
-    animation-play-state: paused;
-  }
-}
-
-@keyframes slideProgressBar {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
+    @media (max-width: 767px) {
+      width: 24px;
+    }
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .slide-layer,
   .slide-bg-img,
   .slide-copy,
@@ -328,4 +352,3 @@
     transition: none !important;
   }
 }
-

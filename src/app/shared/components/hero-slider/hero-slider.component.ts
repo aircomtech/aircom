@@ -125,19 +125,6 @@ import { DialogLauncherService } from '../../../core/services/dialog-launcher.se
             ></button>
           }
         </div>
-
-        <!-- Slide Progress Bar -->
-        @if (sliderConfig().autoplayEnabled) {
-          <div class="slider-progress-track" aria-hidden="true">
-            @for (k of [progressKey()]; track k) {
-              <div
-                class="slider-progress-fill"
-                [class.is-paused]="isPaused()"
-                [style.animation-duration.s]="sliderConfig().autoplayDurationSec || 5"
-              ></div>
-            }
-          </div>
-        }
       }
     </section>
   `
