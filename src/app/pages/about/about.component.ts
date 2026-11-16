@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ABOUT_CONTENT, ABOUT_PILLARS, HERO_STATS, WHY_CHOOSE_ITEMS } from '../../core/data/site.data';
+import { TeamMember } from '../../core/models/site.models';
 import { ContentService } from '../../core/services/content.service';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
 import { SeoService } from '../../core/services/seo.service';
@@ -130,6 +131,73 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
+    <!-- Executive Leadership & Management Team -->
+    <section class="page-section alt-bg">
+      <div class="container">
+        <div class="section-header" appScrollReveal="up">
+          <div class="eyebrow-row">
+            <span class="eyebrow-line"></span>
+            <span class="eyebrow-text">Leadership Team</span>
+            <span class="eyebrow-line right"></span>
+          </div>
+          <h2>Executive Management &amp; Technical Leadership</h2>
+          <p>Meet the visionary leaders guiding Aircom Technologies' enterprise ERP, Frappe engineering, cloud infrastructure, and client success.</p>
+        </div>
+
+        <div class="card-grid-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+          @for (member of team; track member.id) {
+            <div
+              class="feature-box"
+              style="padding: 0; overflow: hidden; border-radius: 20px; background: #FFFFFF; border: 1px solid #E2E8F0; box-shadow: 0 4px 20px rgba(13,27,62,0.06); display: flex; flex-direction: column;"
+              appScrollReveal="up"
+            >
+              <div style="position: relative; aspect-ratio: 1; overflow: hidden; background: linear-gradient(135deg, #0D1B3E, #2457A7);">
+                <img
+                  [src]="member.photo"
+                  [alt]="member.name + ' - ' + member.designation"
+                  style="width: 100%; height: 100%; object-fit: cover; display: block;"
+                  (error)="member.photo = 'assets/images/about-hq.png'"
+                />
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px; background: linear-gradient(to top, rgba(13,27,62,0.92), transparent); color: #FFFFFF;">
+                  <span style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #F59E0B; letter-spacing: 0.05em;">Aircom Management</span>
+                </div>
+              </div>
+
+              <div style="padding: 20px; display: flex; flex-direction: column; flex: 1;">
+                <h3 style="font-size: 1.15rem; color: #0D1B3E; margin: 0 0 6px;">{{ member.name }}</h3>
+                <div style="font-size: 0.85rem; color: #2457A7; font-weight: 600; margin-bottom: 12px;">{{ member.designation }}</div>
+                <p style="font-size: 0.88rem; color: #64748B; line-height: 1.5; margin: 0 0 16px; flex: 1;">
+                  {{ member.bio }}
+                </p>
+
+                <div style="padding-top: 14px; border-top: 1px solid #F1F5F9; display: flex; align-items: center; justify-content: space-between;">
+                  @if (member.linkedin) {
+                    <a
+                      [href]="member.linkedin"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 700; color: #0077B5; text-decoration: none;"
+                    >
+                      <span>LinkedIn Profile ↗</span>
+                    </a>
+                  }
+                  @if (member.email) {
+                    <a
+                      [href]="'mailto:' + member.email"
+                      style="font-size: 0.82rem; color: #64748B; text-decoration: none;"
+                      [title]="'Email ' + member.name"
+                    >
+                      ✉️
+                    </a>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
     <app-cta-banner />
   `
 })
@@ -141,8 +209,11 @@ export class AboutComponent implements OnInit {
   pillars = ABOUT_PILLARS.map((p) => ({ ...p }));
   stats = HERO_STATS;
   whyItems = WHY_CHOOSE_ITEMS.map((w) => ({ ...w }));
+  team: TeamMember[] = [];
 
   ngOnInit(): void {
+    this.team = this.content.currentTeam.filter((m) => m.enabled !== false);
+    this.content.team$.subscribe((t) => (this.team = t.filter((m) => m.enabled !== false)));
     this.applySettings(this.content.currentSettings);
     this.content.settings$.subscribe((st) => this.applySettings(st));
 

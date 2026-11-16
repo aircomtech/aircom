@@ -76,6 +76,16 @@
         </svg>
         <span>About Company</span>
       </button>
+      <button class="nav-item" [class.active]="activeModule() === 'team'" (click)="setModule('team')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Management &amp; Team</span>
+        <span class="nav-badge">{{ teamList().length }}</span>
+      </button>
       <button class="nav-item" [class.active]="activeModule() === 'why_us'" (click)="setModule('why_us')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -172,8 +182,31 @@
           <path d="M4 19.5 A2.5 2.5 0 0 1 6.5 17 H20"/>
           <path d="M6.5 2 H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
         </svg>
-        <span>Blog Management</span>
+        <span>Articles Management</span>
         <span class="nav-badge">{{ blogsList().length }}</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'testimonials'" (click)="setModule('testimonials')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span>Testimonials (Reviews)</span>
+        <span class="nav-badge">{{ testimonialsList().length }}</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'careers'" (click)="setModule('careers')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+        </svg>
+        <span>Careers &amp; Jobs</span>
+        <span class="nav-badge">{{ careersList().length }}</span>
+      </button>
+      <button class="nav-item" [class.active]="activeModule() === 'locations'" (click)="setModule('locations')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span>Locations &amp; Google Maps</span>
+        <span class="nav-badge">{{ locationsList().length }}</span>
       </button>
 
       <!-- OPERATIONS -->
@@ -985,14 +1018,14 @@
       }
 
       <!-- ==================================================== -->
-      <!-- MODULE: BLOG MANAGEMENT -->
+      <!-- MODULE: ARTICLES MANAGEMENT -->
       <!-- ==================================================== -->
       @if (activeModule() === 'blogs') {
         <div class="module-view">
           <div class="view-header">
             <div>
-              <h2>Blog &amp; Knowledge Base Management</h2>
-              <p class="subtitle">Create, edit, delete, and publish articles with pictures that sync live to the public website.</p>
+              <h2>Articles &amp; Technical Insights Management</h2>
+              <p class="subtitle">Create, edit, delete, and publish technical articles with pictures that sync live to the public website.</p>
             </div>
             <div class="header-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
               <button class="btn-action-outline" (click)="restoreAllBackup()">↻ Restore All Articles</button>
@@ -1707,6 +1740,477 @@
                 <div class="modal-footer">
                   <button class="btn-cancel" (click)="selectedPartner.set(null)">Cancel</button>
                   <button class="btn-save-publish" (click)="savePartner(ptr)">Save &amp; Publish Partner</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: MANAGEMENT & LEADERSHIP TEAM -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'team') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Executive Leadership &amp; Management</h2>
+              <p class="subtitle">Manage executive profiles, photos, designations, bios, and LinkedIn credentials displayed on About Us.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-action" (click)="openNewTeamMember()">
+                + Add Executive Profile
+              </button>
+            </div>
+          </div>
+
+          <div class="cards-grid">
+            @for (tm of teamList(); track tm.id) {
+              <div class="admin-item-card">
+                <div class="card-image-wrap" style="aspect-ratio:1;max-height:180px;background:#0D1B3E;display:flex;align-items:center;justify-content:center;">
+                  <img [src]="tm.photo || 'assets/images/about-hq.png'" [alt]="tm.name" style="width:100%;height:100%;object-fit:cover;" />
+                </div>
+                <div class="card-content">
+                  <div class="card-badges">
+                    <span class="badge badge-accent">Order: {{ tm.order }}</span>
+                    <span class="badge" [class.badge-success]="tm.enabled" [class.badge-warning]="!tm.enabled">
+                      {{ tm.enabled ? 'Active' : 'Disabled' }}
+                    </span>
+                  </div>
+                  <h3>{{ tm.name }}</h3>
+                  <p class="card-desc" style="color:#2457A7;font-weight:600;margin-bottom:6px;">{{ tm.designation }}</p>
+                  <p class="card-desc">{{ tm.bio }}</p>
+                </div>
+                <div class="card-actions">
+                  <button class="btn-card-edit" (click)="selectedTeamMember.set(tm)">Edit Profile</button>
+                  <button class="btn-card-delete" (click)="deleteTeamMemberItem(tm.id)" title="Delete Profile">✕</button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Edit Team Member Modal -->
+          @if (selectedTeamMember(); as tm) {
+            <div class="admin-modal-backdrop" (click)="selectedTeamMember.set(null)">
+              <div class="admin-modal-card" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Edit Management Profile: {{ tm.name || 'New Profile' }}</h3>
+                  <button class="modal-close" (click)="selectedTeamMember.set(null)">✕</button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Full Name *</label>
+                      <input type="text" [(ngModel)]="tm.name" placeholder="e.g. Mohammed Muzammil" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Executive Designation *</label>
+                      <input type="text" [(ngModel)]="tm.designation" placeholder="e.g. Managing Director & Founder" />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Executive Biography</label>
+                    <textarea rows="3" [(ngModel)]="tm.bio" placeholder="Brief background, achievements, and leadership role..."></textarea>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>LinkedIn Profile URL</label>
+                      <input type="text" [(ngModel)]="tm.linkedin" placeholder="https://www.linkedin.com/in/..." />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Direct Work Email</label>
+                      <input type="email" [(ngModel)]="tm.email" placeholder="name@aircomtech.com" />
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Display Order</label>
+                      <input type="number" [(ngModel)]="tm.order" />
+                    </div>
+                    <div class="form-group flex-1" style="display:flex;align-items:center;padding-top:28px;">
+                      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" [(ngModel)]="tm.enabled" />
+                        <span>Show on Website</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Executive Photo</label>
+                    <div class="image-preview-box" style="margin-bottom:8px;max-width:200px;aspect-ratio:1;">
+                      <img [src]="tm.photo || 'assets/images/about-hq.png'" [alt]="tm.name" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" />
+                    </div>
+                    <div class="media-controls">
+                      <input type="text" [(ngModel)]="tm.photo" placeholder="Image URL or upload..." />
+                      <button class="btn-action-outline" (click)="openMediaUploadModal({ target: 'team', property: 'photo' })">
+                        Upload Picture
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn-cancel" (click)="selectedTeamMember.set(null)">Cancel</button>
+                  <button class="btn-save-publish" (click)="saveTeamMemberItem()">Save &amp; Publish Profile</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: TESTIMONIALS (CLIENT REVIEWS) -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'testimonials') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Client Testimonials &amp; Reviews</h2>
+              <p class="subtitle">Manage verified enterprise client testimonials, star ratings, and company quotes displayed on the website.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-action" (click)="openNewTestimonial()">
+                + Add Testimonial
+              </button>
+            </div>
+          </div>
+
+          <div class="cards-grid">
+            @for (test of testimonialsList(); track test.id) {
+              <div class="admin-item-card">
+                <div class="card-content">
+                  <div class="card-badges">
+                    <span class="badge badge-accent">Rating: {{ test.rating }} ★</span>
+                    @if (test.industry) {
+                      <span class="badge" style="background:#EBF5FF;color:#2457A7;">{{ test.industry }}</span>
+                    }
+                  </div>
+                  <h3>{{ test.clientName }}</h3>
+                  <p class="card-desc" style="color:#2457A7;font-weight:600;margin-bottom:6px;">{{ test.designation }} — {{ test.company }}</p>
+                  <p class="card-desc" style="font-style:italic;">“{{ test.quote }}”</p>
+                </div>
+                <div class="card-actions">
+                  <button class="btn-card-edit" (click)="selectedTestimonial.set(test)">Edit Review</button>
+                  <button class="btn-card-delete" (click)="deleteTestimonialItem(test.id)" title="Delete Testimonial">✕</button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Edit Testimonial Modal -->
+          @if (selectedTestimonial(); as t) {
+            <div class="admin-modal-backdrop" (click)="selectedTestimonial.set(null)">
+              <div class="admin-modal-card" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Edit Testimonial: {{ t.clientName || 'New Review' }}</h3>
+                  <button class="modal-close" (click)="selectedTestimonial.set(null)">✕</button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Client Name *</label>
+                      <input type="text" [(ngModel)]="t.clientName" placeholder="e.g. Sanjay Deshmukh" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Client Designation *</label>
+                      <input type="text" [(ngModel)]="t.designation" placeholder="e.g. Chief Operating Officer" />
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Company / Organization *</label>
+                      <input type="text" [(ngModel)]="t.company" placeholder="e.g. Apex Precision Engineering Ltd." />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Industry Sector</label>
+                      <input type="text" [(ngModel)]="t.industry" placeholder="e.g. Manufacturing, Retail POS" />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Testimonial Quote *</label>
+                    <textarea rows="4" [(ngModel)]="t.quote" placeholder="Client feedback and operational improvements achieved..."></textarea>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Star Rating (1 - 5)</label>
+                      <select [(ngModel)]="t.rating">
+                        <option [ngValue]="5">5 Stars (Excellent)</option>
+                        <option [ngValue]="4">4 Stars (Very Good)</option>
+                        <option [ngValue]="3">3 Stars (Good)</option>
+                      </select>
+                    </div>
+                    <div class="form-group flex-1" style="display:flex;align-items:center;padding-top:28px;">
+                      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" [(ngModel)]="t.enabled" />
+                        <span>Visible on Website</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn-cancel" (click)="selectedTestimonial.set(null)">Cancel</button>
+                  <button class="btn-save-publish" (click)="saveTestimonialItem()">Save &amp; Publish Testimonial</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: LOCATIONS & GOOGLE MAPS -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'locations') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Branch Offices &amp; Google Maps</h2>
+              <p class="subtitle">Add and configure multiple branch offices with custom Google Map embeds displayed in the Contact Us page and footer.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-action" (click)="openNewLocation()">
+                + Add Branch Location
+              </button>
+            </div>
+          </div>
+
+          <div class="cards-grid">
+            @for (loc of locationsList(); track loc.id) {
+              <div class="admin-item-card">
+                <div class="card-content">
+                  <div class="card-badges">
+                    @if (loc.isHeadquarters) {
+                      <span class="badge" style="background:#F59E0B;color:#FFFFFF;font-weight:700;">HEADQUARTERS</span>
+                    } @else {
+                      <span class="badge" style="background:#EBF5FF;color:#2457A7;">REGIONAL BRANCH</span>
+                    }
+                    <span class="badge" [class.badge-success]="loc.enabled" [class.badge-warning]="!loc.enabled">
+                      {{ loc.enabled ? 'Active' : 'Disabled' }}
+                    </span>
+                  </div>
+                  <h3>{{ loc.name }}</h3>
+                  <p class="card-desc" style="color:#475569;margin-bottom:6px;">📍 {{ loc.address }}</p>
+                  <div style="font-size:0.8rem;color:#64748B;display:flex;flex-direction:column;gap:3px;">
+                    <span>📞 {{ loc.phone }}</span>
+                    <span>✉️ {{ loc.email }}</span>
+                    <span>⏰ {{ loc.workingHours }}</span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button class="btn-card-edit" (click)="selectedLocation.set(loc)">Edit Branch</button>
+                  <button class="btn-card-delete" (click)="deleteLocationItem(loc.id)" title="Delete Location">✕</button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Edit Branch Location Modal -->
+          @if (selectedLocation(); as loc) {
+            <div class="admin-modal-backdrop" (click)="selectedLocation.set(null)">
+              <div class="admin-modal-card" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Edit Location: {{ loc.name || 'New Branch' }}</h3>
+                  <button class="modal-close" (click)="selectedLocation.set(null)">✕</button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Branch Name *</label>
+                      <input type="text" [(ngModel)]="loc.name" placeholder="e.g. Bangalore Technology Center" />
+                    </div>
+                    <div class="form-group flex-1" style="display:flex;align-items:center;padding-top:28px;">
+                      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;">
+                        <input type="checkbox" [(ngModel)]="loc.isHeadquarters" />
+                        <span>Corporate Headquarters</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Full Address *</label>
+                    <textarea rows="2" [(ngModel)]="loc.address" placeholder="Premises, Street, Area, City, State, Pin Code, Country"></textarea>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>City</label>
+                      <input type="text" [(ngModel)]="loc.city" placeholder="e.g. Bangalore" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>State</label>
+                      <input type="text" [(ngModel)]="loc.state" placeholder="e.g. Karnataka" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Country</label>
+                      <input type="text" [(ngModel)]="loc.country" placeholder="India" />
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Direct Phone Number</label>
+                      <input type="tel" [(ngModel)]="loc.phone" placeholder="+91 ..." />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Direct Email</label>
+                      <input type="email" [(ngModel)]="loc.email" placeholder="branch@aircomtech.com" />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Working Hours</label>
+                    <input type="text" [(ngModel)]="loc.workingHours" placeholder="Monday – Saturday: 9:30 AM – 6:30 PM IST" />
+                  </div>
+
+                  <div class="form-group">
+                    <label>Google Maps Embed URL</label>
+                    <input type="text" [(ngModel)]="loc.mapEmbedUrl" placeholder="https://maps.google.com/maps?q=...&output=embed (Leave empty to auto-generate)" />
+                    <small style="color:#64748B;font-size:0.75rem;display:block;margin-top:4px;">
+                      Paste your customized Google Map iframe embed URL, or leave blank to automatically generate from address.
+                    </small>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Display Order</label>
+                      <input type="number" [(ngModel)]="loc.order" />
+                    </div>
+                    <div class="form-group flex-1" style="display:flex;align-items:center;padding-top:28px;">
+                      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" [(ngModel)]="loc.enabled" />
+                        <span>Visible on Website</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn-cancel" (click)="selectedLocation.set(null)">Cancel</button>
+                  <button class="btn-save-publish" (click)="saveLocationItem()">Save &amp; Publish Branch</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ==================================================== -->
+      <!-- MODULE: CAREERS & JOB POSTINGS -->
+      <!-- ==================================================== -->
+      @if (activeModule() === 'careers') {
+        <div class="module-view">
+          <div class="view-header">
+            <div>
+              <h2>Careers &amp; Job Openings</h2>
+              <p class="subtitle">Post new job openings, manage active listings, requirements, and responsibilities. Applications land through direct emails and Supabase records.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-action" (click)="openNewJob()">
+                + Post New Job Opening
+              </button>
+            </div>
+          </div>
+
+          <div class="cards-grid">
+            @for (job of careersList(); track job.id) {
+              <div class="admin-item-card">
+                <div class="card-content">
+                  <div class="card-badges">
+                    <span class="badge badge-accent">{{ job.department }}</span>
+                    <span class="badge" [class.badge-success]="job.status === 'open'" [class.badge-warning]="job.status === 'closed'">
+                      {{ job.status === 'open' ? 'OPEN' : 'CLOSED' }}
+                    </span>
+                  </div>
+                  <h3>{{ job.title }}</h3>
+                  <div style="font-size:0.82rem;color:#2457A7;font-weight:600;margin-bottom:6px;">
+                    📍 {{ job.location }} &bull; 💼 {{ job.type }} &bull; ⏳ {{ job.experience }}
+                  </div>
+                  <p class="card-desc">{{ job.overview }}</p>
+                </div>
+                <div class="card-actions">
+                  <button class="btn-card-edit" (click)="selectedJob.set(job)">Edit Opening</button>
+                  <button class="btn-card-delete" (click)="deleteJobItem(job.id)" title="Delete Job Opening">✕</button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Edit Job Modal -->
+          @if (selectedJob(); as j) {
+            <div class="admin-modal-backdrop" (click)="selectedJob.set(null)">
+              <div class="admin-modal-card" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Edit Job Opening: {{ j.title || 'New Job' }}</h3>
+                  <button class="modal-close" (click)="selectedJob.set(null)">✕</button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Job Title *</label>
+                      <input type="text" [(ngModel)]="j.title" placeholder="e.g. Senior ERPNext Functional Consultant" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Department *</label>
+                      <input type="text" [(ngModel)]="j.department" placeholder="Enterprise ERP, Engineering, Cloud, Sales..." />
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Location *</label>
+                      <input type="text" [(ngModel)]="j.location" placeholder="e.g. Hyderabad / Hybrid" />
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Employment Type</label>
+                      <select [(ngModel)]="j.type">
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
+                      </select>
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Experience Required</label>
+                      <input type="text" [(ngModel)]="j.experience" placeholder="e.g. 2 – 5 Years" />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Role Overview / Summary *</label>
+                    <textarea rows="3" [(ngModel)]="j.overview" placeholder="Brief summary of the role and impact..."></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Key Requirements (Enter each requirement on a new line)</label>
+                    <textarea rows="4" [ngModel]="(j.requirements || []).join('\n')" (ngModelChange)="j.requirements = $event"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Core Responsibilities (Enter each responsibility on a new line)</label>
+                    <textarea rows="4" [ngModel]="(j.responsibilities || []).join('\n')" (ngModelChange)="j.responsibilities = $event"></textarea>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label>Hiring Status</label>
+                      <select [(ngModel)]="j.status">
+                        <option value="open">Open (Accepting Applications)</option>
+                        <option value="closed">Closed (Filled / Inactive)</option>
+                      </select>
+                    </div>
+                    <div class="form-group flex-1">
+                      <label>Display Order</label>
+                      <input type="number" [(ngModel)]="j.order" />
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn-cancel" (click)="selectedJob.set(null)">Cancel</button>
+                  <button class="btn-save-publish" (click)="saveJobItem()">Save &amp; Publish Job</button>
                 </div>
               </div>
             </div>

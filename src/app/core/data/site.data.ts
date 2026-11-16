@@ -1,12 +1,16 @@
 import {
   BlogPost,
+  BranchLocation,
   ContactInfo,
   HeroSliderConfig,
   IndustryItem,
+  JobPosting,
   NavItem,
   PartnerItem,
   ProductItem,
-  ServiceItem
+  ServiceItem,
+  TeamMember,
+  TestimonialItem
 } from '../models/site.models';
 
 export const CONTACT_INFO: ContactInfo = {
@@ -21,6 +25,8 @@ export const CONTACT_INFO: ContactInfo = {
   infoEmail: 'info@aircomtech.com',
   address: 'Plot No.12, Simhadri Nagar Colony, Near PBDAV School, Hyderabad, Telangana, India',
   workingHours: 'Monday – Saturday: 9:30 AM – 6:30 PM IST',
+  crmUrl: 'https://crm.aircomtech.com',
+  supportUrl: 'https://crm.aircomtech.com',
   socials: [
     { name: 'LinkedIn', url: 'https://www.linkedin.com/company/aircom-technologies', icon: 'linkedin' },
     { name: 'YouTube', url: 'https://www.youtube.com/@aircomtechnologies', icon: 'youtube' },
@@ -1256,6 +1262,251 @@ export const PARTNERS_DATA: PartnerItem[] = [
   }
 ];
 
+export const BRANCH_LOCATIONS_DATA: BranchLocation[] = [
+  {
+    id: 'loc-hyd',
+    name: 'Hyderabad Headquarters',
+    isHeadquarters: true,
+    address: 'Plot No.12, Simhadri Nagar Colony, Near PBDAV School, Hyderabad, Telangana, India',
+    city: 'Hyderabad',
+    state: 'Telangana',
+    country: 'India',
+    phone: '+91 77998 99429',
+    email: 'sales@aircomtech.com',
+    workingHours: 'Monday – Saturday: 9:30 AM – 6:30 PM IST',
+    mapEmbedUrl: 'https://maps.google.com/maps?q=Aircom%20Technologies%2C%20Plot%20No.12%2C%20Simhadri%20Nagar%20Colony%2C%20Near%20PBDAV%20School%2C%20Hyderabad%2C%20Telangana&t=&z=16&ie=UTF8&iwloc=&output=embed',
+    order: 1,
+    enabled: true
+  },
+  {
+    id: 'loc-blr',
+    name: 'Bangalore Regional Center',
+    isHeadquarters: false,
+    address: 'Level 4, Prestige Meridian, MG Road, Bangalore, Karnataka 560001, India',
+    city: 'Bangalore',
+    state: 'Karnataka',
+    country: 'India',
+    phone: '+91 80 4123 8890',
+    email: 'blr@aircomtech.com',
+    workingHours: 'Monday – Friday: 9:00 AM – 6:00 PM IST',
+    mapEmbedUrl: 'https://maps.google.com/maps?q=Prestige%20Meridian%2C%20MG%20Road%2C%20Bangalore&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    order: 2,
+    enabled: true
+  },
+  {
+    id: 'loc-mum',
+    name: 'Mumbai Operations Hub',
+    isHeadquarters: false,
+    address: 'Unit 502, B-Wing, Lodha Supremus, Kanjurmarg West, Mumbai, Maharashtra 400078, India',
+    city: 'Mumbai',
+    state: 'Maharashtra',
+    country: 'India',
+    phone: '+91 22 6789 4430',
+    email: 'mumbai@aircomtech.com',
+    workingHours: 'Monday – Friday: 9:30 AM – 6:30 PM IST',
+    mapEmbedUrl: 'https://maps.google.com/maps?q=Lodha%20Supremus%2C%20Kanjurmarg%20West%2C%20Mumbai&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    order: 3,
+    enabled: true
+  }
+];
+
+export const TESTIMONIALS_DATA: TestimonialItem[] = [
+  {
+    id: 'test-1',
+    clientName: 'Sanjay Deshmukh',
+    designation: 'Chief Operating Officer',
+    company: 'Apex Precision Engineering Ltd.',
+    rating: 5,
+    quote: 'Aircom Technologies seamlessly migrated our multi-branch manufacturing operations to ERPNext. Bill of materials, scrap tracking, and purchase approval workflows cut our reconciliation time by 60%. Their responsive support and deep Frappe expertise are unmatched.',
+    avatar: 'assets/images/testimonial-sanjay.png',
+    industry: 'Precision Manufacturing',
+    order: 1,
+    enabled: true
+  },
+  {
+    id: 'test-2',
+    clientName: 'Pooja Verma',
+    designation: 'Director of Finance',
+    company: 'Vanguard Retail Chain',
+    rating: 5,
+    quote: 'Integrating 38 POS retail counters with TallyPrime via Aircom’s real-time API connector transformed our daily auditing. We eliminated duplicate entries and inventory mismatches across all outlets. Aircom delivers pure technical reliability.',
+    avatar: 'assets/images/testimonial-pooja.png',
+    industry: 'Retail & Multi-Outlet POS',
+    order: 2,
+    enabled: true
+  },
+  {
+    id: 'test-3',
+    clientName: 'Dr. Ramesh Kulkarni',
+    designation: 'Chief Information Officer',
+    company: 'LifeCare Multi-Specialty Hospitals',
+    rating: 5,
+    quote: 'Aircom implemented push-protocol facial recognition terminals synchronized directly with our HRMS and doctor on-call rosters. Shift payroll calculation that previously took 5 days is now automated within minutes.',
+    avatar: 'assets/images/testimonial-ramesh.png',
+    industry: 'Healthcare & Hospital HRMS',
+    order: 3,
+    enabled: true
+  },
+  {
+    id: 'test-4',
+    clientName: 'Vikram Singhania',
+    designation: 'Managing Director',
+    company: 'Singhania Jewels & Exports',
+    rating: 5,
+    quote: 'Our jewellery ERP requires strict purity loss calculation, barcode tracking, and encrypted cloud backups. Aircom’s cloud infrastructure and custom ERP modules give us 99.99% uptime and complete peace of mind.',
+    avatar: 'assets/images/testimonial-vikram.png',
+    industry: 'Jewellery & Luxury Retail',
+    order: 4,
+    enabled: true
+  }
+];
+
+export const LEADERSHIP_TEAM_DATA: TeamMember[] = [
+  {
+    id: 'tm-1',
+    name: 'Mohammed Muzammil',
+    designation: 'Managing Director & Founder',
+    bio: 'Pioneered Aircom Technologies in 2009 with a vision to deliver enterprise IT, ERPNext, and resilient network architectures for growing businesses across India and international markets.',
+    photo: 'assets/images/team-director.png',
+    linkedin: 'https://www.linkedin.com/company/aircom-technologies',
+    email: 'info@aircomtech.com',
+    order: 1,
+    enabled: true
+  },
+  {
+    id: 'tm-2',
+    name: 'K. S. Rao',
+    designation: 'Chief Technology Officer (CTO)',
+    bio: 'Over 18 years of software architecture and enterprise database systems experience, spearheading high-throughput ERPNext deployments, Frappe microservices, and API integrations.',
+    photo: 'assets/images/team-cto.png',
+    linkedin: 'https://www.linkedin.com/company/aircom-technologies',
+    email: 'tech@aircomtech.com',
+    order: 2,
+    enabled: true
+  },
+  {
+    id: 'tm-3',
+    name: 'Arunav Sharma',
+    designation: 'VP – Enterprise Solutions & ERP',
+    bio: 'Leads our functional ERP consultation teams across supply chain, manufacturing BOMs, multi-currency accounting, and TallyPrime automated workflows.',
+    photo: 'assets/images/team-vp.png',
+    linkedin: 'https://www.linkedin.com/company/aircom-technologies',
+    email: 'sales@aircomtech.com',
+    order: 3,
+    enabled: true
+  },
+  {
+    id: 'tm-4',
+    name: 'Praveen Chary',
+    designation: 'Head of Cloud Infrastructure & Security',
+    bio: 'Specialist in enterprise UTM firewalls, branch site-to-site VPNs, high-availability AWS/Azure server clusters, and proactive 24/7 IT AMC operations.',
+    photo: 'assets/images/team-infra.png',
+    linkedin: 'https://www.linkedin.com/company/aircom-technologies',
+    email: 'support@aircomtech.com',
+    order: 4,
+    enabled: true
+  }
+];
+
+export const CAREER_OPENINGS_DATA: JobPosting[] = [
+  {
+    id: 'job-1',
+    title: 'Senior ERPNext Functional Consultant',
+    department: 'Enterprise ERP',
+    location: 'Hyderabad (Headquarters) / Hybrid',
+    type: 'Full-time',
+    experience: '3 – 6 Years',
+    overview: 'Lead client discovery, business blueprinting, DocType configuration, workflow automation, and user onboarding for mid-market and enterprise ERPNext projects.',
+    requirements: [
+      'In-depth knowledge of ERPNext modules (Accounts, Buying, Selling, Stock, Manufacturing, HRMS)',
+      'Proven experience handling at least 3 end-to-end ERP implementations',
+      'Strong client communication and requirement mapping abilities',
+      'Familiarity with Frappe framework doctypes, server scripts, and print formats is an advantage'
+    ],
+    responsibilities: [
+      'Conduct client workflow requirement gathering and system gap analysis',
+      'Configure Chart of Accounts, cost centers, price lists, and workflow approval chains',
+      'Conduct UAT testing and corporate staff training sessions',
+      'Coordinate with our developer team for bespoke Frappe custom app extensions'
+    ],
+    status: 'open',
+    order: 1,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'job-2',
+    title: 'Frappe & Python Backend Engineer',
+    department: 'Engineering & Development',
+    location: 'Hyderabad / Bangalore',
+    type: 'Full-time',
+    experience: '2 – 5 Years',
+    overview: 'Develop custom Frappe apps, REST API connectors, automated sync engines for TallyPrime and CRM platforms, and perform database optimization on MariaDB / PostgreSQL.',
+    requirements: [
+      'Strong proficiency in Python, Frappe Framework, MariaDB, and Redis',
+      'Experience building RESTful APIs and webhook integrations',
+      'Proficiency in JavaScript, Jinja templating, and frontend web technologies',
+      'Git workflow, Docker, and Linux deployment experience'
+    ],
+    responsibilities: [
+      'Develop custom DocTypes, background queue workers, and scheduled hooks in Frappe',
+      'Build bi-directional connectors between ERPNext, Tally XML, and third-party portals',
+      'Optimize MariaDB queries for high-volume inventory and transaction ledgers',
+      'Write clean, maintainable, and well-documented modular code'
+    ],
+    status: 'open',
+    order: 2,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'job-3',
+    title: 'Cloud Infrastructure & Network Security Engineer',
+    department: 'IT Infrastructure',
+    location: 'Hyderabad',
+    type: 'Full-time',
+    experience: '3 – 5 Years',
+    overview: 'Deploy and maintain corporate UTM firewalls (Fortinet, Sophos), site-to-site VPN tunnels, Linux/Windows cloud servers (AWS, Azure), and high-availability enterprise networks.',
+    requirements: [
+      'Hands-on experience with Fortinet/Sophos UTM firewalls and IPsec VPN tunneling',
+      'Strong Linux system administration (Ubuntu, Debian, Nginx, SSL certificates, cron backup routines)',
+      'Familiarity with AWS EC2/S3, virtualization (Proxmox, VMware, Hyper-V)',
+      'Understanding of LAN/VLAN segmentation, managed switches, and CCTV networking'
+    ],
+    responsibilities: [
+      'Deploy and monitor cloud servers hosting ERPNext and database clusters',
+      'Configure dual-WAN failover routers and encrypted branch-to-branch VPN tunnels',
+      'Manage daily automated off-site backups and disaster recovery verification drills',
+      'Deliver proactive L2/L3 support for enterprise AMC contracts'
+    ],
+    status: 'open',
+    order: 3,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'job-4',
+    title: 'Enterprise IT & ERP Sales Executive',
+    department: 'Sales & Business Development',
+    location: 'Hyderabad / Bangalore',
+    type: 'Full-time',
+    experience: '2 – 5 Years',
+    overview: 'Drive enterprise sales conversations with CFOs, COOs, and business owners for ERPNext implementation, Tally automation, biometric systems, and IT infrastructure AMC solutions.',
+    requirements: [
+      'Demonstrated track record in B2B software, ERP, or IT infrastructure solution selling',
+      'Exceptional consultative communication and presentation skills',
+      'Ability to understand enterprise business bottlenecks and articulate ROI',
+      'Self-driven with strong pipeline and CRM management habits'
+    ],
+    responsibilities: [
+      'Engage prospective corporate clients and schedule solution discovery sessions',
+      'Work with our technical architects to prepare commercial proposals and RFPs',
+      'Conduct interactive ERP demonstrations showcasing business efficiency gains',
+      'Build long-term enterprise partnerships and account expansions'
+    ],
+    status: 'open',
+    order: 4,
+    created_at: new Date().toISOString()
+  }
+];
+
 export const MAIN_NAV_ITEMS: NavItem[] = [
   { label: 'Home', route: '/' },
   { label: 'About Us', route: '/about' },
@@ -1290,6 +1541,7 @@ export const MAIN_NAV_ITEMS: NavItem[] = [
     }))
   },
   { label: 'Partners', route: '/partners' },
-  { label: 'Blog', route: '/blog' },
+  { label: 'Articles', route: '/articles' },
+  { label: 'Careers', route: '/careers' },
   { label: 'Contact Us', route: '/contact' }
 ];

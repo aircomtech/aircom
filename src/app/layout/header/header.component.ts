@@ -45,6 +45,13 @@ import { TechIconComponent } from '../../shared/components/tech-icon/tech-icon.c
               <span>{{ contact.phone }}</span>
             </a>
             <span class="divider hide-xs">|</span>
+            <a [href]="crmUrl" target="_blank" rel="noopener noreferrer" class="top-link top-crm-link" title="Aircom Customer Support & CRM Portal">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+              </svg>
+              <span>Support (CRM)</span>
+            </a>
+            <span class="divider hide-xs">|</span>
             <button type="button" class="wa-top-btn" (click)="dialogs.openWhatsapp()">
               <span class="wa-badge">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
@@ -210,6 +217,7 @@ export class HeaderComponent implements OnInit {
   readonly dialogs = inject(DialogLauncherService);
 
   contact = CONTACT_INFO;
+  crmUrl = 'https://crm.aircomtech.com';
   private rawNavItems: NavItem[] = MAIN_NAV_ITEMS;
   readonly navItems = signal<NavItem[]>(MAIN_NAV_ITEMS);
   ctaText = 'Get a Quote';
@@ -234,6 +242,9 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     if (this.content.currentSettings.contactInfo) {
       this.contact = { ...this.contact, ...this.content.currentSettings.contactInfo };
+      if (this.content.currentSettings.contactInfo.crmUrl) {
+        this.crmUrl = this.content.currentSettings.contactInfo.crmUrl;
+      }
     }
     if (this.content.currentSettings.header?.ctaText) {
       this.ctaText = this.content.currentSettings.header.ctaText;
@@ -242,7 +253,10 @@ export class HeaderComponent implements OnInit {
     this.rebuildNavItems();
 
     this.content.settings$.subscribe((st) => {
-      if (st.contactInfo) this.contact = { ...this.contact, ...st.contactInfo };
+      if (st.contactInfo) {
+        this.contact = { ...this.contact, ...st.contactInfo };
+        if (st.contactInfo.crmUrl) this.crmUrl = st.contactInfo.crmUrl;
+      }
       if (st.header?.ctaText) this.ctaText = st.header.ctaText;
       this.rebuildNavItems();
     });
@@ -254,24 +268,42 @@ export class HeaderComponent implements OnInit {
 
   private rebuildNavItems(): void {
     const items = [...MAIN_NAV_ITEMS];
-    // Ensure Partners page is visible in navigation even if older DB header JSON lacked it
+    // Ensure Partners page is visible in navigation
     if (!items.some((i) => (i.route || '').trim().toLowerCase().startsWith('/partners'))) {
-      const blogIdx = items.findIndex((i) => (i.route || '').trim().toLowerCase().startsWith('/blog'));
+      const artIdx = items.findIndex((i) => (i.route || '').trim().toLowerCase().includes('article') || (i.route || '').trim().toLowerCase().includes('blog'));
       const partnerNav: NavItem = { label: 'Partners', route: '/partners' };
-      if (blogIdx >= 0) {
-        items.splice(blogIdx, 0, partnerNav);
+      if (artIdx >= 0) {
+        items.splice(artIdx, 0, partnerNav);
       } else {
         items.push(partnerNav);
       }
     }
 
-    const enriched = items.map((item) => {
-      const route = (item.route || '').trim().toLowerCase();
-      const label = (item.label || '').trim().toLowerCase();
+    // Ensure Careers is present in navigation
+    if (!items.some((i) => (i.route || '').trim().toLowerCase().startsWith('/careers'))) {
+      const contactIdx = items.findIndex((i) => (i.route || '').trim().toLowerCase().startsWith('/contact'));
+      const careerNav: NavItem = { label: 'Careers', route: '/careers' };
+      if (contactIdx >= 0) {
+        items.splice(contactIdx, 0, careerNav);
+      } else {
+        items.push(careerNav);
+      }
+    }
 
-      if (route === '/services' || route === '/services/' || route === 'services' || label === 'services') {
+    const enriched = items.map((item) => {
+      let route = (item.route || '').trim().toLowerCase();
+      let label = (item.label || '').trim();
+
+      // Rename Blog to Articles everywhere
+      if (label.toLowerCase() === 'blog' || route === '/blog') {
+        label = 'Articles';
+        route = '/articles';
+      }
+
+      if (route === '/services' || route === '/services/' || route === 'services' || label.toLowerCase() === 'services') {
         return {
           ...item,
+          label,
           route: '/services',
           children: this.content.currentServices.map((s) => ({
             label: s.title,
@@ -281,9 +313,10 @@ export class HeaderComponent implements OnInit {
           }))
         };
       }
-      if (route === '/products' || route === '/products/' || route === 'products' || label === 'products') {
+      if (route === '/products' || route === '/products/' || route === 'products' || label.toLowerCase() === 'products') {
         return {
           ...item,
+          label,
           route: '/products',
           children: this.content.currentProducts.map((p) => ({
             label: p.title,
@@ -293,9 +326,10 @@ export class HeaderComponent implements OnInit {
           }))
         };
       }
-      if (route === '/industries' || route === '/industries/' || route === 'industries' || label === 'industries') {
+      if (route === '/industries' || route === '/industries/' || route === 'industries' || label.toLowerCase() === 'industries') {
         return {
           ...item,
+          label,
           route: '/industries',
           children: this.content.currentIndustries.map((i) => ({
             label: i.name,
@@ -305,7 +339,7 @@ export class HeaderComponent implements OnInit {
           }))
         };
       }
-      return item;
+      return { ...item, label, route: item.route === '/blog' ? '/articles' : item.route };
     });
 
     this.navItems.set(enriched);

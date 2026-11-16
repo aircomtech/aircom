@@ -22,7 +22,7 @@ import {
   SERVICES_DATA,
   WHY_CHOOSE_ITEMS
 } from '../../core/data/site.data';
-import { ProductItem, ServiceItem } from '../../core/models/site.models';
+import { ProductItem, ServiceItem, TestimonialItem } from '../../core/models/site.models';
 import { AnimationService } from '../../core/services/animation.service';
 import { ContentService } from '../../core/services/content.service';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
@@ -347,7 +347,61 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
       </div>
     </section>
 
-    <!-- 7. CONTACT AND QUOTE SECTION -->
+    <!-- 7. ENTERPRISE CLIENT TESTIMONIALS -->
+    <section class="testimonials-section" style="padding: 72px 0; background: #F8FAFC;">
+      <div class="container">
+        <div class="section-header" style="text-align: center; margin-bottom: 40px;" appScrollReveal="up">
+          <div class="eyebrow-row">
+            <span class="eyebrow-line"></span>
+            <span class="eyebrow-text">Client Testimonials</span>
+            <span class="eyebrow-line right"></span>
+          </div>
+          <h2 style="font-size: 2.2rem; color: #0D1B3E; margin-bottom: 12px;">Trusted by Industry Leaders Since 2009</h2>
+          <p style="color: #64748B; max-width: 640px; margin: 0 auto;">
+            Discover how Aircom Technologies empowers manufacturing, retail, healthcare, and multi-location enterprises to streamline operations and scale.
+          </p>
+        </div>
+
+        <div class="testimonials-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+          @for (test of testimonials; track test.id) {
+            <div
+              class="testimonial-card"
+              style="background: #FFFFFF; border-radius: 18px; padding: 28px; box-shadow: 0 4px 20px rgba(13,27,62,0.06); border: 1px solid #E2E8F0; display: flex; flex-direction: column; justify-content: space-between;"
+              appScrollReveal="up"
+            >
+              <div>
+                <!-- Rating Stars -->
+                <div style="display: flex; gap: 4px; margin-bottom: 14px; color: #F59E0B; font-size: 1.15rem;">
+                  @for (star of [1,2,3,4,5]; track star) {
+                    <span>★</span>
+                  }
+                  <span style="margin-left: 6px; font-size: 0.82rem; font-weight: 700; color: #64748B; align-self: center;">5.0</span>
+                </div>
+
+                <!-- Quote Text -->
+                <p style="color: #334155; font-size: 0.95rem; line-height: 1.6; font-style: italic; margin-bottom: 20px;">
+                  “{{ test.quote }}”
+                </p>
+              </div>
+
+              <!-- Author Info -->
+              <div style="display: flex; align-items: center; gap: 14px; padding-top: 18px; border-top: 1px solid #F1F5F9;">
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #102A63, #0BA8EA); color: #FFFFFF; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(11,168,234,0.25);">
+                  {{ test.clientName.charAt(0) }}
+                </div>
+                <div>
+                  <h4 style="margin: 0; font-size: 1rem; color: #0D1B3E; font-weight: 700;">{{ test.clientName }}</h4>
+                  <div style="font-size: 0.82rem; color: #2457A7; font-weight: 600;">{{ test.designation }}</div>
+                  <div style="font-size: 0.78rem; color: #64748B;">{{ test.company }}</div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. CONTACT AND QUOTE SECTION -->
     <app-contact-section />
   `
 })
@@ -371,6 +425,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   whyItems = WHY_CHOOSE_ITEMS.map((w) => ({ ...w }));
   products = PRODUCTS_DATA;
   industries = INDUSTRIES_DATA;
+  testimonials: TestimonialItem[] = [];
   hero = this.content.currentSettings.hero || {
     eyebrow: 'INNOVATIVE • SCALABLE • RELIABLE',
     title: 'Enterprise Technology Solutions for a',
@@ -407,11 +462,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.services = this.content.currentServices;
     this.products = this.content.currentProducts;
     this.industries = this.content.currentIndustries;
+    this.testimonials = this.content.currentTestimonials.filter((t) => t.enabled !== false);
     this.applySettings(this.content.currentSettings);
 
     this.content.services$.subscribe((s) => (this.services = s));
     this.content.products$.subscribe((p) => (this.products = p));
     this.content.industries$.subscribe((i) => (this.industries = i));
+    this.content.testimonials$.subscribe((t) => (this.testimonials = t.filter((item) => item.enabled !== false)));
     this.content.settings$.subscribe((st) => this.applySettings(st));
 
     this.seo.updateSeo({

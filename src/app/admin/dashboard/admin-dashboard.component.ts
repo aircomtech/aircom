@@ -13,13 +13,28 @@ import {
 import { CloudinaryService } from '../../core/services/cloudinary.service';
 import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-logo.component';
 import { HERO_SLIDER_DEFAULT } from '../../core/data/site.data';
-import { ServiceItem, ProductItem, IndustryItem, BlogPost, PartnerItem, HeroSlideItem } from '../../core/models/site.models';
+import {
+  BlogPost,
+  BranchLocation,
+  HeroSlideItem,
+  IndustryItem,
+  JobPosting,
+  PartnerItem,
+  ProductItem,
+  ServiceItem,
+  TeamMember,
+  TestimonialItem
+} from '../../core/models/site.models';
 
 type AdminModule =
   | 'overview'
   | 'header'
   | 'hero'
   | 'about'
+  | 'team'
+  | 'locations'
+  | 'testimonials'
+  | 'careers'
   | 'services'
   | 'erpnext'
   | 'hrms'
@@ -34,7 +49,6 @@ type AdminModule =
   | 'projects'
   | 'why_us'
   | 'partners'
-  | 'testimonials'
   | 'contact_info'
   | 'inquiries'
   | 'footer'
@@ -79,6 +93,10 @@ export class AdminDashboardComponent implements OnInit {
   industriesList = signal<IndustryItem[]>([]);
   partnersList = signal<PartnerItem[]>([]);
   blogsList = signal<BlogPost[]>([]);
+  locationsList = signal<BranchLocation[]>([]);
+  testimonialsList = signal<TestimonialItem[]>([]);
+  teamList = signal<TeamMember[]>([]);
+  careersList = signal<JobPosting[]>([]);
   inquiriesList = signal<InquiryRecord[]>([]);
   activityLogs = signal<ActivityLogRecord[]>([]);
   mediaAssets = signal<MediaAssetRecord[]>([]);
@@ -93,6 +111,10 @@ export class AdminDashboardComponent implements OnInit {
   selectedIndustry = signal<IndustryItem | null>(null);
   selectedPartner = signal<PartnerItem | null>(null);
   selectedBlog = signal<BlogPost | null>(null);
+  selectedLocation = signal<BranchLocation | null>(null);
+  selectedTestimonial = signal<TestimonialItem | null>(null);
+  selectedTeamMember = signal<TeamMember | null>(null);
+  selectedJob = signal<JobPosting | null>(null);
   selectedInquiry = signal<InquiryRecord | null>(null);
   previewHeroSlide = signal<HeroSlideItem | null>(null);
 
@@ -190,6 +212,10 @@ export class AdminDashboardComponent implements OnInit {
     this.industriesList.set(JSON.parse(JSON.stringify(this.content.currentIndustries)));
     this.partnersList.set(JSON.parse(JSON.stringify(this.content.currentPartners)));
     this.blogsList.set(JSON.parse(JSON.stringify(this.content.currentBlogs)));
+    this.locationsList.set(JSON.parse(JSON.stringify(this.content.currentLocations)));
+    this.testimonialsList.set(JSON.parse(JSON.stringify(this.content.currentTestimonials)));
+    this.teamList.set(JSON.parse(JSON.stringify(this.content.currentTeam)));
+    this.careersList.set(JSON.parse(JSON.stringify(this.content.currentCareers)));
     this.activityLogs.set(this.content.currentActivityLogs);
 
     // Subscribe to live sync changes
@@ -226,6 +252,22 @@ export class AdminDashboardComponent implements OnInit {
 
     this.content.blogs$.subscribe((blogs) => {
       this.blogsList.set(JSON.parse(JSON.stringify(blogs)));
+    });
+
+    this.content.locations$.subscribe((locs) => {
+      this.locationsList.set(JSON.parse(JSON.stringify(locs)));
+    });
+
+    this.content.testimonials$.subscribe((tests) => {
+      this.testimonialsList.set(JSON.parse(JSON.stringify(tests)));
+    });
+
+    this.content.team$.subscribe((team) => {
+      this.teamList.set(JSON.parse(JSON.stringify(team)));
+    });
+
+    this.content.careers$.subscribe((careers) => {
+      this.careersList.set(JSON.parse(JSON.stringify(careers)));
     });
 
     this.content.activityLogs$.subscribe((logs) => {
@@ -974,6 +1016,18 @@ export class AdminDashboardComponent implements OnInit {
             return list;
           });
         }
+      } else if (target.target === 'team') {
+        if (this.selectedTeamMember()) {
+          const tm = { ...this.selectedTeamMember()! };
+          (tm as any)[target.property] = url;
+          this.selectedTeamMember.set(tm);
+        }
+      } else if (target.target === 'testimonial') {
+        if (this.selectedTestimonial()) {
+          const t = { ...this.selectedTestimonial()! };
+          (t as any)[target.property] = url;
+          this.selectedTestimonial.set(t);
+        }
       }
       if (notify) {
         this.showToast('success', 'Picture updated & synchronized live to website!');
@@ -1011,7 +1065,170 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  // --- LOCATIONS (GOOGLE MAPS) ---
+  openNewLocation(): void {
+    const newLoc: BranchLocation = {
+      id: 'loc-' + Date.now(),
+      name: '',
+      isHeadquarters: false,
+      address: '',
+      city: '',
+      state: '',
+      country: 'India',
+      phone: '+91 ',
+      email: '',
+      workingHours: 'Monday – Saturday: 9:30 AM – 6:30 PM IST',
+      mapEmbedUrl: '',
+      order: this.locationsList().length + 1,
+      enabled: true
+    };
+    this.selectedLocation.set(newLoc);
+  }
+
+  async saveLocationItem(): Promise<void> {
+    const loc = this.selectedLocation();
+    if (!loc) return;
+    if (!loc.name || !loc.address) {
+      this.showToast('error', 'Branch name and address are required.');
+      return;
+    }
+    if (!loc.mapEmbedUrl) {
+      loc.mapEmbedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(loc.name + ', ' + loc.address)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+    }
+    await this.content.saveLocation(loc);
+    this.selectedLocation.set(null);
+    this.showToast('success', `Branch "${loc.name}" saved and live!`);
+  }
+
+  async deleteLocationItem(id: string): Promise<void> {
+    if (!confirm('Are you sure you want to remove this branch location?')) return;
+    await this.content.deleteLocation(id);
+    this.showToast('info', 'Branch location removed.');
+  }
+
+  // --- TESTIMONIALS ---
+  openNewTestimonial(): void {
+    const newTest: TestimonialItem = {
+      id: 'test-' + Date.now(),
+      clientName: '',
+      designation: '',
+      company: '',
+      rating: 5,
+      quote: '',
+      avatar: '',
+      industry: '',
+      order: this.testimonialsList().length + 1,
+      enabled: true
+    };
+    this.selectedTestimonial.set(newTest);
+  }
+
+  async saveTestimonialItem(): Promise<void> {
+    const t = this.selectedTestimonial();
+    if (!t) return;
+    if (!t.clientName || !t.quote) {
+      this.showToast('error', 'Client name and quote are required.');
+      return;
+    }
+    await this.content.saveTestimonial(t);
+    this.selectedTestimonial.set(null);
+    this.showToast('success', `Testimonial from "${t.clientName}" saved!`);
+  }
+
+  async deleteTestimonialItem(id: string): Promise<void> {
+    if (!confirm('Are you sure you want to delete this testimonial?')) return;
+    await this.content.deleteTestimonial(id);
+    this.showToast('info', 'Testimonial removed.');
+  }
+
+  // --- LEADERSHIP & MANAGEMENT TEAM ---
+  openNewTeamMember(): void {
+    const newMember: TeamMember = {
+      id: 'tm-' + Date.now(),
+      name: '',
+      designation: '',
+      bio: '',
+      photo: 'assets/images/about-hq.png',
+      linkedin: 'https://www.linkedin.com/company/aircom-technologies',
+      email: '',
+      order: this.teamList().length + 1,
+      enabled: true
+    };
+    this.selectedTeamMember.set(newMember);
+  }
+
+  async saveTeamMemberItem(): Promise<void> {
+    const tm = this.selectedTeamMember();
+    if (!tm) return;
+    if (!tm.name || !tm.designation) {
+      this.showToast('error', 'Member name and designation are required.');
+      return;
+    }
+    await this.content.saveTeamMember(tm);
+    this.selectedTeamMember.set(null);
+    this.showToast('success', `Management profile for "${tm.name}" saved!`);
+  }
+
+  async deleteTeamMemberItem(id: string): Promise<void> {
+    if (!confirm('Are you sure you want to delete this profile?')) return;
+    await this.content.deleteTeamMember(id);
+    this.showToast('info', 'Profile removed.');
+  }
+
+  // --- CAREERS & JOB POSTINGS ---
+  openNewJob(): void {
+    const newJob: JobPosting = {
+      id: 'job-' + Date.now(),
+      title: '',
+      department: 'Enterprise ERP',
+      location: 'Hyderabad / Hybrid',
+      type: 'Full-time',
+      experience: '2 – 5 Years',
+      overview: '',
+      requirements: [],
+      responsibilities: [],
+      status: 'open',
+      order: this.careersList().length + 1,
+      created_at: new Date().toISOString()
+    };
+    this.selectedJob.set(newJob);
+  }
+
+  async saveJobItem(): Promise<void> {
+    const j = this.selectedJob();
+    if (!j) return;
+    if (!j.title || !j.department) {
+      this.showToast('error', 'Job title and department are required.');
+      return;
+    }
+    if (typeof j.requirements === 'string') {
+      j.requirements = (j.requirements as string).split('\n').map((s) => s.trim()).filter(Boolean);
+    }
+    if (typeof j.responsibilities === 'string') {
+      j.responsibilities = (j.responsibilities as string).split('\n').map((s) => s.trim()).filter(Boolean);
+    }
+    await this.content.saveJobPosting(j);
+    this.selectedJob.set(null);
+    this.showToast('success', `Job posting "${j.title}" published!`);
+  }
+
+  async deleteJobItem(id: string): Promise<void> {
+    if (!confirm('Are you sure you want to delete this job posting?')) return;
+    await this.content.deleteJobPosting(id);
+    this.showToast('info', 'Job posting removed.');
+  }
+
   // --- HELPERS ---
+  updateCrmUrl(url: string): void {
+    const current = this.siteSettings();
+    if (!current.contactInfo) {
+      current.contactInfo = { ...this.content.currentSettings.contactInfo, crmUrl: url, supportUrl: url } as any;
+    } else {
+      current.contactInfo.crmUrl = url;
+      current.contactInfo.supportUrl = url;
+    }
+    this.siteSettings.set({ ...current });
+  }
 
   formatSectionName(key: string): string {
     return key

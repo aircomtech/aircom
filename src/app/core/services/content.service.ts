@@ -6,19 +6,39 @@ import {
   ABOUT_CONTENT,
   ABOUT_PILLARS,
   BLOG_POSTS,
+  BRANCH_LOCATIONS_DATA,
+  CAREER_OPENINGS_DATA,
   CONTACT_INFO,
   HERO_SLIDER_DEFAULT,
   HERO_STATS,
   INDUSTRIES_DATA,
+  LEADERSHIP_TEAM_DATA,
   MAIN_NAV_ITEMS,
   PARTNERS_DATA,
   PRODUCTS_DATA,
   SERVICES_DATA,
+  TESTIMONIALS_DATA,
   WHY_CHOOSE_ITEMS
 } from '../data/site.data';
-import { BlogPost, HeroSliderConfig, IndustryItem, NavItem, PartnerItem, ProductItem, ServiceItem } from '../models/site.models';
+import {
+  BlogPost,
+  BranchLocation,
+  HeroSliderConfig,
+  IndustryItem,
+  JobPosting,
+  NavItem,
+  PartnerItem,
+  ProductItem,
+  ServiceItem,
+  TeamMember,
+  TestimonialItem
+} from '../models/site.models';
 
 export interface SiteSettingsMap {
+  locations?: BranchLocation[];
+  testimonials?: TestimonialItem[];
+  team?: TeamMember[];
+  careers?: JobPosting[];
   header?: {
     logoUrl?: string;
     logoDarkUrl?: string;
@@ -214,6 +234,10 @@ export class ContentService {
   private industriesSubject = new BehaviorSubject<IndustryItem[]>(INDUSTRIES_DATA);
   private partnersSubject = new BehaviorSubject<PartnerItem[]>(PARTNERS_DATA);
   private blogsSubject = new BehaviorSubject<BlogPost[]>(BLOG_POSTS);
+  private locationsSubject = new BehaviorSubject<BranchLocation[]>(BRANCH_LOCATIONS_DATA);
+  private testimonialsSubject = new BehaviorSubject<TestimonialItem[]>(TESTIMONIALS_DATA);
+  private teamSubject = new BehaviorSubject<TeamMember[]>(LEADERSHIP_TEAM_DATA);
+  private careersSubject = new BehaviorSubject<JobPosting[]>(CAREER_OPENINGS_DATA);
   private liveSyncActiveSubject = new BehaviorSubject<boolean>(false);
   private activityLogsSubject = new BehaviorSubject<ActivityLogRecord[]>([
     {
@@ -267,6 +291,10 @@ export class ContentService {
   public readonly industries$ = this.industriesSubject.asObservable();
   public readonly partners$ = this.partnersSubject.asObservable();
   public readonly blogs$ = this.blogsSubject.asObservable();
+  public readonly locations$ = this.locationsSubject.asObservable();
+  public readonly testimonials$ = this.testimonialsSubject.asObservable();
+  public readonly team$ = this.teamSubject.asObservable();
+  public readonly careers$ = this.careersSubject.asObservable();
   public readonly activityLogs$ = this.activityLogsSubject.asObservable();
   public readonly liveSyncActive$ = this.liveSyncActiveSubject.asObservable();
 
@@ -317,6 +345,22 @@ export class ContentService {
 
   get currentBlogs(): BlogPost[] {
     return this.blogsSubject.value;
+  }
+
+  get currentLocations(): BranchLocation[] {
+    return this.locationsSubject.value;
+  }
+
+  get currentTestimonials(): TestimonialItem[] {
+    return this.testimonialsSubject.value;
+  }
+
+  get currentTeam(): TeamMember[] {
+    return this.teamSubject.value;
+  }
+
+  get currentCareers(): JobPosting[] {
+    return this.careersSubject.value;
   }
 
   get currentActivityLogs(): ActivityLogRecord[] {
@@ -542,6 +586,18 @@ export class ContentService {
               this.getDeletedSlugs('partners')
             )
           );
+        }
+        if (Array.isArray((merged as any).locations) && (merged as any).locations.length > 0) {
+          this.locationsSubject.next((merged as any).locations);
+        }
+        if (Array.isArray((merged as any).testimonials) && (merged as any).testimonials.length > 0) {
+          this.testimonialsSubject.next((merged as any).testimonials);
+        }
+        if (Array.isArray((merged as any).team) && (merged as any).team.length > 0) {
+          this.teamSubject.next((merged as any).team);
+        }
+        if (Array.isArray((merged as any).careers) && (merged as any).careers.length > 0) {
+          this.careersSubject.next((merged as any).careers);
         }
         this.liveSyncActiveSubject.next(true);
       }
@@ -1124,6 +1180,154 @@ export class ContentService {
       } catch {
         // Ignore if table not yet created
       }
+    }
+    return true;
+  }
+
+  // --- BRANCH LOCATIONS (GOOGLE MAPS) ---
+  async saveLocation(loc: BranchLocation): Promise<boolean> {
+    const list = [...this.locationsSubject.value];
+    const index = list.findIndex((l) => l.id === loc.id);
+    if (index >= 0) {
+      list[index] = { ...loc };
+    } else {
+      list.push({ ...loc });
+    }
+    this.locationsSubject.next(list);
+    await this.saveSetting('locations' as any, list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('locations').upsert(loc, { onConflict: 'id' });
+        await this.logActivity('Save', `Branch Location: ${loc.name}`);
+      } catch {}
+    }
+    return true;
+  }
+
+  async deleteLocation(id: string): Promise<boolean> {
+    const list = this.locationsSubject.value.filter((l) => l.id !== id);
+    this.locationsSubject.next(list);
+    await this.saveSetting('locations' as any, list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('locations').delete().eq('id', id);
+        await this.logActivity('Delete', `Location ID: ${id}`);
+      } catch {}
+    }
+    return true;
+  }
+
+  // --- TESTIMONIALS ---
+  async saveTestimonial(item: TestimonialItem): Promise<boolean> {
+    const list = [...this.testimonialsSubject.value];
+    const index = list.findIndex((t) => t.id === item.id);
+    if (index >= 0) {
+      list[index] = { ...item };
+    } else {
+      list.push({ ...item });
+    }
+    this.testimonialsSubject.next(list);
+    await this.saveSetting('testimonials' as any, list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('testimonials').upsert(item, { onConflict: 'id' });
+        await this.logActivity('Save', `Testimonial: ${item.clientName}`);
+      } catch {}
+    }
+    return true;
+  }
+
+  async deleteTestimonial(id: string): Promise<boolean> {
+    const list = this.testimonialsSubject.value.filter((t) => t.id !== id);
+    this.testimonialsSubject.next(list);
+    await this.saveSetting('testimonials' as any, list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('testimonials').delete().eq('id', id);
+        await this.logActivity('Delete', `Testimonial ID: ${id}`);
+      } catch {}
+    }
+    return true;
+  }
+
+  // --- MANAGEMENT & LEADERSHIP TEAM ---
+  async saveTeamMember(member: TeamMember): Promise<boolean> {
+    const list = [...this.teamSubject.value];
+    const index = list.findIndex((m) => m.id === member.id);
+    if (index >= 0) {
+      list[index] = { ...member };
+    } else {
+      list.push({ ...member });
+    }
+    this.teamSubject.next(list);
+    await this.saveSetting('team' as any, list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('team_members').upsert(member, { onConflict: 'id' });
+        await this.logActivity('Save', `Team Member: ${member.name}`);
+      } catch {}
+    }
+    return true;
+  }
+
+  async deleteTeamMember(id: string): Promise<boolean> {
+    const list = this.teamSubject.value.filter((m) => m.id !== id);
+    this.teamSubject.next(list);
+    await this.saveSetting('team' as any, list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('team_members').delete().eq('id', id);
+        await this.logActivity('Delete', `Team Member ID: ${id}`);
+      } catch {}
+    }
+    return true;
+  }
+
+  // --- CAREERS & JOB POSTINGS ---
+  async saveJobPosting(job: JobPosting): Promise<boolean> {
+    const list = [...this.careersSubject.value];
+    const index = list.findIndex((j) => j.id === job.id);
+    if (index >= 0) {
+      list[index] = { ...job };
+    } else {
+      list.unshift({ ...job });
+    }
+    this.careersSubject.next(list);
+    await this.saveSetting('careers' as any, list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('careers').upsert(job, { onConflict: 'id' });
+        await this.logActivity('Save', `Job Opening: ${job.title}`);
+      } catch {}
+    }
+    return true;
+  }
+
+  async deleteJobPosting(id: string): Promise<boolean> {
+    const list = this.careersSubject.value.filter((j) => j.id !== id);
+    this.careersSubject.next(list);
+    await this.saveSetting('careers' as any, list);
+
+    const client = this.sb.getClient();
+    if (client) {
+      try {
+        await client.from('careers').delete().eq('id', id);
+        await this.logActivity('Delete', `Job Posting ID: ${id}`);
+      } catch {}
     }
     return true;
   }

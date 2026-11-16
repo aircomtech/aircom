@@ -17,7 +17,7 @@ import { CtaBannerComponent } from '../../../shared/components/cta-banner/cta-ba
     @if (post(); as p) {
       <section class="page-hero">
         <div class="container">
-          <app-breadcrumb [items]="[{ label: 'Blog', route: '/blog' }, { label: p.category }]" />
+          <app-breadcrumb [items]="[{ label: 'Articles', route: '/articles' }, { label: p.category }]" />
           <span class="hero-badge">{{ p.category }}</span>
           <h1>{{ p.title }}</h1>
           <p>{{ p.author }} &bull; {{ p.date }} &bull; {{ p.readTime }}</p>

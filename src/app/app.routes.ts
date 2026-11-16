@@ -72,6 +72,18 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/partners/partners.component').then((m) => m.PartnersComponent)
       },
       {
+        path: 'articles',
+        loadComponent: () => import('./pages/blog/blog-list/blog-list.component').then((m) => m.BlogListComponent)
+      },
+      {
+        path: 'articles/:slug',
+        loadComponent: () => import('./pages/blog/blog-detail/blog-detail.component').then((m) => m.BlogDetailComponent)
+      },
+      {
+        path: 'careers',
+        loadComponent: () => import('./pages/careers/careers.component').then((m) => m.CareersComponent)
+      },
+      {
         path: 'blog',
         loadComponent: () => import('./pages/blog/blog-list/blog-list.component').then((m) => m.BlogListComponent)
       },

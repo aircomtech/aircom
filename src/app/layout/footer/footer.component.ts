@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { CONTACT_INFO, SERVICES_DATA } from '../../core/data/site.data';
+import { BranchLocation } from '../../core/models/site.models';
 import { ContentService } from '../../core/services/content.service';
 import { DialogLauncherService } from '../../core/services/dialog-launcher.service';
 import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-logo.component';
@@ -38,7 +39,9 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
               <li><a routerLink="/products">Products</a></li>
               <li><a routerLink="/industries">Industries</a></li>
               <li><a routerLink="/partners">Partners</a></li>
-              <li><a routerLink="/blog">Blog</a></li>
+              <li><a routerLink="/articles">Articles</a></li>
+              <li><a routerLink="/careers">Careers</a></li>
+              <li><a [href]="crmUrl" target="_blank" rel="noopener noreferrer">Support (CRM) ↗</a></li>
               <li><a routerLink="/contact">Contact Us</a></li>
             </ul>
           </div>
@@ -92,8 +95,27 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
           </div>
         </div>
 
-        <!-- Clean Embedded Location Map -->
+        <!-- Clean Embedded Location Map (Multi-Branch Support) -->
         <div class="footer-map-section">
+          <div class="footer-map-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="color:#0BA8EA;font-weight:700;font-size:0.9rem;">📍 Our Presence:</span>
+              <span style="color:rgba(255,255,255,0.85);font-size:0.85rem;">{{ selectedBranch?.name || 'Hyderabad Headquarters' }}</span>
+            </div>
+            <div class="branch-pills" style="display:flex;gap:8px;flex-wrap:wrap;">
+              @for (b of branches; track b.id) {
+                <button
+                  type="button"
+                  [style.background]="selectedBranch?.id === b.id ? '#0BA8EA' : 'rgba(255,255,255,0.1)'"
+                  [style.color]="selectedBranch?.id === b.id ? '#FFFFFF' : 'rgba(255,255,255,0.8)'"
+                  style="border:1px solid rgba(255,255,255,0.2);padding:4px 12px;border-radius:20px;font-size:0.75rem;cursor:pointer;font-weight:600;font-family:inherit;"
+                  (click)="selectBranch(b)"
+                >
+                  {{ b.city || b.name }}
+                </button>
+              }
+            </div>
+          </div>
           <div class="footer-map-frame">
             <iframe
               [src]="safeMapUrl"
@@ -103,7 +125,7 @@ import { AircomLogoComponent } from '../../shared/components/aircom-logo/aircom-
               allowfullscreen=""
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
-              title="Aircom Technologies Location Map - Plot No.12, Simhadri Nagar Colony, Near PBDAV School, Hyderabad, Telangana, India"
+              [title]="'Aircom Technologies - ' + (selectedBranch?.name || 'Location')"
             ></iframe>
           </div>
         </div>
@@ -128,6 +150,9 @@ export class FooterComponent implements OnInit {
   readonly dialogs = inject(DialogLauncherService);
 
   contact = CONTACT_INFO;
+  crmUrl = 'https://crm.aircomtech.com';
+  branches: BranchLocation[] = [];
+  selectedBranch: BranchLocation | null = null;
   featuredServices = SERVICES_DATA.slice(0, 6);
   footerTagline = 'Enterprise ERP, TallyPrime integration, HRMS automation, IT infrastructure, and cloud solutions trusted since 2009.';
   copyrightText = `© ${new Date().getFullYear()} Aircom Technologies. All Rights Reserved.`;
@@ -137,6 +162,9 @@ export class FooterComponent implements OnInit {
   ngOnInit(): void {
     if (this.content.currentSettings.contactInfo) {
       this.contact = { ...this.contact, ...this.content.currentSettings.contactInfo };
+      if (this.content.currentSettings.contactInfo.crmUrl) {
+        this.crmUrl = this.content.currentSettings.contactInfo.crmUrl;
+      }
     }
     if (this.content.currentSettings.footer?.tagline) {
       this.footerTagline = this.content.currentSettings.footer.tagline;
@@ -145,12 +173,27 @@ export class FooterComponent implements OnInit {
       this.copyrightText = this.content.currentSettings.footer.copyrightText;
     }
     this.featuredServices = this.content.currentServices.slice(0, 6);
-    this.updateMapUrl();
+    this.branches = this.content.currentLocations.filter((b) => b.enabled !== false);
+    if (this.branches.length > 0) {
+      this.selectBranch(this.branches[0]);
+    } else {
+      this.updateMapUrl();
+    }
+
+    this.content.locations$.subscribe((locs) => {
+      this.branches = locs.filter((b) => b.enabled !== false);
+      if (!this.selectedBranch && this.branches.length > 0) {
+        this.selectBranch(this.branches[0]);
+      }
+    });
 
     this.content.settings$.subscribe((st) => {
       if (st.contactInfo) {
         this.contact = { ...this.contact, ...st.contactInfo };
-        this.updateMapUrl();
+        if (st.contactInfo.crmUrl) this.crmUrl = st.contactInfo.crmUrl;
+        if (!this.selectedBranch) {
+          this.updateMapUrl();
+        }
       }
       if (st.footer?.tagline) this.footerTagline = st.footer.tagline;
       if (st.footer?.copyrightText) this.copyrightText = st.footer.copyrightText;
@@ -159,6 +202,13 @@ export class FooterComponent implements OnInit {
     this.content.services$.subscribe((svcs) => {
       this.featuredServices = svcs.slice(0, 6);
     });
+  }
+
+  selectBranch(branch: BranchLocation): void {
+    this.selectedBranch = branch;
+    const embedUrl = branch.mapEmbedUrl || `https://maps.google.com/maps?q=${encodeURIComponent(branch.address)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+    this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+    this.googleMapsDirectUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.address)}`;
   }
 
   private updateMapUrl(): void {

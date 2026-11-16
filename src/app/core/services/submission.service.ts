@@ -6,7 +6,7 @@ import { CONTACT_INFO } from '../data/site.data';
 import { SupabaseService } from './supabase.service';
 
 export interface InquiryPayload {
-  type: 'quote' | 'contact' | 'service' | 'product' | 'whatsapp' | 'newsletter';
+  type: 'quote' | 'contact' | 'service' | 'product' | 'whatsapp' | 'newsletter' | 'career';
   fullName?: string;
   companyName?: string;
   email: string;
@@ -31,11 +31,13 @@ export class SubmissionService {
 
   submitInquiry(payload: InquiryPayload): Observable<SubmissionResult> {
     const formattedSummary = this.buildFormattedText(payload);
-    const subjectLine = encodeURIComponent(
-      payload.subject || `[Aircom Website ${payload.type.toUpperCase()}] ${payload.interest || 'Business Inquiry'}`
-    );
+    const targetEmail = payload.type === 'career' ? CONTACT_INFO.infoEmail : CONTACT_INFO.salesEmail;
+    const defaultSubject = payload.type === 'career'
+      ? `[Aircom Careers Application] ${payload.interest || 'Job Position'} - ${payload.fullName || 'Applicant'}`
+      : `[Aircom Website ${payload.type.toUpperCase()}] ${payload.interest || 'Business Inquiry'}`;
+    const subjectLine = encodeURIComponent(payload.subject || defaultSubject);
     const bodyText = encodeURIComponent(formattedSummary);
-    const mailtoUrl = `mailto:${CONTACT_INFO.salesEmail}?subject=${subjectLine}&body=${bodyText}`;
+    const mailtoUrl = `mailto:${targetEmail}?subject=${subjectLine}&body=${bodyText}`;
     const whatsappUrl = `https://wa.me/${CONTACT_INFO.whatsappNumber}?text=${bodyText}`;
 
     // 1. First attempt to save directly to Supabase contact_submissions table

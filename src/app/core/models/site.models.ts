@@ -124,6 +124,65 @@ export interface ContactInfo {
   infoEmail: string;
   address: string;
   workingHours: string;
+  crmUrl?: string;
+  supportUrl?: string;
   socials: { name: string; url: string; icon: string }[];
 }
+
+export interface BranchLocation {
+  id: string;
+  name: string;
+  isHeadquarters?: boolean;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  phone: string;
+  email: string;
+  workingHours: string;
+  mapEmbedUrl: string;
+  order: number;
+  enabled: boolean;
+}
+
+export interface TestimonialItem {
+  id: string;
+  clientName: string;
+  designation: string;
+  company: string;
+  rating: number;
+  quote: string;
+  avatar?: string;
+  industry?: string;
+  order: number;
+  enabled: boolean;
+}
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  designation: string;
+  bio: string;
+  photo: string;
+  linkedin?: string;
+  email?: string;
+  order: number;
+  enabled: boolean;
+}
+
+export interface JobPosting {
+  id: string;
+  title: string;
+  department: string;
+  location: string;
+  type: 'Full-time' | 'Part-time' | 'Contract';
+  experience: string;
+  overview: string;
+  requirements: string[];
+  responsibilities: string[];
+  status: 'open' | 'closed';
+  order: number;
+  created_at?: string;
+}
+
 

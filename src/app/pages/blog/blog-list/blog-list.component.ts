@@ -16,10 +16,10 @@ import { ScrollRevealDirective } from '../../../shared/directives/scroll-reveal.
   template: `
     <section class="page-hero">
       <div class="container">
-        <app-breadcrumb [items]="[{ label: 'Blog' }]" />
+        <app-breadcrumb [items]="[{ label: 'Articles' }]" />
         <span class="hero-badge">Knowledge &amp; Insights</span>
-        <h1>Enterprise IT, ERP &amp; Integration Insights</h1>
-        <p>Practical guides on ERPNext, TallyPrime synchronization, biometric HRMS automation, and resilient cloud networks.</p>
+        <h1>Enterprise IT, ERP &amp; Integration Articles</h1>
+        <p>Practical guides and articles on ERPNext, TallyPrime synchronization, biometric HRMS automation, and resilient cloud networks.</p>
       </div>
     </section>
 
@@ -90,9 +90,9 @@ export class BlogListComponent implements OnInit {
     });
 
     this.seo.updateSeo({
-      title: 'Blog & Insights | Aircom Technologies',
-      description: 'Read articles on ERPNext implementation, TallyPrime integration, biometric HRMS, and enterprise IT security.',
-      path: '/blog'
+      title: 'Articles & Technical Insights | Aircom Technologies',
+      description: 'Read articles and enterprise guides on ERPNext implementation, TallyPrime integration, biometric HRMS, and enterprise IT security.',
+      path: '/articles'
     });
   }
 }
